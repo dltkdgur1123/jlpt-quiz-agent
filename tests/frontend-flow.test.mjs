@@ -12,9 +12,10 @@ test("front page contains level/type selection and mobile-first quiz flow", () =
   assert.match(source, /문제 유형/);
   assert.match(source, /답안 제출/);
   assert.match(source, /choice-button/);
+  assert.match(source, /\/api\/quiz\/next/);
 });
 
-test("answer result shows correctness, explanation, and feedback choices only after answer", () => {
+test("answer result shows correctness, explanation, and real logged-in feedback choices only after answer", () => {
   const source = quizClient();
   assert.match(source, /정답입니다|오답입니다/);
   assert.match(source, /해설/);
@@ -23,6 +24,10 @@ test("answer result shows correctness, explanation, and feedback choices only af
   assert.match(source, /아니오/);
   assert.match(source, /모르겠다/);
   assert.match(source, /로그인하면 출제 경험 제보를 제출할 수 있습니다/);
+  assert.match(source, /Authorization/);
+  assert.match(source, /Bearer/);
+  assert.match(source, /exam-seen-feedback/);
+  assert.equal(source.includes("로그인 사용자 미리보기"), false);
 });
 
 test("score UI uses safe wording and data-insufficient state", () => {

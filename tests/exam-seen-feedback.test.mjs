@@ -90,4 +90,19 @@ test("feedback API route exists", () => {
   );
   assert.match(route, /export async function POST/);
   assert.match(route, /submitExamSeenFeedback/);
+  assert.match(route, /authorization/);
+  assert.match(route, /getUser/);
+  assert.match(route, /buildUserProfileUpsert/);
+  assert.equal(route.includes("body.session_user_id"), false);
+});
+
+test("Supabase feedback repository refreshes item score stats after upsert", () => {
+  const source = readFileSync(
+    new URL("../src/lib/feedback/supabase-repository.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /calculateItemScoreStats/);
+  assert.match(source, /item_score_stats/);
+  assert.match(source, /quiz_attempts/);
+  assert.match(source, /exam_seen_feedback/);
 });
