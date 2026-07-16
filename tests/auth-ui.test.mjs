@@ -21,6 +21,16 @@ test("auth panel uses safe email magic link instead of password signup", () => {
   assert.equal(source.includes("password"), false);
 });
 
+test("auth panel disables login controls when a session exists", () => {
+  const source = authPanel();
+  assert.match(source, /getSession/);
+  assert.match(source, /onAuthStateChange/);
+  assert.match(source, /isSignedIn/);
+  assert.match(source, /disabled={isAuthLoading \|\| isSignedIn}/);
+  assert.match(source, /로그인된 상태입니다/);
+  assert.match(source, /signOut/);
+});
+
 test("auth callback page handles OAuth code and magic link hash sessions", () => {
   const source = callbackPage();
   assert.match(source, /exchangeCodeForSession/);
