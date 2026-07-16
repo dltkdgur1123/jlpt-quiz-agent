@@ -1,0 +1,4 @@
+word,reading,meaning,jlpt_level,question_text,choice_a,choice_b,choice_c,choice_d,correct_choice,explanation,status
+食べる,たべる,먹다,N5,다음 단어의 뜻으로 가장 알맞은 것은? 食べる,먹다,마시다,보다,가다,A,食べる는 '먹다'라는 뜻의 동사입니다.,active
+学校,がっこう,학교,N5,다음 단어의 읽는 법으로 맞는 것은? 学校,がっこう,がくせい,せんせい,きょうしつ,A,学校는 'がっこう'라고 읽습니다.,active
+必要,ひつよう,필요,N4,다음 단어의 뜻으로 가장 알맞은 것은? 必要,필요,무료,불편,불안,A,必要는 '필요'라는 뜻입니다.,active
