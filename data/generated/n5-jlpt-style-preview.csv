@@ -1,0 +1,21 @@
+item_type,jlpt_level,question_type,source_item,source_reading,source_meaning,source_day,question_text,choice_a,choice_b,choice_c,choice_d,correct_choice,explanation,review_status
+vocab,N5,vocab_context_blank,会う,あう,"만나다, 보다",DAY 004,きのう、駅で友だちに（　　　）。,会いました,買いました,書きました,読みました,A,「友だちに」と 함께 쓰여 사람을 만났다는 뜻이 자연스럽습니다. 「会う」は 만나다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,青い,あおい,파란색,DAY 005,弟は（　　　）シャツを着ています。,赤い,青い,暑い,甘い,B,「シャツ」の 색을 설명하는 말이 필요합니다. 「青い」は 파랗다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,明るい,あかるい,"밝다, 쾌활하다",DAY 005,この部屋はまどが大きいので、とても（　　　）です。,寒い,暗い,明るい,古い,C,창문이 커서 방이 밝다는 문맥입니다. 「明るい」は 밝다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,秋,あき,가을,DAY 005,（　　　）になると、木の葉が赤くなります。,朝,夏,冬,秋,D,나뭇잎이 붉어지는 계절은 가을입니다. 「秋」は 가을이라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,開ける,あける,열다,DAY 005,暑いですから、まどを（　　　）ください。,閉めて,開けて,洗って,歩いて,B,더우니 창문을 열어 달라는 문장입니다. 「開ける」は 열다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,朝,あさ,아침,DAY 005,わたしは毎日（　　　）七時に起きます。,朝,夜,午後,昨日,A,일어나는 시간으로 ‘아침 7시’가 자연스럽습니다. 「朝」は 아침이라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,遊ぶ,あそぶ,"놀다, 즐겁게 시간을 보내다, 어울리다",DAY 006,日曜日に公園で子どもたちが（　　　）います。,勉強して,遊んで,読んで,寝て,B,공원에서 아이들이 놀고 있다는 문맥입니다. 「遊ぶ」は 놀다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,暖かい,あたたかい,따뜻한,DAY 006,今日は（　　　）ので、コートはいりません。,暑い,寒い,暖かい,新しい,C,코트가 필요 없다는 문맥이므로 날씨가 따뜻하다는 말이 자연스럽습니다. 「暖かい」は 따뜻하다라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,頭,あたま,머리,DAY 007,きのうから（　　　）が痛いです。,足,手,耳,頭,D,아프다는 신체 부위가 들어가는 문장입니다. 「頭」は 머리라는 뜻입니다.,draft
+vocab,N5,vocab_context_blank,洗う,あらう,씻다,DAY 009,ご飯を食べる前に、手を（　　　）ください。,開けて,洗って,歩いて,会って,B,밥을 먹기 전에 손을 씻어 달라는 문장입니다. 「洗う」は 씻다라는 뜻입니다.,draft
+grammar,N5,grammar_sentence_blank,～です,～です,～입니다,DAY 001,田中さんは学生（　　　）。,です,ます,ません,でしたか,A,명사 뒤에서 정중하게 ‘~입니다’를 나타낼 때 「です」를 씁니다.,draft
+grammar,N5,grammar_sentence_blank,～ます,～ます,～합니다,DAY 001,わたしは毎朝六時に起き（　　　）。,です,ます,ました,ませんでした,B,현재의 습관을 정중하게 말하므로 동사 뒤에 「ます」를 씁니다.,draft
+grammar,N5,grammar_sentence_blank,～ません,～ません,～하지 않습니다,DAY 002,今日は学校へ行き（　　　）。,ます,ました,ません,でした,C,‘가지 않습니다’라는 정중한 부정 표현에는 「ません」을 씁니다.,draft
+grammar,N5,grammar_sentence_blank,～ました,～ました,～했습니다,DAY 002,きのう、映画を見（　　　）。,ます,ません,ました,です,C,「きのう」が 있으므로 과거의 일을 정중하게 말하는 「ました」가 자연스럽습니다.,draft
+grammar,N5,grammar_sentence_blank,～は,～は,～은/는,DAY 003,わたし（　　　）韓国から来ました。,が,を,に,は,D,문장의 주제 ‘나는’을 나타내므로 「は」가 자연스럽습니다.,draft
+grammar,N5,grammar_sentence_blank,～を,～を,～을/를,DAY 004,毎日、日本語（　　　）勉強します。,を,に,で,へ,A,「勉強します」의 대상을 나타내므로 목적격 조사 「を」를 씁니다.,draft
+grammar,N5,grammar_sentence_blank,～へ,～へ,～로/～에,DAY 004,来週、東京（　　　）行きます。,を,で,へ,と,C,이동의 방향이나 목적지를 나타낼 때 「へ」를 쓸 수 있습니다.,draft
+grammar,N5,grammar_sentence_blank,～てもいいです,～てもいいです,～해도 됩니다,DAY 006,ここで写真を撮っ（　　　）か。,てはいけません,てもいいです,たいです,てください,B,허가를 묻는 문장이므로 「～てもいいですか」가 자연스럽습니다.,draft
+grammar,N5,grammar_sentence_blank,～てはいけません,～てはいけません,～해서는 안 됩니다,DAY 006,この部屋でたばこを吸っ（　　　）。,てもいいです,たいです,てはいけません,ています,C,금지 표현이 필요하므로 「～てはいけません」이 자연스럽습니다.,draft
+grammar,N5,grammar_sentence_blank,～たいです,～たいです,～하고 싶습니다,DAY 007,週末に友だちと映画を見（　　　）。,たいです,てください,てもいいです,てはいけません,A,하고 싶은 일을 말하므로 동사ます형 어간 뒤에 「たいです」를 씁니다.,draft
