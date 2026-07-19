@@ -37,3 +37,13 @@ test("JLPT question generation template requires safe JSON output and trust guar
   assert.match(source, /공식 문제를 복제하지 않고/);
   assert.match(source, /정답은 하나만 가능/);
 });
+
+test("JLPT style guide prioritizes natural Japanese, JLPT-like format, and post-answer Korean explanations", () => {
+  const guide = styleGuide();
+  const template = promptTemplate();
+  assert.match(guide, /일본어 문장이 자연스러운가/);
+  assert.match(guide, /JLPT 문항 형식에 가까운가/);
+  assert.match(guide, /답안 제출 후에만 노출/);
+  assert.match(template, /일본어 문장이 자연스럽고 JLPT 문항 형식에 가까운지/);
+  assert.match(template, /앱에서는 답안 제출 후에만 보여준다/);
+});
