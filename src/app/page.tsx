@@ -12,7 +12,7 @@ export default function Home() {
           <p>
             단일 퀴즈를 넘어 N5 모의고사 세트 응시, 전체 제출, 영역별 결과 확인 흐름으로 확장 중입니다.
           </p>
-          <Link href="/mock-exams/n5-lite-001">N5 모의고사 Lite 001 시작</Link>
+          <Link href="/mock-exams/n5-lite-002">N5 모의고사 Lite 002 시작</Link>
         </section>
         <AuthPanel />
         <QuizMvp />

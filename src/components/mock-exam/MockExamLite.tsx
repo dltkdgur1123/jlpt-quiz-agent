@@ -4,9 +4,11 @@ import { useMemo, useState } from "react";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 
+type MockExamSectionKey = "vocab" | "grammar" | "reading";
+
 type MockExamQuestion = {
   id: string;
-  section_key: "vocab" | "grammar";
+  section_key: MockExamSectionKey;
   section_sort_order: number;
   sort_order: number;
   question_text: string;
@@ -29,7 +31,7 @@ type MockExamArtifact = {
     listening_included: false;
   };
   sections: Array<{
-    section_key: "vocab" | "grammar";
+    section_key: MockExamSectionKey;
     section_title: string;
     sort_order: number;
     question_count: number;

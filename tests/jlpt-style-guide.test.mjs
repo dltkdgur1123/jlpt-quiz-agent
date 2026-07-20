@@ -25,6 +25,9 @@ test("JLPT style guide defines structural patterns without treating samples as r
     "G3. 연결 지문 문법 클로즈형",
     "Reading 문항 유형",
     "sample09 참고 범위",
+    "jlpt.or.kr 문제 구성 참고 범위",
+    "문장의 문법 2",
+    "정보검색",
     "聴解 MP3 / script: 현재 미구현",
   ]) {
     assert.match(source, new RegExp(phrase));

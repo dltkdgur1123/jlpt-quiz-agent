@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
-const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-001/page.tsx", import.meta.url), "utf8");
+const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-002/page.tsx", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 
@@ -11,12 +11,12 @@ test("home page promotes N5 mock exam Lite entry", () => {
   const source = homePage();
   assert.match(source, /JLPT Mock Exam Platform/);
   assert.match(source, /JLPT 모의고사 Lite/);
-  assert.match(source, /\/mock-exams\/n5-lite-001/);
+  assert.match(source, /\/mock-exams\/n5-lite-002/);
 });
 
 test("N5 mock exam page loads generated set artifact", () => {
   const source = mockExamPage();
-  assert.match(source, /n5-mock-exam-lite-set-001\.json/);
+  assert.match(source, /n5-mock-exam-lite-set-002\.json/);
   assert.match(source, /MockExamLite/);
 });
 

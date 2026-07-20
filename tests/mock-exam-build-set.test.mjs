@@ -84,3 +84,30 @@ test("generated N5 mock exam set artifact has 30 draft review questions", () => 
   assert.equal(artifact.questions.filter((question) => question.section_key === "grammar").length, 15);
   assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
 });
+
+test("improved N5 mock exam set 002 mixes vocab grammar and reading formats", () => {
+  const artifact = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-mock-exam-lite-set-002.json", import.meta.url), "utf8"),
+  );
+
+  assert.equal(artifact.set.set_code, "n5-mock-exam-lite-002");
+  assert.equal(artifact.set.question_count, 35);
+  assert.deepEqual(
+    artifact.sections.map((section) => section.section_key),
+    ["vocab", "grammar", "reading"],
+  );
+  for (const questionType of [
+    "vocab_reading",
+    "vocab_orthography",
+    "vocab_paraphrase",
+    "grammar_sentence_build",
+    "grammar_text_blank",
+    "reading_info",
+  ]) {
+    assert.ok(
+      artifact.questions.some((question) => question.question_type === questionType),
+      `${questionType} missing`,
+    );
+  }
+  assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
+});
