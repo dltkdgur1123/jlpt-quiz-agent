@@ -4,6 +4,8 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getNextQuiz } from "@/lib/quiz/next";
 import { createSupabaseQuizRepository } from "@/lib/quiz/supabase-repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const search = request.nextUrl.searchParams;
 
