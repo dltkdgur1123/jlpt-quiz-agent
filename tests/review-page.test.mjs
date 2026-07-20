@@ -12,6 +12,11 @@ const reviewBatch002Page = () =>
     new URL("../src/app/review/n5-preview-batch-002/page.tsx", import.meta.url),
     "utf8",
   );
+const reviewBatch003Page = () =>
+  readFileSync(
+    new URL("../src/app/review/n5-preview-batch-003/page.tsx", import.meta.url),
+    "utf8",
+  );
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
 
 test("N5 preview review page reads generated questions and shows human review criteria", () => {
@@ -38,4 +43,13 @@ test("N5 batch 002 review page reads final Shorts source preview", () => {
   assert.match(source, /최종 쇼츠 source/);
   assert.match(source, /source_stage/);
   assert.match(source, /문제와 보기에는 한국어가 없는가/);
+});
+
+test("N5 batch 003 review page shows sample09 non-listening format review", () => {
+  const source = reviewBatch003Page();
+  assert.match(source, /n5-jlpt-style-preview-batch-003\.json/);
+  assert.match(source, /N5 JLPT형 preview batch-003 문항 검수/);
+  assert.match(source, /sample09의 비청해 출제 형식/);
+  assert.match(source, /어휘 한자 읽기 선택형/);
+  assert.match(source, /청해 요소가 섞이지 않았는가/);
 });
