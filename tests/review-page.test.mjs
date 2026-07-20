@@ -19,8 +19,9 @@ test("N5 preview review page reads generated questions and shows human review cr
   assert.match(source, /검수 포인트/);
 });
 
-test("home page links to the N5 preview review route", () => {
+test("home page does not show draft preview review entry after import", () => {
   const source = homePage();
-  assert.match(source, /\/review\/n5-preview/);
-  assert.match(source, /문항 검수 페이지 열기/);
+  assert.equal(source.includes("/review/n5-preview"), false);
+  assert.equal(source.includes("문항 검수 페이지 열기"), false);
+  assert.equal(source.includes("실제 DB import 전"), false);
 });
