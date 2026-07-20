@@ -36,6 +36,7 @@ test("JLPT question generation template requires safe JSON output and trust guar
   assert.match(source, /grammar_sentence_blank/);
   assert.match(source, /공식 문제를 복제하거나 변형하지 않고/);
   assert.match(source, /정답은 하나만 가능/);
+  assert.match(source, /숫자\+時 표기/);
 });
 
 test("JLPT style guide prioritizes natural Japanese, JLPT-like format, and post-answer Korean explanations", () => {

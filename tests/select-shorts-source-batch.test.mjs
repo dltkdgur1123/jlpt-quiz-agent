@@ -24,6 +24,7 @@ test("selectRows keeps used shorts rows with source trace fields", () => {
     ],
     "vocab",
     2,
+    () => 0,
   );
 
   assert.deepEqual(rows.map((row) => row.source_item), ["青い", "会う"]);
@@ -45,6 +46,7 @@ test("buildSourceBatch reads N5 vocab and grammar Shorts CSVs", () => {
 
   const batch = buildSourceBatch(dir);
   assert.equal(batch.batch_id, "n5-shorts-source-batch-002");
+  assert.match(batch.selection_rule, /random used=true/);
   assert.equal(batch.rows.length, 2);
   assert.deepEqual(batch.rows.map((row) => row.item_type), ["vocab", "grammar"]);
 });

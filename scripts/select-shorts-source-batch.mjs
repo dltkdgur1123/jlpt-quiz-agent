@@ -61,15 +61,37 @@ function toSourceRow(itemType, row) {
   };
 }
 
-export function selectRows(rows, itemType, limit = BATCH_SIZE_PER_TYPE) {
-  return rows
+function createSeededRandom(seedText = "") {
+  let seed = 2166136261;
+  for (const char of seedText) {
+    seed ^= char.charCodeAt(0);
+    seed = Math.imul(seed, 16777619);
+  }
+
+  return () => {
+    seed += 0x6D2B79F5;
+    let value = seed;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleRows(rows, random) {
+  const shuffled = [...rows];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+export function selectRows(rows, itemType, limit = BATCH_SIZE_PER_TYPE, random = Math.random) {
+  const eligibleRows = rows
     .filter((row) => row.word && row.meaning && row.day && normalizeUsed(row.used))
-    .map((row) => toSourceRow(itemType, row))
-    .sort((a, b) => {
-      if (b.source_score !== a.source_score) return b.source_score - a.source_score;
-      return a.source_day.localeCompare(b.source_day) || a.source_item.localeCompare(b.source_item);
-    })
-    .slice(0, limit);
+    .map((row) => toSourceRow(itemType, row));
+
+  return shuffleRows(eligibleRows, random).slice(0, limit);
 }
 
 export function buildSourceBatch(sourceDir = DEFAULT_SOURCE_DIR) {
@@ -80,14 +102,17 @@ export function buildSourceBatch(sourceDir = DEFAULT_SOURCE_DIR) {
     throw new Error(`missing JLPT Shorts source files under ${sourceDir}`);
   }
 
-  const vocabRows = selectRows(parseCsv(readFileSync(vocabPath, "utf8")), "vocab");
-  const grammarRows = selectRows(parseCsv(readFileSync(grammarPath, "utf8")), "grammar");
+  const seed = process.env.JLPT_SOURCE_RANDOM_SEED;
+  const vocabRandom = seed ? createSeededRandom(`${seed}:vocab`) : Math.random;
+  const grammarRandom = seed ? createSeededRandom(`${seed}:grammar`) : Math.random;
+  const vocabRows = selectRows(parseCsv(readFileSync(vocabPath, "utf8")), "vocab", BATCH_SIZE_PER_TYPE, vocabRandom);
+  const grammarRows = selectRows(parseCsv(readFileSync(grammarPath, "utf8")), "grammar", BATCH_SIZE_PER_TYPE, grammarRandom);
 
   return {
     batch_id: "n5-shorts-source-batch-002",
     source_dir: sourceDir,
     level: LEVEL,
-    selection_rule: "used=true rows sorted by score desc, then day/item",
+    selection_rule: "random used=true rows with assigned day from final Shorts source",
     rows: [...vocabRows, ...grammarRows],
   };
 }
