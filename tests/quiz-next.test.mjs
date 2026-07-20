@@ -88,3 +88,14 @@ test("API route exists at GET app/api/quiz/next", () => {
   assert.match(route, /item_type/);
   assert.match(route, /jlpt_level/);
 });
+
+test("Supabase quiz repository samples from multiple active rows", () => {
+  const source = readFileSync(
+    new URL("../src/lib/quiz/supabase-repository.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /pickRandomItem/);
+  assert.match(source, /Math\.random/);
+  assert.match(source, /limit\(50\)/);
+  assert.equal(source.includes("maybeSingle"), false);
+});
