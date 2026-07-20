@@ -77,7 +77,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["vocab_reading"],
     title: "漢字読み",
     instructionJa: "問題１　＿＿のことばはどう読みますか。１・２・３・４から一つ選びなさい。",
-    instructionKo: "밑줄 친 말은 어떻게 읽습니까? 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "밑줄 친 단어의 읽는 법을 고르세요.",
   },
   {
     problemNo: 2,
@@ -85,7 +85,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["vocab_orthography"],
     title: "表記",
     instructionJa: "問題２　＿＿のことばを漢字で書くとき、最もよいものを１・２・３・４から一つ選びなさい。",
-    instructionKo: "밑줄 친 말을 한자로 쓸 때 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "밑줄 친 말을 한자로 바르게 쓴 것을 고르세요.",
   },
   {
     problemNo: 3,
@@ -93,7 +93,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["vocab_context_blank"],
     title: "文脈規定",
     instructionJa: "問題３　（　　　）に入れるのに最もよいものを、１・２・３・４から一つ選びなさい。",
-    instructionKo: "괄호에 들어갈 가장 알맞은 말을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "빈칸에 들어갈 가장 알맞은 말을 고르세요.",
   },
   {
     problemNo: 4,
@@ -101,7 +101,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["vocab_paraphrase"],
     title: "言い換え類義",
     instructionJa: "問題４　次の文とだいたい同じ意味の文を、１・２・３・４から一つ選びなさい。",
-    instructionKo: "다음 문장과 대체로 같은 뜻의 문장을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "뜻이 가장 비슷한 문장을 고르세요.",
   },
   {
     problemNo: 5,
@@ -109,7 +109,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["grammar_sentence_blank"],
     title: "文法形式の判断",
     instructionJa: "問題５　（　　　）に入れるのに最もよいものを、１・２・３・４から一つ選びなさい。",
-    instructionKo: "괄호에 들어갈 가장 알맞은 문법 표현을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "빈칸에 들어갈 가장 알맞은 문법 표현을 고르세요.",
   },
   {
     problemNo: 6,
@@ -117,7 +117,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["grammar_sentence_build"],
     title: "文の組み立て",
     instructionJa: "問題６　次の文の ★ に入る最もよいものを、１・２・３・４から一つ選びなさい。",
-    instructionKo: "다음 문장의 ★에 들어갈 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "★ 자리에 들어갈 가장 알맞은 말을 고르세요.",
   },
   {
     problemNo: 7,
@@ -125,7 +125,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["grammar_text_blank"],
     title: "文章の文法",
     instructionJa: "問題７　次の文章を読んで、（　　　）に入る最もよいものを、１・２・３・４から一つ選びなさい。",
-    instructionKo: "다음 글을 읽고 괄호에 들어갈 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "글을 읽고 빈칸에 들어갈 가장 알맞은 말을 고르세요.",
   },
   {
     problemNo: 8,
@@ -133,7 +133,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["reading_short", "reading_medium"],
     title: "内容理解",
     instructionJa: "問題８　次の文章を読んで、質問に答えなさい。答えは１・２・３・４から一つ選びなさい。",
-    instructionKo: "다음 글을 읽고 질문에 답하세요. 답은 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "글을 읽고 질문에 맞는 답을 고르세요.",
   },
   {
     problemNo: 9,
@@ -141,7 +141,7 @@ const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
     questionTypes: ["reading_info"],
     title: "情報検索",
     instructionJa: "問題９　次の案内を見て、質問に答えなさい。答えは１・２・３・４から一つ選びなさい。",
-    instructionKo: "다음 안내문을 보고 질문에 답하세요. 답은 1·2·3·4에서 하나 고르세요.",
+    instructionKo: "안내문을 보고 질문에 맞는 답을 고르세요.",
   },
 ];
 
@@ -232,7 +232,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                   <div className="mock-exam-problem-instruction">
                     <p className="section-eyebrow">{problem.title}</p>
                     <h3>{problem.instructionJa}</h3>
-                    <p>한국어 안내: {problem.instructionKo}</p>
+                    <p>풀이 안내: {problem.instructionKo}</p>
                   </div>
 
                   {questions.map((question, questionIndex) => (
