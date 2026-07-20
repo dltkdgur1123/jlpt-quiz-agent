@@ -24,6 +24,8 @@ test("JLPT style guide defines structural patterns without treating samples as r
     "G2. 별표 어순 배열형",
     "G3. 연결 지문 문법 클로즈형",
     "Reading 문항 유형",
+    "sample09 참고 범위",
+    "聴解 MP3 / script: 현재 미구현",
   ]) {
     assert.match(source, new RegExp(phrase));
   }
@@ -35,6 +37,8 @@ test("JLPT question generation template requires safe JSON output and trust guar
   assert.match(source, /vocab_context_blank/);
   assert.match(source, /grammar_sentence_blank/);
   assert.match(source, /공식 문제를 복제하거나 변형하지 않고/);
+  assert.match(source, /sample09 페이지는 출제 형식 참고용/);
+  assert.match(source, /청해 문제는 아직 만들지 않는다/);
   assert.match(source, /정답은 하나만 가능/);
   assert.match(source, /숫자\+時 표기/);
 });
@@ -65,6 +69,7 @@ test("official JLPT PDFs are format references, not sources for transformed ques
   assert.match(guide, /형식 참고 자료/);
   assert.match(guide, /변형, 패러프레이즈, 일부 치환/);
   assert.match(guide, /공식 PDF에 나온 문법 문제를 변형하지 않는다/);
+  assert.match(guide, /sample09의 PDF\/MP3\/script는 레포에 저장하지 않는다/);
   assert.match(template, /공식 문제를 복제하거나 변형하지 않고/);
   assert.match(template, /PDF는 형식 참고에만 사용한다/);
 });
