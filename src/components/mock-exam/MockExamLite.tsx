@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
+type FeedbackValue = "yes" | "no" | "unknown";
 
 type MockExamSectionKey = "vocab" | "grammar" | "reading";
 
@@ -41,6 +42,11 @@ type MockExamArtifact = {
 };
 
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
+const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
+  yes: "본 적 있음",
+  no: "본 적 없음",
+  unknown: "모르겠음",
+};
 
 function choiceText(question: MockExamQuestion, key: ChoiceKey) {
   return question[`choice_${key.toLowerCase()}` as "choice_a" | "choice_b" | "choice_c" | "choice_d"];
@@ -48,6 +54,7 @@ function choiceText(question: MockExamQuestion, key: ChoiceKey) {
 
 export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
+  const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
   const [submitted, setSubmitted] = useState(false);
 
   const answeredCount = Object.keys(selectedAnswers).length;
@@ -70,6 +77,12 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
       rate: questions.length === 0 ? 0 : Math.round((correct / questions.length) * 100),
     };
   });
+
+  const feedbackSummary = {
+    yes: Object.values(seenFeedbacks).filter((feedback) => feedback === "yes").length,
+    no: Object.values(seenFeedbacks).filter((feedback) => feedback === "no").length,
+    unknown: Object.values(seenFeedbacks).filter((feedback) => feedback === "unknown").length,
+  };
 
   return (
     <div className="mock-exam-shell">
@@ -136,6 +149,23 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                     <strong>{selectedAnswers[question.id] === question.correct_choice ? "정답" : "오답"}</strong>
                     <p>정답: {question.correct_choice}</p>
                     <p>{question.explanation}</p>
+                    <div className="mock-exam-seen-feedback">
+                      <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
+                      <div className="feedback-buttons">
+                        {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
+                          <button
+                            data-selected={seenFeedbacks[question.id] === feedback}
+                            key={feedback}
+                            onClick={() =>
+                              setSeenFeedbacks((feedbacks) => ({ ...feedbacks, [question.id]: feedback }))
+                            }
+                            type="button"
+                          >
+                            {FEEDBACK_LABELS[feedback]}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 ) : null}
               </article>
@@ -158,6 +188,13 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               ))}
             </div>
             <p>공식 JLPT 점수 환산이나 합격 판정이 아닌 학습 참고용 모의고사 Lite 결과입니다.</p>
+            <div className="mock-exam-feedback-summary">
+              <h3>출제 경험 체크</h3>
+              <p>
+                본 적 있음 {feedbackSummary.yes} · 본 적 없음 {feedbackSummary.no} · 모르겠음 {feedbackSummary.unknown}
+              </p>
+              <p>현재 모의고사 화면에서는 세트 내 임시 기록이며, 로그인 기반 저장/API 연결은 다음 티켓에서 반영합니다.</p>
+            </div>
           </>
         ) : (
           <>

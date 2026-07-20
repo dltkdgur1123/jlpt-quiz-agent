@@ -30,6 +30,10 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "합격 판정",
     "sectionResults",
     "selectedAnswers",
+    "seenFeedbacks",
+    "출제 경험 체크",
+    "본 적 있음",
+    "로그인 기반 저장/API 연결은 다음 티켓",
   ]) {
     assert.match(source, new RegExp(phrase));
   }
