@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 type FeedbackValue = "yes" | "no" | "unknown";
@@ -60,6 +60,12 @@ type ProblemDefinition = {
   title: string;
   instructionJa: string;
   instructionKo: string;
+};
+
+type RenderedChoice = {
+  renderedKey: ChoiceKey;
+  originalKey: ChoiceKey;
+  text: string;
 };
 
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
@@ -149,6 +155,50 @@ function choiceText(question: MockExamQuestion, key: ChoiceKey) {
   return question[`choice_${key.toLowerCase()}` as "choice_a" | "choice_b" | "choice_c" | "choice_d"];
 }
 
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function nextSeed(seed: number) {
+  return Math.imul(seed ^ (seed >>> 15), 2246822507) >>> 0;
+}
+
+function buildRenderedChoices(question: MockExamQuestion, attemptSeed: string): RenderedChoice[] {
+  const originalChoices = CHOICE_KEYS.map((originalKey) => ({
+    originalKey,
+    text: choiceText(question, originalKey),
+  }));
+  let seed = hashSeed(`${attemptSeed}:${question.id}`);
+  const shuffledChoices = [...originalChoices];
+
+  for (let index = shuffledChoices.length - 1; index > 0; index -= 1) {
+    seed = nextSeed(seed + index);
+    const swapIndex = seed % (index + 1);
+    [shuffledChoices[index], shuffledChoices[swapIndex]] = [shuffledChoices[swapIndex], shuffledChoices[index]];
+  }
+
+  const originalCorrectIndex = CHOICE_KEYS.indexOf(question.correct_choice);
+  const renderedCorrectIndex = shuffledChoices.findIndex((choice) => choice.originalKey === question.correct_choice);
+  if (renderedCorrectIndex === originalCorrectIndex) {
+    const swapIndex = (renderedCorrectIndex + 1) % shuffledChoices.length;
+    [shuffledChoices[renderedCorrectIndex], shuffledChoices[swapIndex]] = [
+      shuffledChoices[swapIndex],
+      shuffledChoices[renderedCorrectIndex],
+    ];
+  }
+
+  return shuffledChoices.map((choice, index) => ({ ...choice, renderedKey: CHOICE_KEYS[index] }));
+}
+
+function renderedCorrectChoice(question: MockExamQuestion, renderedChoices: RenderedChoice[]) {
+  return renderedChoices.find((choice) => choice.originalKey === question.correct_choice)?.renderedKey ?? question.correct_choice;
+}
+
 function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition) {
   return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
 }
@@ -158,24 +208,41 @@ function formatQuestionNumber(problem: ProblemDefinition, questionIndex: number)
 }
 
 export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
+  const [attemptSeed, setAttemptSeed] = useState(() => `${artifact.set.set_code}:initial`);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
+    queueMicrotask(() => setAttemptSeed(nextAttemptSeed));
+  }, [artifact.set.set_code]);
+
+  const renderedChoiceMap = useMemo(
+    () =>
+      Object.fromEntries(
+        artifact.questions.map((question) => [question.id, buildRenderedChoices(question, attemptSeed)]),
+      ) as Record<string, RenderedChoice[]>,
+    [artifact.questions, attemptSeed],
+  );
 
   const answeredCount = Object.keys(selectedAnswers).length;
   const unansweredCount = artifact.set.question_count - answeredCount;
   const score = useMemo(
     () =>
-      artifact.questions.reduce(
-        (total, question) => total + (selectedAnswers[question.id] === question.correct_choice ? 1 : 0),
-        0,
-      ),
-    [artifact.questions, selectedAnswers],
+      artifact.questions.reduce((total, question) => {
+        const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+        return total + (selectedAnswers[question.id] === renderedCorrectChoice(question, renderedChoices) ? 1 : 0);
+      }, 0),
+    [artifact.questions, attemptSeed, renderedChoiceMap, selectedAnswers],
   );
 
   const sectionResults = artifact.sections.map((section) => {
     const questions = artifact.questions.filter((question) => question.section_key === section.section_key);
-    const correct = questions.filter((question) => selectedAnswers[question.id] === question.correct_choice).length;
+    const correct = questions.filter((question) => {
+      const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+      return selectedAnswers[question.id] === renderedCorrectChoice(question, renderedChoices);
+    }).length;
     return {
       ...section,
       correct,
@@ -242,9 +309,14 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                       </p>
                       <h4>{question.question_text}</h4>
                       <div className="choice-list">
-                        {CHOICE_KEYS.map((key) => {
-                          const selected = selectedAnswers[question.id] === key;
-                          const correct = submitted && question.correct_choice === key;
+                        {(renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed)).map((choice) => {
+                          const renderedKey = choice.renderedKey;
+                          const questionCorrectChoice = renderedCorrectChoice(
+                            question,
+                            renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
+                          );
+                          const selected = selectedAnswers[question.id] === renderedKey;
+                          const correct = submitted && questionCorrectChoice === renderedKey;
                           const wrongSelected = submitted && selected && !correct;
                           return (
                             <button
@@ -253,20 +325,35 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                               data-correct={correct}
                               data-wrong={wrongSelected}
                               disabled={submitted}
-                              key={key}
-                              onClick={() => setSelectedAnswers((answers) => ({ ...answers, [question.id]: key }))}
+                              key={renderedKey}
+                              onClick={() => setSelectedAnswers((answers) => ({ ...answers, [question.id]: renderedKey }))}
                               type="button"
                             >
-                              <span>{CHOICE_NUMBERS[key]}</span>
-                              {choiceText(question, key)}
+                              <span>{CHOICE_NUMBERS[renderedKey]}</span>
+                              {choice.text}
                             </button>
                           );
                         })}
                       </div>
                       {submitted ? (
                         <div className="result-card mock-exam-answer-review">
-                          <strong>{selectedAnswers[question.id] === question.correct_choice ? "정답" : "오답"}</strong>
-                          <p>정답: {CHOICE_NUMBERS[question.correct_choice]}</p>
+                          <strong>
+                            {selectedAnswers[question.id] ===
+                            renderedCorrectChoice(
+                              question,
+                              renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
+                            )
+                              ? "정답"
+                              : "오답"}
+                          </strong>
+                          <p>
+                            정답: {CHOICE_NUMBERS[
+                              renderedCorrectChoice(
+                                question,
+                                renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
+                              )
+                            ]}
+                          </p>
                           <p>{question.explanation}</p>
                           <div className="mock-exam-seen-feedback">
                             <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>

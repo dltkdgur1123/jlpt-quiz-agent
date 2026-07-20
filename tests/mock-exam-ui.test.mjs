@@ -41,6 +41,11 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "CHOICE_NUMBERS",
     "問題{problem.problemNo}",
     "grammar_sentence_build",
+    "attemptSeed",
+    "buildRenderedChoices",
+    "renderedCorrectChoice",
+    "randomUUID",
+    "originalCorrectIndex",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
