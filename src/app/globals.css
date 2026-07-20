@@ -123,6 +123,10 @@ dd { margin: 0; color: var(--muted); }
 .mock-exam-sticky-status { position: sticky; top: 12px; z-index: 2; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-weight: 800; }
 .mock-exam-section { display: grid; gap: 16px; }
 .mock-exam-section-header { border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.mock-exam-problem-group { display: grid; gap: 14px; }
+.mock-exam-problem-instruction { padding: 18px; border: 1px solid var(--border); border-left: 6px solid var(--accent); border-radius: 18px; background: #f8fafc; }
+.mock-exam-problem-instruction h3 { margin: 6px 0 8px; line-height: 1.55; }
+.mock-exam-problem-instruction p:last-child { margin-bottom: 0; color: var(--muted); }
 .mock-exam-answer-review { box-shadow: none; padding: 14px; border-radius: 16px; }
 .mock-exam-seen-feedback { display: grid; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .mock-exam-seen-feedback h4 { margin: 0; }

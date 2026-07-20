@@ -34,8 +34,13 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "출제 경험 체크",
     "본 적 있음",
     "로그인 기반 저장/API 연결은 다음 티켓",
+    "問題６　次の文の ★ に入る最もよいものを、１・２・３・４から一つ選びなさい。",
+    "한국어 안내:",
+    "CHOICE_NUMBERS",
+    "問題{problem.problemNo}",
+    "grammar_sentence_build",
   ]) {
-    assert.match(source, new RegExp(phrase));
+    assert.ok(source.includes(phrase), phrase);
   }
   assert.match(source, /submitted \? \(/);
   assert.match(source, /청해 없이/);

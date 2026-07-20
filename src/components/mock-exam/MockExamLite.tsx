@@ -6,12 +6,24 @@ type ChoiceKey = "A" | "B" | "C" | "D";
 type FeedbackValue = "yes" | "no" | "unknown";
 
 type MockExamSectionKey = "vocab" | "grammar" | "reading";
+type MockExamQuestionType =
+  | "vocab_reading"
+  | "vocab_orthography"
+  | "vocab_context_blank"
+  | "vocab_paraphrase"
+  | "grammar_sentence_blank"
+  | "grammar_sentence_build"
+  | "grammar_text_blank"
+  | "reading_short"
+  | "reading_medium"
+  | "reading_info";
 
 type MockExamQuestion = {
   id: string;
   section_key: MockExamSectionKey;
   section_sort_order: number;
   sort_order: number;
+  question_type: MockExamQuestionType;
   question_text: string;
   choice_a: string;
   choice_b: string;
@@ -41,15 +53,108 @@ type MockExamArtifact = {
   questions: MockExamQuestion[];
 };
 
+type ProblemDefinition = {
+  problemNo: number;
+  sectionKey: MockExamSectionKey;
+  questionTypes: MockExamQuestionType[];
+  title: string;
+  instructionJa: string;
+  instructionKo: string;
+};
+
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
+const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "4" };
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
   yes: "본 적 있음",
   no: "본 적 없음",
   unknown: "모르겠음",
 };
 
+const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
+  {
+    problemNo: 1,
+    sectionKey: "vocab",
+    questionTypes: ["vocab_reading"],
+    title: "漢字読み",
+    instructionJa: "問題１　＿＿のことばはどう読みますか。１・２・３・４から一つ選びなさい。",
+    instructionKo: "밑줄 친 말은 어떻게 읽습니까? 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 2,
+    sectionKey: "vocab",
+    questionTypes: ["vocab_orthography"],
+    title: "表記",
+    instructionJa: "問題２　＿＿のことばを漢字で書くとき、最もよいものを１・２・３・４から一つ選びなさい。",
+    instructionKo: "밑줄 친 말을 한자로 쓸 때 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 3,
+    sectionKey: "vocab",
+    questionTypes: ["vocab_context_blank"],
+    title: "文脈規定",
+    instructionJa: "問題３　（　　　）に入れるのに最もよいものを、１・２・３・４から一つ選びなさい。",
+    instructionKo: "괄호에 들어갈 가장 알맞은 말을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 4,
+    sectionKey: "vocab",
+    questionTypes: ["vocab_paraphrase"],
+    title: "言い換え類義",
+    instructionJa: "問題４　次の文とだいたい同じ意味の文を、１・２・３・４から一つ選びなさい。",
+    instructionKo: "다음 문장과 대체로 같은 뜻의 문장을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 5,
+    sectionKey: "grammar",
+    questionTypes: ["grammar_sentence_blank"],
+    title: "文法形式の判断",
+    instructionJa: "問題５　（　　　）に入れるのに最もよいものを、１・２・３・４から一つ選びなさい。",
+    instructionKo: "괄호에 들어갈 가장 알맞은 문법 표현을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 6,
+    sectionKey: "grammar",
+    questionTypes: ["grammar_sentence_build"],
+    title: "文の組み立て",
+    instructionJa: "問題６　次の文の ★ に入る最もよいものを、１・２・３・４から一つ選びなさい。",
+    instructionKo: "다음 문장의 ★에 들어갈 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 7,
+    sectionKey: "grammar",
+    questionTypes: ["grammar_text_blank"],
+    title: "文章の文法",
+    instructionJa: "問題７　次の文章を読んで、（　　　）に入る最もよいものを、１・２・３・４から一つ選びなさい。",
+    instructionKo: "다음 글을 읽고 괄호에 들어갈 가장 알맞은 것을 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 8,
+    sectionKey: "reading",
+    questionTypes: ["reading_short", "reading_medium"],
+    title: "内容理解",
+    instructionJa: "問題８　次の文章を読んで、質問に答えなさい。答えは１・２・３・４から一つ選びなさい。",
+    instructionKo: "다음 글을 읽고 질문에 답하세요. 답은 1·2·3·4에서 하나 고르세요.",
+  },
+  {
+    problemNo: 9,
+    sectionKey: "reading",
+    questionTypes: ["reading_info"],
+    title: "情報検索",
+    instructionJa: "問題９　次の案内を見て、質問に答えなさい。答えは１・２・３・４から一つ選びなさい。",
+    instructionKo: "다음 안내문을 보고 질문에 답하세요. 답은 1·2·3·4에서 하나 고르세요.",
+  },
+];
+
 function choiceText(question: MockExamQuestion, key: ChoiceKey) {
   return question[`choice_${key.toLowerCase()}` as "choice_a" | "choice_b" | "choice_c" | "choice_d"];
+}
+
+function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition) {
+  return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
+}
+
+function formatQuestionNumber(problem: ProblemDefinition, questionIndex: number) {
+  return `${problem.problemNo}-${questionIndex + 1}`;
 }
 
 export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
@@ -90,7 +195,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
         <p className="section-eyebrow">JLPT Mock Exam Lite</p>
         <h1>{artifact.set.set_title}</h1>
         <p>
-          청해 없이 문자·어휘와 문법만 먼저 보는 N5 모의고사 Lite입니다. 문제와 보기는 제출 전 일본어만
+          청해 없이 문자·어휘·문법·독해를 먼저 보는 N5 모의고사 Lite입니다. 문제와 보기는 제출 전 일본어만
           노출하고, 해설은 전체 제출 후 확인합니다.
         </p>
         <div className="mock-exam-status-grid" aria-label="모의고사 정보">
@@ -106,72 +211,90 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
         <span>타이머 {artifact.set.time_limit_minutes}:00</span>
       </section>
 
-      {artifact.sections.map((section) => (
-        <section className="mock-exam-section" key={section.section_key}>
-          <div className="mock-exam-section-header">
-            <p className="section-eyebrow">Section {section.sort_order}</p>
-            <h2>{section.section_title}</h2>
-            <p>
-              {section.question_count}문항 · 권장 {section.time_limit_minutes}분
-            </p>
-          </div>
+      {artifact.sections.map((section) => {
+        const problems = PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === section.section_key);
+        return (
+          <section className="mock-exam-section" key={section.section_key}>
+            <div className="mock-exam-section-header">
+              <p className="section-eyebrow">Section {section.sort_order}</p>
+              <h2>{section.section_title}</h2>
+              <p>
+                {section.question_count}문항 · 권장 {section.time_limit_minutes}분
+              </p>
+            </div>
 
-          {artifact.questions
-            .filter((question) => question.section_key === section.section_key)
-            .map((question) => (
-              <article className="quiz-card" key={question.id}>
-                <p className="section-eyebrow">{question.sort_order} / {artifact.set.question_count}</p>
-                <h3>{question.question_text}</h3>
-                <div className="choice-list">
-                  {CHOICE_KEYS.map((key) => {
-                    const selected = selectedAnswers[question.id] === key;
-                    const correct = submitted && question.correct_choice === key;
-                    const wrongSelected = submitted && selected && !correct;
-                    return (
-                      <button
-                        className="choice-button"
-                        data-selected={selected}
-                        data-correct={correct}
-                        data-wrong={wrongSelected}
-                        disabled={submitted}
-                        key={key}
-                        onClick={() => setSelectedAnswers((answers) => ({ ...answers, [question.id]: key }))}
-                        type="button"
-                      >
-                        <span>{key}</span>
-                        {choiceText(question, key)}
-                      </button>
-                    );
-                  })}
-                </div>
-                {submitted ? (
-                  <div className="result-card mock-exam-answer-review">
-                    <strong>{selectedAnswers[question.id] === question.correct_choice ? "정답" : "오답"}</strong>
-                    <p>정답: {question.correct_choice}</p>
-                    <p>{question.explanation}</p>
-                    <div className="mock-exam-seen-feedback">
-                      <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
-                      <div className="feedback-buttons">
-                        {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
-                          <button
-                            data-selected={seenFeedbacks[question.id] === feedback}
-                            key={feedback}
-                            onClick={() =>
-                              setSeenFeedbacks((feedbacks) => ({ ...feedbacks, [question.id]: feedback }))
-                            }
-                            type="button"
-                          >
-                            {FEEDBACK_LABELS[feedback]}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+            {problems.map((problem) => {
+              const questions = problemQuestions(artifact, problem);
+              if (questions.length === 0) return null;
+
+              return (
+                <section className="mock-exam-problem-group" key={problem.problemNo}>
+                  <div className="mock-exam-problem-instruction">
+                    <p className="section-eyebrow">{problem.title}</p>
+                    <h3>{problem.instructionJa}</h3>
+                    <p>한국어 안내: {problem.instructionKo}</p>
                   </div>
-                ) : null}
-              </article>
-            ))}
-        </section>
-      ))}
+
+                  {questions.map((question, questionIndex) => (
+                    <article className="quiz-card" key={question.id}>
+                      <p className="section-eyebrow">
+                        問題{problem.problemNo} · {formatQuestionNumber(problem, questionIndex)} / {artifact.set.question_count}
+                      </p>
+                      <h4>{question.question_text}</h4>
+                      <div className="choice-list">
+                        {CHOICE_KEYS.map((key) => {
+                          const selected = selectedAnswers[question.id] === key;
+                          const correct = submitted && question.correct_choice === key;
+                          const wrongSelected = submitted && selected && !correct;
+                          return (
+                            <button
+                              className="choice-button"
+                              data-selected={selected}
+                              data-correct={correct}
+                              data-wrong={wrongSelected}
+                              disabled={submitted}
+                              key={key}
+                              onClick={() => setSelectedAnswers((answers) => ({ ...answers, [question.id]: key }))}
+                              type="button"
+                            >
+                              <span>{CHOICE_NUMBERS[key]}</span>
+                              {choiceText(question, key)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {submitted ? (
+                        <div className="result-card mock-exam-answer-review">
+                          <strong>{selectedAnswers[question.id] === question.correct_choice ? "정답" : "오답"}</strong>
+                          <p>정답: {CHOICE_NUMBERS[question.correct_choice]}</p>
+                          <p>{question.explanation}</p>
+                          <div className="mock-exam-seen-feedback">
+                            <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
+                            <div className="feedback-buttons">
+                              {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
+                                <button
+                                  data-selected={seenFeedbacks[question.id] === feedback}
+                                  key={feedback}
+                                  onClick={() =>
+                                    setSeenFeedbacks((feedbacks) => ({ ...feedbacks, [question.id]: feedback }))
+                                  }
+                                  type="button"
+                                >
+                                  {FEEDBACK_LABELS[feedback]}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
+                    </article>
+                  ))}
+                </section>
+              );
+            })}
+          </section>
+        );
+      })}
 
       <section className="result-card">
         {submitted ? (
