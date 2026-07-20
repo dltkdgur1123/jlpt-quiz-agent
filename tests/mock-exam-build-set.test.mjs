@@ -139,3 +139,21 @@ test("improved N5 mock exam set 002 mixes vocab grammar and reading formats", ()
   }
   assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
 });
+
+test("realistic N5 mock exam 001 has 50 non-listening questions", () => {
+  const artifact = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-001.json", import.meta.url), "utf8"),
+  );
+
+  assert.equal(artifact.set.set_code, "n5-realistic-mock-exam-001");
+  assert.equal(artifact.set.question_count, 50);
+  assert.equal(artifact.set.listening_included, false);
+  assert.deepEqual(
+    artifact.sections.map((section) => `${section.section_key}:${section.question_count}`),
+    ["vocab:20", "grammar:20", "reading:10"],
+  );
+  assert.equal(artifact.questions.filter((question) => question.section_key === "vocab").length, 20);
+  assert.equal(artifact.questions.filter((question) => question.section_key === "grammar").length, 20);
+  assert.equal(artifact.questions.filter((question) => question.section_key === "reading").length, 10);
+  assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
+});
