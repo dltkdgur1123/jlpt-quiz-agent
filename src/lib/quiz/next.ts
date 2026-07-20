@@ -1,4 +1,5 @@
 import type { GrammarItem, VocabItem } from "@/lib/db/types";
+import { validateQuizItem } from "./quality-gate.ts";
 
 export type QuizItemType = "vocab" | "grammar";
 export type QuizChoiceKey = "A" | "B" | "C" | "D";
@@ -67,6 +68,11 @@ export async function getNextQuiz(
 
   if (!item) {
     throw new Error("quiz item not found");
+  }
+
+  const qualityResult = validateQuizItem(item, { requireActive: true });
+  if (!qualityResult.valid) {
+    throw new Error("quiz item failed quality gate");
   }
 
   return {

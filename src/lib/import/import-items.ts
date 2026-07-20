@@ -1,4 +1,5 @@
 import type { GrammarItem, VocabItem } from "@/lib/db/types";
+import { validateQuizItem } from "../quiz/quality-gate.ts";
 
 export type ImportItemType = "vocab" | "grammar";
 export type ImportRow = Record<string, unknown>;
@@ -75,6 +76,21 @@ export function validateImportRows(itemType: ImportItemType, rows: ImportRow[]):
       throw new Error(`row ${rowNumber}: duplicate choices`);
     }
 
+    const qualityResult = validateQuizItem({
+      jlpt_level: value(row, "jlpt_level") as VocabInsertRow["jlpt_level"],
+      question_text: value(row, "question_text"),
+      choice_a: value(row, "choice_a"),
+      choice_b: value(row, "choice_b"),
+      choice_c: value(row, "choice_c"),
+      choice_d: value(row, "choice_d"),
+      correct_choice: value(row, "correct_choice") as VocabInsertRow["correct_choice"],
+      status: value(row, "status") as VocabInsertRow["status"],
+    });
+
+    if (!qualityResult.valid) {
+      throw new Error(`row ${rowNumber}: quality gate failed: ${qualityResult.errors.join(", ")}`);
+    }
+
     return row;
   });
 }
@@ -107,6 +123,12 @@ export function buildInsertRows(
       correct_choice: value(row, "correct_choice") as VocabInsertRow["correct_choice"],
       explanation: value(row, "explanation"),
       status: value(row, "status") as VocabInsertRow["status"],
+      source_type: null,
+      source_day: null,
+      source_item: null,
+      source_reading: null,
+      generation_batch: null,
+      review_status: null,
     }));
   }
 
@@ -122,5 +144,11 @@ export function buildInsertRows(
     correct_choice: value(row, "correct_choice") as GrammarInsertRow["correct_choice"],
     explanation: value(row, "explanation"),
     status: value(row, "status") as GrammarInsertRow["status"],
+    source_type: null,
+    source_day: null,
+    source_item: null,
+    source_reading: null,
+    generation_batch: null,
+    review_status: null,
   }));
 }

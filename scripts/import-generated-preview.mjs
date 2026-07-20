@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "node:fs";
 
 const [, , inputPath = "data/generated/n5-jlpt-style-preview.json"] = process.argv;
+const GENERATION_BATCH = "n5-jlpt-style-preview-001";
 
 function loadEnv() {
   const text = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
@@ -43,6 +44,12 @@ function toInsertRow(row) {
     correct_choice: assertChoice(row.correct_choice),
     explanation: row.explanation,
     status: "active",
+    source_type: "shorts",
+    source_day: row.source_day,
+    source_item: row.source_item,
+    source_reading: row.source_reading,
+    generation_batch: GENERATION_BATCH,
+    review_status: "approved",
   };
 
   if (row.item_type === "vocab") {

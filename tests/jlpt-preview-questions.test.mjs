@@ -10,6 +10,14 @@ const preview = () =>
     ),
   );
 
+const previewBatch002 = () =>
+  JSON.parse(
+    readFileSync(
+      new URL("../data/generated/n5-jlpt-style-preview-batch-002.json", import.meta.url),
+      "utf8",
+    ),
+  );
+
 const choiceKeys = ["choice_a", "choice_b", "choice_c", "choice_d"];
 
 test("N5 JLPT-style preview contains 10 vocab and 10 grammar questions", () => {
@@ -44,5 +52,28 @@ test("N5 JLPT-style preview avoids officiality and prediction wording", () => {
   );
   for (const forbidden of ["기출", "공식 문제", "출제 예상", "반드시", "확률 보장"]) {
     assert.equal(source.includes(forbidden), false);
+  }
+});
+
+test("N5 batch 002 preview contains final Shorts source trace and Japanese-only quiz fields", () => {
+  const rows = previewBatch002();
+  assert.equal(rows.length, 20);
+  assert.equal(rows.filter((row) => row.item_type === "vocab").length, 10);
+  assert.equal(rows.filter((row) => row.item_type === "grammar").length, 10);
+
+  for (const row of rows) {
+    assert.equal(row.jlpt_level, "N5");
+    assert.equal(row.source_stage, "final_used_csv");
+    assert.equal(row.review_status, "draft");
+    assert.match(row.question_text, /（　　　）/);
+    assert.equal(/[ㄱ-ㅎㅏ-ㅣ가-힣]/u.test(row.question_text), false);
+    assert.match(row.correct_choice, /^[ABCD]$/);
+
+    const choices = choiceKeys.map((key) => row[key]);
+    assert.equal(new Set(choices).size, 4);
+    for (const choice of choices) {
+      assert.equal(/[ㄱ-ㅎㅏ-ㅣ가-힣]/u.test(choice), false);
+      assert.match(choice, /[ぁ-んァ-ヶ一-龯]/u);
+    }
   }
 });

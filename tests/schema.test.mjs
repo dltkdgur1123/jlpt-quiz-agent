@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const schema = readFileSync(
-  new URL("../supabase/migrations/0001_initial_mvp_schema.sql", import.meta.url),
-  "utf8",
-);
+const migrations = [
+  "../supabase/migrations/0001_initial_mvp_schema.sql",
+  "../supabase/migrations/0002_source_traceability.sql",
+];
+const schema = migrations
+  .map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
+  .join("\n");
 const types = readFileSync(new URL("../src/lib/db/types.ts", import.meta.url), "utf8");
 
 const requiredTables = [
@@ -42,8 +45,25 @@ test("score stats use perceived_exam_score and preserve unknown count", () => {
   assert.match(schema, /feedback_yes_count \+ feedback_no_count \+ feedback_unknown_count = feedback_total_count/);
 });
 
+test("source traceability fields are added to quiz item tables", () => {
+  for (const field of [
+    "source_type",
+    "source_day",
+    "source_item",
+    "source_reading",
+    "generation_batch",
+    "review_status",
+  ]) {
+    assert.match(schema, new RegExp(`add column if not exists ${field} text`));
+    assert.match(types, new RegExp(`${field}: .* \\| null`));
+  }
+  assert.match(schema, /source_type in \('shorts', 'manual', 'generated'\)/);
+  assert.match(schema, /review_status in \('draft', 'approved', 'rejected'\)/);
+});
+
 test("TypeScript DB types expose core domain names", () => {
   assert.match(types, /export type FeedbackValue = "yes" \| "no" \| "unknown"/);
+  assert.match(types, /export type SourceType = "shorts" \| "manual" \| "generated"/);
   assert.match(types, /export interface ItemScoreStats/);
   assert.match(types, /perceived_exam_score: number \| null/);
 });

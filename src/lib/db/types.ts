@@ -3,6 +3,8 @@ export type ItemType = "vocab" | "grammar";
 export type ChoiceKey = "A" | "B" | "C" | "D";
 export type FeedbackValue = "yes" | "no" | "unknown";
 export type ItemStatus = "draft" | "active" | "archived";
+export type SourceType = "shorts" | "manual" | "generated";
+export type ReviewStatus = "draft" | "approved" | "rejected";
 
 export interface UserProfile {
   id: string;
@@ -28,6 +30,12 @@ export interface VocabItem {
   correct_choice: ChoiceKey;
   explanation: string | null;
   status: ItemStatus;
+  source_type: SourceType | null;
+  source_day: string | null;
+  source_item: string | null;
+  source_reading: string | null;
+  generation_batch: string | null;
+  review_status: ReviewStatus | null;
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +53,12 @@ export interface GrammarItem {
   correct_choice: ChoiceKey;
   explanation: string | null;
   status: ItemStatus;
+  source_type: SourceType | null;
+  source_day: string | null;
+  source_item: string | null;
+  source_reading: string | null;
+  generation_batch: string | null;
+  review_status: ReviewStatus | null;
   created_at: string;
   updated_at: string;
 }

@@ -7,6 +7,11 @@ const reviewPage = () =>
     new URL("../src/app/review/n5-preview/page.tsx", import.meta.url),
     "utf8",
   );
+const reviewBatch002Page = () =>
+  readFileSync(
+    new URL("../src/app/review/n5-preview-batch-002/page.tsx", import.meta.url),
+    "utf8",
+  );
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
 
 test("N5 preview review page reads generated questions and shows human review criteria", () => {
@@ -24,4 +29,13 @@ test("home page does not show draft preview review entry after import", () => {
   assert.equal(source.includes("/review/n5-preview"), false);
   assert.equal(source.includes("문항 검수 페이지 열기"), false);
   assert.equal(source.includes("실제 DB import 전"), false);
+});
+
+test("N5 batch 002 review page reads final Shorts source preview", () => {
+  const source = reviewBatch002Page();
+  assert.match(source, /n5-jlpt-style-preview-batch-002\.json/);
+  assert.match(source, /N5 JLPT형 preview batch-002 문항 검수/);
+  assert.match(source, /최종 쇼츠 source/);
+  assert.match(source, /source_stage/);
+  assert.match(source, /문제와 보기에는 한국어가 없는가/);
 });

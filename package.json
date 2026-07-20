@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "backfill:source-traceability": "node scripts/backfill-source-traceability.mjs",
+    "select:shorts-source-batch": "node scripts/select-shorts-source-batch.mjs",
+    "validate:final-shorts-source": "node scripts/validate-final-shorts-source-snapshot.mjs",
+    "sync:final-shorts-source": "node scripts/sync-final-shorts-source-snapshot.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",

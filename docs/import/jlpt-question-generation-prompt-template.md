@@ -12,6 +12,7 @@
 - “공식”, “기출”, “출제 예상”, “반드시 나온다” 같은 표현을 쓰지 않는다.
 - 정답이 2개 이상 가능하게 만들지 않는다.
 - 오답 보기를 너무 말이 안 되게 만들지 않는다.
+- `question_text`와 `choice_a~d`에는 한국어를 넣지 않는다. 한국어는 `explanation`, `review_notes`에만 허용한다.
 
 ## 입력
 
@@ -37,10 +38,10 @@
   "jlpt_level": "N5",
   "question_type": "vocab_context_blank",
   "question_text": "日本語の文。（　　　）を含む。",
-  "choice_a": "보기 A",
-  "choice_b": "보기 B",
-  "choice_c": "보기 C",
-  "choice_d": "보기 D",
+  "choice_a": "日本語の選択肢A",
+  "choice_b": "日本語の選択肢B",
+  "choice_c": "日本語の選択肢C",
+  "choice_d": "日本語の選択肢D",
   "correct_choice": "A",
   "explanation": "한국어로 짧게: 정답 의미와 문맥상 자연스러운 이유",
   "review_notes": "검수자가 볼 짧은 주의점"
@@ -70,4 +71,5 @@
 - 정답은 하나만 가능해야 한다.
 - 해설은 “왜 이 답이 자연스러운지”를 설명해야 하며, 앱에서는 답안 제출 후에만 보여준다.
 - 문제 풀이 전 `question_text`와 보기에는 한국어 해설이나 정답 의미를 넣지 않는다.
+- `question_text`와 `choice_a~d`는 일본어만 사용한다. “다음 문법 표현의 의미로 가장 알맞은 것은?” 같은 한국어 문제문은 폐기한다.
 - 공식 시험이라고 오해할 표현을 쓰지 않는다.

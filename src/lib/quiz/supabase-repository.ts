@@ -1,14 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { GrammarItem, VocabItem } from "@/lib/db/types";
+import { isQuizItemSafeForExposure } from "./quality-gate.ts";
 import type { QuizLevel, QuizRepository } from "@/lib/quiz/next";
 
-function pickRandomItem<T>(items: T[] | null): T | null {
-  if (!items || items.length === 0) {
+function pickRandomSafeItem<T extends VocabItem | GrammarItem>(items: T[] | null): T | null {
+  const safeItems = items?.filter(isQuizItemSafeForExposure) ?? [];
+
+  if (safeItems.length === 0) {
     return null;
   }
 
-  return items[Math.floor(Math.random() * items.length)];
+  return safeItems[Math.floor(Math.random() * safeItems.length)];
 }
 
 export function createSupabaseQuizRepository(client: SupabaseClient): QuizRepository {
@@ -25,7 +28,7 @@ export function createSupabaseQuizRepository(client: SupabaseClient): QuizReposi
         throw error;
       }
 
-      return pickRandomItem(data as VocabItem[] | null);
+      return pickRandomSafeItem(data as VocabItem[] | null);
     },
 
     async findNextGrammarQuiz({ jlptLevel }: { jlptLevel: QuizLevel }): Promise<GrammarItem | null> {
@@ -40,7 +43,7 @@ export function createSupabaseQuizRepository(client: SupabaseClient): QuizReposi
         throw error;
       }
 
-      return pickRandomItem(data as GrammarItem[] | null);
+      return pickRandomSafeItem(data as GrammarItem[] | null);
     },
   };
 }

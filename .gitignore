@@ -40,6 +40,10 @@ yarn-error.log*
 # supabase local/link state
 supabase/.temp/
 
+# generated/local review artifacts
+/artifacts/
+/data/source/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

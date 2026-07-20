@@ -48,6 +48,16 @@ test("JLPT style guide prioritizes natural Japanese, JLPT-like format, and post-
   assert.match(template, /앱에서는 답안 제출 후에만 보여준다/);
 });
 
+test("question text and choices are Japanese-only before answer submission", () => {
+  const guide = styleGuide();
+  const template = promptTemplate();
+  assert.match(guide, /문제 본문은 일본어로 작성한다/);
+  assert.match(guide, /보기 4개는 일본어로 작성한다/);
+  assert.match(guide, /한국어로 의미를 묻는 문항은 JLPT형 문항으로 보지 않고 폐기한다/);
+  assert.match(template, /`question_text`와 `choice_a~d`는 일본어만 사용한다/);
+  assert.match(template, /한국어 문제문은 폐기한다/);
+});
+
 test("official JLPT PDFs are format references, not sources for transformed questions", () => {
   const guide = styleGuide();
   const template = promptTemplate();
