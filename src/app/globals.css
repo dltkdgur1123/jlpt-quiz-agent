@@ -31,7 +31,7 @@ main {
   gap: 18px;
 }
 
-.hero-copy, .quiz-card, .result-card, .score-card, .control-grid, .auth-card, .auth-callback-card {
+.hero-copy, .quiz-card, .result-card, .score-card, .control-grid, .auth-card, .auth-callback-card, .review-entry-card, .review-question-card {
   border: 1px solid var(--border);
   border-radius: 24px;
   background: var(--card);
@@ -99,6 +99,20 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .auth-callback-card a { color: var(--accent); font-weight: 800; }
 .auth-callback-card--success { border-color: #86efac; }
 .auth-callback-card--error { border-color: #fca5a5; }
+.review-page-stack { width: min(980px, 100%); }
+.review-entry-card a, .hero-copy a { color: var(--accent); font-weight: 800; }
+.review-summary-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 16px 0; }
+.review-summary-grid strong { padding: 12px; border-radius: 14px; background: #eff6ff; color: #1d4ed8; }
+.review-question-card { display: grid; gap: 16px; }
+.review-card-header { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.review-card-header span { padding: 6px 10px; border-radius: 999px; background: #fef3c7; color: #92400e; font-weight: 800; }
+.review-choice-list { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+.review-choice-list li { display: flex; gap: 12px; align-items: center; min-height: 48px; border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; }
+.review-choice-list span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-weight: 800; }
+.review-choice-list li[data-correct="true"] { border-color: #86efac; background: #f0fdf4; }
+.review-checklist { border-top: 1px solid var(--border); padding-top: 10px; }
+.review-checklist p { margin: 0; font-weight: 800; color: var(--foreground); }
+.review-checklist ul { margin: 8px 0 0; color: var(--muted); line-height: 1.8; }
 dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
 dt { font-weight: 700; }
 dd { margin: 0; color: var(--muted); }
@@ -107,4 +121,5 @@ dd { margin: 0; color: var(--muted); }
   main { padding: 48px; }
   .control-grid { grid-template-columns: 1fr 1fr auto; align-items: end; }
   .feedback-buttons { grid-template-columns: repeat(3, 1fr); }
+  .review-summary-grid { grid-template-columns: repeat(3, 1fr); }
 }
