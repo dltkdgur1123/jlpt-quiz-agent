@@ -132,6 +132,10 @@ dd { margin: 0; color: var(--muted); }
 .mock-exam-seen-feedback h4 { margin: 0; }
 .mock-exam-seen-feedback button[data-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px #dbeafe; font-weight: 800; }
 .mock-exam-feedback-summary { margin-top: 16px; padding: 14px; border-radius: 16px; background: #f8fafc; }
+.mock-exam-review-list { display: grid; gap: 10px; margin: 10px 0 0; padding-left: 18px; }
+.mock-exam-review-list li { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.mock-exam-review-list a { color: var(--accent); font-weight: 800; text-decoration: none; }
+.mock-exam-review-list span { display: block; margin-top: 4px; color: var(--muted); }
 
 @media (min-width: 680px) {
   main { padding: 48px; }

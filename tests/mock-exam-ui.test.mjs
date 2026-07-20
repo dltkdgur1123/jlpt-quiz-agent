@@ -61,6 +61,11 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "최근 풀이 중복",
     "최근 출제 문항 기록",
     "다음 랜덤 세트부터",
+    "복습 우선순위",
+    "오답·미응답 노트",
+    "reviewTargets",
+    "weakestSections",
+    "mock-exam-review-list",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

@@ -209,6 +209,17 @@ function formatQuestionNumber(problem: ProblemDefinition, questionIndex: number)
   return `${problem.problemNo}-${questionIndex + 1}`;
 }
 
+function problemForQuestion(question: MockExamQuestion) {
+  return PROBLEM_DEFINITIONS.find((problem) => problem.questionTypes.includes(question.question_type));
+}
+
+function formatReviewLabel(question: MockExamQuestion) {
+  const problem = problemForQuestion(question);
+  if (!problem) return `문항 ${question.sort_order}`;
+  const problemQuestionsInSection = question.sort_order;
+  return `問題${problem.problemNo} · ${problem.title} · ${problemQuestionsInSection}번`;
+}
+
 function readRecentQuestionHistory() {
   if (typeof window === "undefined") return [];
 
@@ -278,9 +289,29 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     return {
       ...section,
       correct,
+      wrongOrBlank: questions.length - correct,
       rate: questions.length === 0 ? 0 : Math.round((correct / questions.length) * 100),
     };
   });
+
+  const reviewTargets = artifact.questions
+    .map((question) => {
+      const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+      const correctChoice = renderedCorrectChoice(question, renderedChoices);
+      const selectedChoice = selectedAnswers[question.id];
+      return {
+        question,
+        correctChoice,
+        selectedChoice,
+        isCorrect: selectedChoice === correctChoice,
+      };
+    })
+    .filter((target) => !target.isCorrect);
+
+  const weakestSections = [...sectionResults]
+    .sort((a, b) => b.wrongOrBlank - a.wrongOrBlank || a.rate - b.rate)
+    .filter((section) => section.wrongOrBlank > 0)
+    .slice(0, 2);
 
   const feedbackSummary = {
     yes: Object.values(seenFeedbacks).filter((feedback) => feedback === "yes").length,
@@ -341,7 +372,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                   </div>
 
                   {questions.map((question, questionIndex) => (
-                    <article className="quiz-card" key={question.id}>
+                    <article className="quiz-card" id={`question-${question.id}`} key={question.id}>
                       <p className="section-eyebrow">
                         問題{problem.problemNo} · {formatQuestionNumber(problem, questionIndex)} / {artifact.set.question_count}
                       </p>
@@ -435,6 +466,33 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 </strong>
               ))}
             </div>
+            <div className="mock-exam-feedback-summary">
+              <h3>복습 우선순위</h3>
+              {weakestSections.length > 0 ? (
+                <p>
+                  먼저 볼 영역: {weakestSections.map((section) => `${section.section_title} ${section.wrongOrBlank}문항`).join(" · ")}
+                </p>
+              ) : (
+                <p>전 문항 정답입니다. 다음 세트로 넘어가도 좋습니다.</p>
+              )}
+              <p>오답·미응답 {reviewTargets.length}문항을 아래에서 바로 확인하세요.</p>
+            </div>
+            {reviewTargets.length > 0 ? (
+              <div className="mock-exam-feedback-summary">
+                <h3>오답·미응답 노트</h3>
+                <ol className="mock-exam-review-list">
+                  {reviewTargets.slice(0, 12).map(({ question, selectedChoice, correctChoice }) => (
+                    <li key={question.id}>
+                      <a href={`#question-${question.id}`}>{formatReviewLabel(question)}</a>
+                      <span>
+                        내 답 {selectedChoice ? CHOICE_NUMBERS[selectedChoice] : "미응답"} · 정답 {CHOICE_NUMBERS[correctChoice]}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                {reviewTargets.length > 12 ? <p>상위 12문항만 먼저 표시합니다.</p> : null}
+              </div>
+            ) : null}
             <p>공식 JLPT 점수 환산이나 합격 판정이 아닌 학습 참고용 모의고사 Lite 결과입니다.</p>
             <div className="mock-exam-feedback-summary">
               <h3>최근 출제 문항 기록</h3>
