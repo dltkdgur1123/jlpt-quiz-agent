@@ -66,6 +66,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "reviewTargets",
     "weakestSections",
     "mock-exam-review-list",
+    "progressPercent",
+    "mock-exam-progress-bar",
+    "mock-exam-hero",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

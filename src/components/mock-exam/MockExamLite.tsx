@@ -271,6 +271,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
 
   const answeredCount = Object.keys(selectedAnswers).length;
   const unansweredCount = artifact.set.question_count - answeredCount;
+  const progressPercent = Math.round((answeredCount / artifact.set.question_count) * 100);
   const score = useMemo(
     () =>
       artifact.questions.reduce((total, question) => {
@@ -326,7 +327,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
 
   return (
     <div className="mock-exam-shell">
-      <section className="hero-copy">
+      <section className="hero-copy mock-exam-hero">
         <p className="section-eyebrow">JLPT Mock Exam Lite</p>
         <h1>{artifact.set.set_title}</h1>
         <p>
@@ -334,17 +335,22 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           노출하고, 해설은 전체 제출 후 확인합니다.
         </p>
         <div className="mock-exam-status-grid" aria-label="모의고사 정보">
-          <strong>{artifact.set.question_count}문항</strong>
-          <strong>제한 시간 {artifact.set.time_limit_minutes}분</strong>
-          <strong>청해 제외</strong>
-          <strong>최근 풀이 중복 {recentQuestionCount}문항</strong>
+          <strong><span>문항</span>{artifact.set.question_count}문항</strong>
+          <strong><span>제한 시간</span>{artifact.set.time_limit_minutes}분</strong>
+          <strong><span>범위</span>청해 제외</strong>
+          <strong><span>최근 풀이 중복</span>{recentQuestionCount}문항</strong>
         </div>
       </section>
 
       <section className="mock-exam-sticky-status" aria-label="응시 현황">
-        <span>답변 {answeredCount}/{artifact.set.question_count}</span>
-        <span>미응답 {unansweredCount}</span>
-        <span>타이머 {artifact.set.time_limit_minutes}:00</span>
+        <div className="mock-exam-progress-copy">
+          <strong>진행률 {progressPercent}%</strong>
+          <span>답변 {answeredCount}/{artifact.set.question_count} · 미응답 {unansweredCount}</span>
+        </div>
+        <div className="mock-exam-progress-bar" aria-hidden="true">
+          <span style={{ width: `${progressPercent}%` }} />
+        </div>
+        <span className="mock-exam-timer">타이머 {artifact.set.time_limit_minutes}:00</span>
       </section>
 
       {artifact.sections.map((section) => {
