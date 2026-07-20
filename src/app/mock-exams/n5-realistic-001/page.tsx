@@ -8,14 +8,27 @@ function loadMockExamSet() {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
+function AdSidebar({ side }: { side: "left" | "right" }) {
+  return (
+    <aside aria-label={`${side} sidebar ad`} className="exam-ad-sidebar">
+      <span>Google Ad</span>
+      <p>사이드 광고 영역</p>
+    </aside>
+  );
+}
+
 export default function N5RealisticMockExam001Page() {
   const artifact = loadMockExamSet();
 
   return (
     <main>
-      <div className="page-stack">
-        <Link href="/">홈으로 돌아가기</Link>
-        <MockExamLite artifact={artifact} />
+      <div className="exam-portal-layout">
+        <AdSidebar side="left" />
+        <div className="exam-main-column">
+          <Link className="back-link" href="/">홈으로 돌아가기</Link>
+          <MockExamLite artifact={artifact} />
+        </div>
+        <AdSidebar side="right" />
       </div>
     </main>
   );

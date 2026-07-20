@@ -27,6 +27,9 @@ test("N5 realistic mock exam page loads generated 50-question set", () => {
   const source = realisticMockExamPage();
   assert.match(source, /n5-realistic-mock-exam-001\.json/);
   assert.match(source, /MockExamLite/);
+  assert.match(source, /exam-portal-layout/);
+  assert.match(source, /exam-ad-sidebar/);
+  assert.match(source, /Google Ad/);
 });
 
 test("mock exam client keeps answers hidden until full submit and shows section results", () => {
