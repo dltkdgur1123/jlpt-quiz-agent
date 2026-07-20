@@ -1,4 +1,5 @@
 import type { ChoiceKey, ItemType, JlptLevel } from "@/lib/db/types";
+import { orderQuestionsAvoidingRecent } from "./recent-history.ts";
 
 export type MockExamBuildReviewStatus = "draft" | "approved" | "rejected";
 
@@ -29,6 +30,7 @@ export interface BuildMockExamSetOptions {
   grammarCount?: number;
   timeLimitMinutes?: number;
   eligibleReviewStatuses?: MockExamBuildReviewStatus[];
+  recentQuestionIds?: string[];
 }
 
 export interface MockExamSetArtifactQuestion extends MockExamBuildQuestionSource {
@@ -103,6 +105,10 @@ function assertPoolHasEnough(kind: ItemType, available: number, required: number
   }
 }
 
+function artifactQuestionId(setCode: string, sectionKey: ItemType, question: MockExamBuildQuestionSource) {
+  return stableId([setCode, sectionKey, question.question_text]);
+}
+
 export function buildMockExamSet(
   sourceQuestions: MockExamBuildQuestionSource[],
   options: BuildMockExamSetOptions,
@@ -122,13 +128,22 @@ export function buildMockExamSet(
     );
   });
 
-  const vocab = shuffle(
+  const recentQuestionIds = new Set(options.recentQuestionIds ?? []);
+  const shuffledVocab = shuffle(
     eligible.filter((question) => question.item_type === "vocab"),
     `${options.seed ?? options.setCode}:vocab`,
   );
-  const grammar = shuffle(
+  const shuffledGrammar = shuffle(
     eligible.filter((question) => question.item_type === "grammar"),
     `${options.seed ?? options.setCode}:grammar`,
+  );
+  const vocab = orderQuestionsAvoidingRecent(
+    shuffledVocab.map((question) => ({ ...question, id: artifactQuestionId(options.setCode, "vocab", question) })),
+    recentQuestionIds,
+  );
+  const grammar = orderQuestionsAvoidingRecent(
+    shuffledGrammar.map((question) => ({ ...question, id: artifactQuestionId(options.setCode, "grammar", question) })),
+    recentQuestionIds,
   );
 
   assertPoolHasEnough("vocab", vocab.length, vocabCount);
@@ -157,7 +172,7 @@ export function buildMockExamSet(
       const sortOrder = questionsBeforeSection(selectedBySection, section.section_key) + index + 1;
       return {
         ...question,
-        id: stableId([options.setCode, section.section_key, question.question_text]),
+        id: question.id ?? artifactQuestionId(options.setCode, section.section_key, question),
         mock_exam_set_code: options.setCode,
         section_key: section.section_key,
         section_sort_order: section.section_sort_order,

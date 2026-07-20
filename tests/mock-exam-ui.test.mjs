@@ -46,6 +46,11 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "renderedCorrectChoice",
     "randomUUID",
     "originalCorrectIndex",
+    "RECENT_HISTORY_STORAGE_KEY",
+    "recentQuestionCount",
+    "최근 풀이 중복",
+    "최근 출제 문항 기록",
+    "다음 랜덤 세트부터",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

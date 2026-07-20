@@ -85,6 +85,34 @@ test("generated N5 mock exam set artifact has 30 draft review questions", () => 
   assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
 });
 
+test("buildMockExamSet moves recent question IDs behind fresh options when pool allows", () => {
+  const pool = [
+    ...Array.from({ length: 20 }, (_, index) => makeQuestion("vocab", index)),
+    ...Array.from({ length: 20 }, (_, index) => makeQuestion("grammar", index)),
+  ];
+  const baseline = buildMockExamSet(pool, {
+    setCode: "n5-recent-aware",
+    setTitle: "Recent Aware",
+    jlptLevel: "N5",
+    seed: "fixed",
+    vocabCount: 5,
+    grammarCount: 5,
+  });
+  const recentQuestionIds = baseline.questions.slice(0, 2).map((question) => question.id);
+
+  const recentAware = buildMockExamSet(pool, {
+    setCode: "n5-recent-aware",
+    setTitle: "Recent Aware",
+    jlptLevel: "N5",
+    seed: "fixed",
+    vocabCount: 5,
+    grammarCount: 5,
+    recentQuestionIds,
+  });
+
+  assert.equal(recentAware.questions.slice(0, 5).some((question) => recentQuestionIds.includes(question.id)), false);
+});
+
 test("improved N5 mock exam set 002 mixes vocab grammar and reading formats", () => {
   const artifact = JSON.parse(
     readFileSync(new URL("../data/generated/n5-mock-exam-lite-set-002.json", import.meta.url), "utf8"),

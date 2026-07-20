@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { mergeRecentQuestionHistory, recentQuestionIdSet } from "@/lib/mock-exam/recent-history";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 type FeedbackValue = "yes" | "no" | "unknown";
@@ -70,6 +71,7 @@ type RenderedChoice = {
 
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
 const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "4" };
+const RECENT_HISTORY_STORAGE_KEY = "jlpt-mock-exam-recent-question-history";
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
   yes: "본 적 있음",
   no: "본 적 없음",
@@ -207,16 +209,46 @@ function formatQuestionNumber(problem: ProblemDefinition, questionIndex: number)
   return `${problem.problemNo}-${questionIndex + 1}`;
 }
 
+function readRecentQuestionHistory() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const rawHistory = window.localStorage.getItem(RECENT_HISTORY_STORAGE_KEY);
+    if (!rawHistory) return [];
+    const parsedHistory = JSON.parse(rawHistory) as Array<{ question_id?: unknown; seen_at?: unknown }>;
+    return parsedHistory
+      .filter((entry) => typeof entry.question_id === "string" && typeof entry.seen_at === "string")
+      .map((entry) => ({ question_id: entry.question_id as string, seen_at: entry.seen_at as string }));
+  } catch {
+    return [];
+  }
+}
+
+function writeRecentQuestionHistory(questionIds: string[]) {
+  if (typeof window === "undefined") return 0;
+
+  const nextHistory = mergeRecentQuestionHistory(readRecentQuestionHistory(), questionIds, new Date().toISOString());
+  window.localStorage.setItem(RECENT_HISTORY_STORAGE_KEY, JSON.stringify(nextHistory));
+  return nextHistory.length;
+}
+
 export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [attemptSeed, setAttemptSeed] = useState(() => `${artifact.set.set_code}:initial`);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
+  const [recentQuestionCount, setRecentQuestionCount] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
     queueMicrotask(() => setAttemptSeed(nextAttemptSeed));
   }, [artifact.set.set_code]);
+
+  useEffect(() => {
+    const recentIds = recentQuestionIdSet(readRecentQuestionHistory(), Date.now());
+    const nextRecentQuestionCount = artifact.questions.filter((question) => recentIds.has(question.id)).length;
+    queueMicrotask(() => setRecentQuestionCount(nextRecentQuestionCount));
+  }, [artifact.questions]);
 
   const renderedChoiceMap = useMemo(
     () =>
@@ -256,6 +288,11 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     unknown: Object.values(seenFeedbacks).filter((feedback) => feedback === "unknown").length,
   };
 
+  function submitMockExam() {
+    setSubmitted(true);
+    setRecentQuestionCount(writeRecentQuestionHistory(artifact.questions.map((question) => question.id)));
+  }
+
   return (
     <div className="mock-exam-shell">
       <section className="hero-copy">
@@ -269,6 +306,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           <strong>{artifact.set.question_count}문항</strong>
           <strong>제한 시간 {artifact.set.time_limit_minutes}분</strong>
           <strong>청해 제외</strong>
+          <strong>최근 풀이 중복 {recentQuestionCount}문항</strong>
         </div>
       </section>
 
@@ -399,6 +437,11 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             </div>
             <p>공식 JLPT 점수 환산이나 합격 판정이 아닌 학습 참고용 모의고사 Lite 결과입니다.</p>
             <div className="mock-exam-feedback-summary">
+              <h3>최근 출제 문항 기록</h3>
+              <p>이번 세트의 {artifact.set.question_count}문항을 최근 풀이 기록에 저장했습니다.</p>
+              <p>다음 랜덤 세트부터 같은 사용자에게 최근 7일 내 문항을 뒤로 미루는 회피 기준으로 사용합니다.</p>
+            </div>
+            <div className="mock-exam-feedback-summary">
               <h3>출제 경험 체크</h3>
               <p>
                 본 적 있음 {feedbackSummary.yes} · 본 적 없음 {feedbackSummary.no} · 모르겠음 {feedbackSummary.unknown}
@@ -409,7 +452,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
         ) : (
           <>
             <p>전체 제출 전까지 정답 여부와 한국어 해설은 숨겨집니다.</p>
-            <button className="primary-action" onClick={() => setSubmitted(true)} type="button">
+            <button className="primary-action" onClick={submitMockExam} type="button">
               전체 제출
             </button>
           </>
