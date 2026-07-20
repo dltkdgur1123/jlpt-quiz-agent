@@ -78,6 +78,12 @@ const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
   unknown: "모르겠음",
 };
 
+const MOCK_TOTAL_SCORE = 180;
+const MOCK_LANGUAGE_READING_SCORE = 120;
+const MOCK_LISTENING_SCORE = 60;
+const MOCK_PASS_TOTAL_THRESHOLD = 80;
+const MOCK_SECTION_RATE_THRESHOLD = 30;
+
 const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
   {
     problemNo: 1,
@@ -220,6 +226,20 @@ function formatReviewLabel(question: MockExamQuestion) {
   return `問題${problem.problemNo} · ${problem.title} · ${problemQuestionsInSection}번`;
 }
 
+function formatMockExamDate() {
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+  }).format(new Date());
+}
+
+function scaledScore(correct: number, total: number, maxScore: number) {
+  if (total === 0) return 0;
+  return Math.round((correct / total) * maxScore);
+}
+
 function readRecentQuestionHistory() {
   if (typeof window === "undefined") return [];
 
@@ -313,6 +333,30 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     .sort((a, b) => b.wrongOrBlank - a.wrongOrBlank || a.rate - b.rate)
     .filter((section) => section.wrongOrBlank > 0)
     .slice(0, 2);
+
+  const languageReadingScore = scaledScore(score, artifact.set.question_count, MOCK_LANGUAGE_READING_SCORE);
+  const listeningScore = artifact.set.listening_included ? scaledScore(score, artifact.set.question_count, MOCK_LISTENING_SCORE) : 0;
+  const totalMockScore = languageReadingScore + listeningScore;
+  const answerRate = Math.round((score / artifact.set.question_count) * 100);
+  const sectionResultMap = Object.fromEntries(sectionResults.map((section) => [section.section_key, section]));
+  const vocabScore = scaledScore(sectionResultMap.vocab?.correct ?? 0, sectionResultMap.vocab?.question_count ?? 0, 60);
+  const grammarScore = scaledScore(sectionResultMap.grammar?.correct ?? 0, sectionResultMap.grammar?.question_count ?? 0, 60);
+  const readingScore = scaledScore(sectionResultMap.reading?.correct ?? 0, sectionResultMap.reading?.question_count ?? 0, 60);
+  const listeningGoal = 30;
+  const categoryScores = [
+    { label: "문자·어휘", score: vocabScore, goal: 35, detail: `${sectionResultMap.vocab?.correct ?? 0}/${sectionResultMap.vocab?.question_count ?? 0}` },
+    { label: "읽기", score: readingScore, goal: 35, detail: `${sectionResultMap.reading?.correct ?? 0}/${sectionResultMap.reading?.question_count ?? 0}` },
+    { label: "문법", score: grammarScore, goal: 35, detail: `${sectionResultMap.grammar?.correct ?? 0}/${sectionResultMap.grammar?.question_count ?? 0}` },
+    { label: "듣기", score: listeningScore, goal: listeningGoal, detail: "0/60" },
+  ];
+  const historyBarHeight = Math.max(8, Math.round((totalMockScore / MOCK_TOTAL_SCORE) * 100));
+  const lowestSectionRate = Math.min(...sectionResults.map((section) => section.rate));
+  const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
+  const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
+  const passAdvice = mockPassed
+    ? "현재 세트 기준으로는 합격권입니다. 오답 노트로 약한 영역만 정리하세요."
+    : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
+  const examDate = formatMockExamDate();
 
   const feedbackSummary = {
     yes: Object.values(seenFeedbacks).filter((feedback) => feedback === "yes").length,
@@ -465,6 +509,110 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <h2>
               {score} / {artifact.set.question_count}
             </h2>
+            <div className="mock-result-certificate" data-passed={mockPassed}>
+              <div className="mock-result-certificate-head">
+                <div>
+                  <p className="section-eyebrow">Mock Test Result</p>
+                  <h3>日本語 能力試験 合否 結果通知書</h3>
+                  <strong>Japanese-Language Proficiency Test<br />Mock Test Result</strong>
+                </div>
+                <div className="mock-result-qr" aria-hidden="true">
+                  <span />
+                </div>
+              </div>
+              <dl className="mock-result-meta">
+                <dt>受験日 Test Date</dt>
+                <dd>{examDate}</dd>
+                <dt>受験レベル Level</dt>
+                <dd>{artifact.set.jlpt_level}</dd>
+                <dt>受験者 Name</dt>
+                <dd>Guest Learner</dd>
+              </dl>
+              <div className="mock-result-score-table" aria-label="모의 성적표">
+                <strong>得点区分別得点<br /><span>Scores by Scoring Section</span></strong>
+                <strong>総合得点<br /><span>Total Score</span></strong>
+                <span>言語知識・読解<br />Language Knowledge / Reading</span>
+                <span>聴解<br />Listening</span>
+                <span>{totalMockScore}/{MOCK_TOTAL_SCORE}</span>
+                <b>{languageReadingScore}/{MOCK_LANGUAGE_READING_SCORE}</b>
+                <b>{listeningScore}/{MOCK_LISTENING_SCORE}</b>
+                <b>{totalMockScore}/{MOCK_TOTAL_SCORE}</b>
+              </div>
+              <div className="mock-result-pass-row">
+                <span aria-hidden="true">↓</span>
+                <strong>{passStatusLabel}</strong>
+                <em>{mockPassed ? "PASS" : "REVIEW"}</em>
+              </div>
+              <p>{passAdvice}</p>
+              <small>
+                공식 JLPT 성적표·합격 판정이 아니라, 현재 비청해 모의고사 세트의 학습 참고용 모의 합격 여부입니다.
+              </small>
+            </div>
+            <section className="mock-detail-result" aria-label="상세 결과">
+              <h3>상세 결과</h3>
+              <div className="mock-detail-summary">
+                <div className="mock-detail-scorebox">
+                  <span>Test 1 · {examDate}</span>
+                  <strong>{totalMockScore}/{MOCK_TOTAL_SCORE}</strong>
+                </div>
+                <dl>
+                  <dt>시간</dt>
+                  <dd>{artifact.set.time_limit_minutes}:00</dd>
+                  <dt>정답률</dt>
+                  <dd>{answerRate}%</dd>
+                  <dt>결과</dt>
+                  <dd>{mockPassed ? "합격" : "불합격"}</dd>
+                </dl>
+              </div>
+              <div className="mock-detail-legend">
+                <span><i />내 점수</span>
+                <span><i />목표</span>
+              </div>
+              <p className="mock-detail-hint">각 영역을 클릭하면 상세 분석을 확인할 수 있도록 확장 예정입니다.</p>
+              <div className="mock-radar-panel">
+                <div className="mock-radar-card mock-radar-card--top">
+                  <strong>{categoryScores[0].label}</strong>
+                  <span>{categoryScores[0].detail} · {categoryScores[0].score}</span>
+                </div>
+                <div className="mock-radar-card mock-radar-card--left">
+                  <strong>{categoryScores[1].label}</strong>
+                  <span>{categoryScores[1].detail} · {categoryScores[1].score}</span>
+                </div>
+                <div className="mock-radar-chart" aria-hidden="true">
+                  <span className="mock-radar-goal" />
+                  <span className="mock-radar-score" />
+                </div>
+                <div className="mock-radar-card mock-radar-card--right">
+                  <strong>{categoryScores[3].label}</strong>
+                  <span>{categoryScores[3].detail} · {categoryScores[3].score}</span>
+                </div>
+                <div className="mock-radar-card mock-radar-card--bottom">
+                  <strong>{categoryScores[2].label}</strong>
+                  <span>{categoryScores[2].detail} · {categoryScores[2].score}</span>
+                </div>
+              </div>
+            </section>
+            <section className="mock-teacher-card" aria-label="선생님의 평가">
+              <h3>선생님의 평가</h3>
+              <div className="mock-teacher-profile">
+                <div aria-hidden="true">忍</div>
+                <p><strong>JLPT Coach · {artifact.set.jlpt_level}</strong><span>모의고사 분석 선생님</span></p>
+              </div>
+              <p>{passAdvice}</p>
+            </section>
+            <section className="mock-history-card" aria-label="기록">
+              <h3>기록</h3>
+              <div className="mock-history-tabs" aria-label="기록 필터">
+                <button type="button">총</button><button type="button">읽기</button><button type="button">듣기</button><button type="button">어휘</button>
+              </div>
+              <div className="mock-history-chart" aria-hidden="true">
+                <span style={{ height: `${historyBarHeight}%` }}>{totalMockScore}</span>
+              </div>
+              <div className="mock-result-actions">
+                <a className="secondary-link" href="/mock-exams/n5-realistic-001">다른 시험 보기</a>
+                <a className="primary-link" href="#question-${reviewTargets[0]?.question.id ?? artifact.questions[0]?.id}">정답 보기</a>
+              </div>
+            </section>
             <div className="mock-exam-status-grid">
               {sectionResults.map((result) => (
                 <strong key={result.section_key}>
@@ -499,7 +647,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 {reviewTargets.length > 12 ? <p>상위 12문항만 먼저 표시합니다.</p> : null}
               </div>
             ) : null}
-            <p>공식 JLPT 점수 환산이나 합격 판정이 아닌 학습 참고용 모의고사 Lite 결과입니다.</p>
+            <p>점수 환산은 모의 세트 기준이며, 실제 JLPT 공식 성적과는 다를 수 있습니다.</p>
             <div className="mock-exam-feedback-summary">
               <h3>최근 출제 문항 기록</h3>
               <p>이번 세트의 {artifact.set.question_count}문항을 최근 풀이 기록에 저장했습니다.</p>
