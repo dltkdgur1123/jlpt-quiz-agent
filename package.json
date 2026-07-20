@@ -12,7 +12,8 @@
     "backfill:source-traceability": "node scripts/backfill-source-traceability.mjs",
     "select:shorts-source-batch": "node scripts/select-shorts-source-batch.mjs",
     "validate:final-shorts-source": "node scripts/validate-final-shorts-source-snapshot.mjs",
-    "sync:final-shorts-source": "node scripts/sync-final-shorts-source-snapshot.mjs"
+    "sync:final-shorts-source": "node scripts/sync-final-shorts-source-snapshot.mjs",
+    "build:n5-mock-exam-lite-set": "node scripts/build-n5-mock-exam-lite-set.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",
