@@ -168,7 +168,7 @@ export default async function Home() {
             <div className="home-redesign-section-head">
               <div>
                 <p>JLPT SHORTS</p>
-                <h2 id="shorts-title">최신 유튜브 Shorts</h2>
+                <h2 id="shorts-title">레벨별 JLPT Shorts</h2>
               </div>
               <a href={youtubeShortsUrl} rel="noreferrer" target="_blank">Shorts 보기 →</a>
             </div>

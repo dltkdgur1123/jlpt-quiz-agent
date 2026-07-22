@@ -26,7 +26,7 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "모의고사 시작",
     "최근 학습",
     "최근 성적",
-    "최신 유튜브 Shorts",
+    "레벨별 JLPT Shorts",
     "https://www.youtube.com/@hyokujlpt/shorts",
     "getLatestHyokuShorts",
     "getShortLevel",
