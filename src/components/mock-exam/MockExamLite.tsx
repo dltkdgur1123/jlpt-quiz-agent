@@ -392,6 +392,12 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     void submitMockExam();
   }
 
+  function forceSubmitMockExam() {
+    if (submitted || saveStatus === "saving") return;
+    setSubmitWarning(null);
+    void submitMockExam();
+  }
+
   async function submitMockExam() {
     setSubmitted(true);
     setSaveStatus("saving");
@@ -597,7 +603,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             </section>
           ) : null}
 
-      <section className="result-card">
+      <section className={submitted ? "result-card mock-exam-result-panel" : "result-card mock-exam-submit-card"}>
         {submitted ? (
           <>
             <p className="section-eyebrow">결과</p>
@@ -764,7 +770,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 <strong>{submitWarning}</strong>
                 <div>
                   <button className="secondary-action" onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
-                  <button className="primary-action" onClick={requestSubmitMockExam} type="button">그래도 제출</button>
+                  <button className="primary-action" onClick={forceSubmitMockExam} type="button">그래도 제출</button>
                 </div>
               </div>
             ) : null}
@@ -780,20 +786,29 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <strong>문제 목록</strong>
             <span>{answeredCount}/{artifact.set.question_count}</span>
           </div>
-          <nav>
-            {flattenedQuestions.map(({ question }, index) => (
-              <button
-                className="mock-question-nav-item"
-                data-answered={Boolean(selectedAnswers[question.id])}
-                data-current={index === currentQuestionIndex}
-                key={question.id}
-                onClick={() => setCurrentQuestionIndex(index)}
-                type="button"
-              >
-                {index + 1}
-              </button>
-            ))}
-          </nav>
+          <div className="mock-question-nav-scroll">
+            <nav>
+              {flattenedQuestions.map(({ question }, index) => (
+                <button
+                  className="mock-question-nav-item"
+                  data-answered={Boolean(selectedAnswers[question.id])}
+                  data-current={index === currentQuestionIndex}
+                  key={question.id}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  type="button"
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </nav>
+          </div>
+          {submitWarning ? (
+            <div className="mock-question-nav-confirm" role="alert">
+              <strong>미응답 {unansweredCount}문항</strong>
+              <button onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
+              <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
+            </div>
+          ) : null}
           <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
             제출하기
           </button>
