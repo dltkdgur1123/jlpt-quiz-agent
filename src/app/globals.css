@@ -2368,7 +2368,7 @@ main,
   background: transparent;
 }
 .home-level-switch-item + .home-level-switch-item {
-  border-left: 1px solid rgba(105, 94, 78, .09);
+  border-left: 0;
 }
 .home-level-switch-item strong {
   color: #312a22;
