@@ -13,11 +13,13 @@ const mockExamAttemptRoute = () =>
   readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
+const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 
 test("home page promotes dashboard mock exam and Shorts entries", () => {
   const source = homePage();
+  const headerSource = siteHeader();
   for (const phrase of [
-    "HYOKU JLPT",
+    "SiteHeader",
     "실전처럼 풀고,",
     "데이터로 합격에 가까워지세요.",
     "무료 모의고사 시작",
@@ -28,11 +30,13 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
     "N5 필수 동사 会います 읽기",
     "home-shell",
     "home-level-grid",
-    "home-login-button",
-    "href=\"/login\"",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
+  for (const phrase of ["HYOKU JLPT", "AuthHeaderButton"]) {
+    assert.ok(headerSource.includes(phrase), phrase);
+  }
+  assert.ok(readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8").includes("home-login-button"));
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
   assert.match(source, /\/mock-exams\/n5-lite-002/);
 });

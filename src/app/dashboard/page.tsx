@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardAttemptData } from "@/components/dashboard/DashboardAttemptData";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const stats = [
   { label: "연속 학습", value: "12일", note: "지난주보다 +3일", tone: "blue" },
@@ -25,16 +26,7 @@ export default function DashboardPage() {
   return (
     <main className="figma-main">
       <div className="figma-shell dashboard-page">
-        <header className="figma-topbar">
-          <Link className="figma-brand" href="/"><span />HYOKU JLPT</Link>
-          <nav className="figma-nav" aria-label="대시보드 메뉴">
-            <Link href="/">홈</Link>
-            <Link href="/mock-exams/n5-realistic-001">모의고사</Link>
-            <a href="#history">학습 기록</a>
-            <Link className="active" href="/dashboard">대시보드</Link>
-            <b>H</b>
-          </nav>
-        </header>
+        <SiteHeader active="dashboard" />
 
         <section className="dashboard-hero">
           <div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 const levels = [
   { level: "N5", title: "입문 일본어", time: "예상 소요 45분", href: "/mock-exams/n5-realistic-001", tone: "mint" },
   { level: "N4", title: "초급 일본어", time: "예상 소요 55분", href: "/mock-exams/n5-lite-002", tone: "blue" },
@@ -17,19 +18,7 @@ export default function Home() {
   return (
     <main>
       <div className="home-shell">
-        <header className="home-topbar">
-          <Link className="home-brand" href="/">
-            <span aria-hidden="true" />
-            <strong>HYOKU JLPT</strong>
-          </Link>
-          <nav aria-label="메인 메뉴" className="home-nav">
-            <a href="#home">홈</a>
-            <Link href="/mock-exams/n5-realistic-001">모의고사</Link>
-            <a href="#continue-learning">학습 기록</a>
-            <Link href="/dashboard">대시보드</Link>
-          </nav>
-          <Link className="home-login-button" href="/login">로그인</Link>
-        </header>
+        <SiteHeader active="home" />
 
         <section className="home-hero" id="home">
           <div>

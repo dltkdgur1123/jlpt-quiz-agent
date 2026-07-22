@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -86,18 +87,22 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     setMessage("로그아웃되었습니다.");
   }
 
+  if (isSignedIn) {
+    return (
+      <section className={`auth-card auth-card--${variant} auth-card--signed-in`} aria-label="로그인된 계정">
+        <p className="auth-status">{sessionEmail} 계정으로 로그인되어 있습니다.</p>
+        <Link className="auth-dashboard-link" href="/dashboard">대시보드로 이동</Link>
+        <button className="auth-signout-button" type="button" onClick={signOut}>
+          로그아웃
+        </button>
+        {message ? <p className="auth-message">{message}</p> : null}
+      </section>
+    );
+  }
+
   return (
     <section className={`auth-card auth-card--${variant}`} aria-label="로그인">
-      <div className="auth-card-head">
-        <p className="section-eyebrow">로그인</p>
-        <h2>{isSignedIn ? "로그인된 상태입니다" : "학습 기록을 저장하려면 로그인하세요"}</h2>
-        <p>
-          비밀번호 가입 없이 소셜 로그인 또는 이메일 링크로 안전하게 시작합니다.
-        </p>
-      </div>
-
-      {isAuthLoading ? <p className="auth-helper">로그인 상태를 확인하고 있습니다.</p> : null}
-      {sessionEmail ? <p className="auth-status">{sessionEmail} 계정으로 로그인되었습니다.</p> : null}
+      {isAuthLoading ? <p className="auth-helper">확인 중</p> : null}
 
       <div className="auth-provider-grid">
         {providers.map(({ provider, label, tone, mark }) => (
@@ -105,7 +110,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
             className={`auth-provider-button auth-provider-${tone}`}
             key={provider}
             type="button"
-            disabled={isAuthLoading || isSignedIn}
+            disabled={isAuthLoading}
             onClick={() => signInWithProvider(provider)}
           >
             <span aria-hidden="true">{mark}</span>
@@ -122,18 +127,13 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
           type="email"
           placeholder="you@example.com"
           value={email}
-          disabled={isAuthLoading || isSignedIn}
+          disabled={isAuthLoading}
           onChange={(event) => setEmail(event.target.value)}
         />
       </label>
-      <button className="auth-email-submit" type="button" disabled={isAuthLoading || isSignedIn} onClick={signInWithEmailLink}>
+      <button className="auth-email-submit" type="button" disabled={isAuthLoading} onClick={signInWithEmailLink}>
         이메일 링크로 로그인
       </button>
-      {isSignedIn ? (
-        <button className="auth-signout-button" type="button" onClick={signOut}>
-          로그아웃
-        </button>
-      ) : null}
       {message ? <p className="auth-message">{message}</p> : null}
     </section>
   );

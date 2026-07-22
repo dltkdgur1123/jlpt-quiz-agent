@@ -1277,3 +1277,160 @@ main:has(.home-shell) { padding: 0 0 80px; }
     border-radius: 24px;
   }
 }
+
+/* Auth/header UX correction: all pages use the Home header; logged-out login page is auth-only */
+.figma-main:has(.site-header) {
+  padding: 0 0 80px;
+}
+.site-header .home-nav a.active {
+  color: var(--figma-primary);
+  font-weight: 600;
+}
+.auth-header-loading {
+  color: #6b7280;
+  pointer-events: none;
+}
+.auth-header-account {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+.login-page-main {
+  padding: 0 0 80px;
+  background: var(--figma-bg);
+}
+.login-page-shell {
+  width: 100%;
+  min-height: 100vh;
+  gap: 0;
+}
+.login-simple-stage {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  display: grid;
+  place-items: center;
+  padding: 56px 24px 96px;
+}
+.login-simple-stage .auth-card--page {
+  width: min(656px, 100%);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  gap: 28px;
+}
+.login-simple-stage .auth-provider-grid {
+  gap: 18px;
+}
+.login-simple-stage .auth-provider-button,
+.login-simple-stage .auth-email-submit,
+.login-simple-stage .auth-dashboard-link,
+.login-simple-stage .auth-signout-button {
+  height: 88px;
+  min-height: 88px;
+  border-radius: 22px;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+.login-simple-stage .auth-provider-button span {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  background: rgba(248, 250, 252, .92);
+}
+.login-simple-stage .auth-provider-google {
+  border-color: #e5e7eb;
+  background: #fff;
+  color: #3f4654;
+}
+.login-simple-stage .auth-provider-kakao {
+  border-color: #ffeb3b;
+  background: #ffeb3b;
+  color: #3f4654;
+}
+.login-simple-stage .auth-provider-naver {
+  border-color: #49d687;
+  background: #49d687;
+  color: #fff;
+}
+.login-simple-stage .auth-divider {
+  margin: 18px 0 2px;
+  font-size: 24px;
+  color: #9aa1ad;
+}
+.login-simple-stage .auth-email-field {
+  gap: 14px;
+  font-size: 28px;
+  color: #263043;
+  letter-spacing: -0.04em;
+}
+.login-simple-stage .auth-email-field input {
+  height: 86px;
+  min-height: 86px;
+  border-radius: 22px;
+  padding: 0 24px;
+  background: #f9fafb;
+  font-size: 26px;
+  font-weight: 900;
+}
+.login-simple-stage .auth-email-submit,
+.login-simple-stage .auth-dashboard-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: #7c73e6;
+  color: #fff;
+}
+.login-simple-stage .auth-card--signed-in {
+  width: min(520px, 100%);
+  padding: 32px;
+  border: 1px solid var(--figma-border);
+  border-radius: 24px;
+  background: #fff;
+  gap: 16px;
+}
+.login-simple-stage .auth-card--signed-in .auth-status {
+  margin: 0;
+  text-align: center;
+}
+.login-simple-stage .auth-card--signed-in .auth-dashboard-link,
+.login-simple-stage .auth-card--signed-in .auth-signout-button {
+  height: 56px;
+  min-height: 56px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+@media (max-width: 760px) {
+  .login-simple-stage {
+    min-height: calc(100vh - 64px);
+    padding: 32px 16px 72px;
+  }
+  .login-simple-stage .auth-card--page {
+    gap: 18px;
+  }
+  .login-simple-stage .auth-provider-button,
+  .login-simple-stage .auth-email-submit {
+    height: 64px;
+    min-height: 64px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+  .login-simple-stage .auth-provider-button span {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  .login-simple-stage .auth-divider,
+  .login-simple-stage .auth-email-field {
+    font-size: 18px;
+  }
+  .login-simple-stage .auth-email-field input {
+    height: 64px;
+    min-height: 64px;
+    font-size: 18px;
+  }
+}

@@ -5,6 +5,8 @@ import test from "node:test";
 const authPanel = () => readFileSync(new URL("../src/components/auth/AuthPanel.tsx", import.meta.url), "utf8");
 const loginPage = () => readFileSync(new URL("../src/app/login/page.tsx", import.meta.url), "utf8");
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
+const authHeaderButton = () => readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8");
 const callbackPage = () => readFileSync(new URL("../src/app/auth/callback/page.tsx", import.meta.url), "utf8");
 const setupDoc = () => readFileSync(new URL("../docs/architecture/auth-provider-dashboard-setup.md", import.meta.url), "utf8");
 
@@ -23,25 +25,32 @@ test("auth panel uses safe email magic link instead of password signup", () => {
   assert.equal(source.includes("password"), false);
 });
 
-test("auth panel disables login controls when a session exists", () => {
+test("auth panel switches to account actions when a session exists", () => {
   const source = authPanel();
   assert.match(source, /getSession/);
   assert.match(source, /onAuthStateChange/);
   assert.match(source, /isSignedIn/);
-  assert.match(source, /disabled={isAuthLoading \|\| isSignedIn}/);
-  assert.match(source, /로그인된 상태입니다/);
+  assert.match(source, /auth-card--signed-in/);
+  assert.match(source, /대시보드로 이동/);
   assert.match(source, /signOut/);
 });
 
-test("login page uses Figma-style dedicated auth layout", () => {
+test("login page is a centered auth-only screen and headers are shared", () => {
   const loginSource = loginPage();
   const homeSource = homePage();
   const panelSource = authPanel();
-  assert.match(homeSource, /href="\/login"/);
-  assert.match(loginSource, /login-page-shell/);
-  assert.match(loginSource, /login-copy-card/);
+  const headerSource = siteHeader();
+  const headerButtonSource = authHeaderButton();
+  assert.match(homeSource, /<SiteHeader active="home"/);
+  assert.match(loginSource, /<SiteHeader active="home"/);
+  assert.match(loginSource, /login-simple-stage/);
+  assert.doesNotMatch(loginSource, /login-copy-card/);
   assert.match(loginSource, /<AuthPanel variant="page"/);
-  assert.match(panelSource, /auth-card--\$\{variant\}/);
+  assert.match(headerSource, /home-topbar site-header/);
+  assert.match(headerSource, /home-nav/);
+  assert.match(headerSource, /AuthHeaderButton/);
+  assert.match(headerButtonSource, /getSession/);
+  assert.match(headerButtonSource, /대시보드/);
   assert.match(panelSource, /auth-provider-button/);
   assert.match(panelSource, /auth-divider/);
 });
