@@ -58,7 +58,7 @@ export default function Home() {
         <section className="home-section" aria-labelledby="level-title">
           <div className="home-section-head">
             <h2 id="level-title">레벨별 모의고사</h2>
-            <Link href="/mock-exams/n5-realistic-001">전체 시험 보기 →</Link>
+            <Link href="/mock-exams/n5-realistic-001">전체 보기 →</Link>
           </div>
           <div className="home-level-grid">
             {levels.map((item) => (
