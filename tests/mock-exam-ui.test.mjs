@@ -9,10 +9,20 @@ const realisticMockExamPage = () =>
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 
-test("home page promotes N5 mock exam Lite entry", () => {
+test("home page promotes dashboard mock exam and Shorts entries", () => {
   const source = homePage();
-  assert.match(source, /JLPT Mock Exam Platform/);
-  assert.match(source, /JLPT 모의고사 Lite/);
+  for (const phrase of [
+    "HYOKU JLPT",
+    "안녕하세요,",
+    "새 모의고사 시작",
+    "최근 JLPT 쇼츠",
+    "N5 필수 동사 会います 읽기",
+    "현재 취약 영역",
+    "home-dashboard-shell",
+    "home-shorts-grid",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
   assert.match(source, /\/mock-exams\/n5-lite-002/);
 });
