@@ -2644,3 +2644,67 @@ main,
   font-size: 14px !important;
   font-weight: 650 !important;
 }
+
+/* Mock exam submitted-state QA: prevent controls/results from bleeding into right rail */
+.mock-exam-paper-column,
+.mock-exam-focus-panel,
+.mock-exam-current-card,
+.mock-exam-answer-review,
+.mock-exam-result-panel,
+.mock-result-certificate,
+.mock-detail-result,
+.mock-teacher-card,
+.mock-history-card,
+.mock-exam-feedback-summary {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.mock-exam-focus-panel .mock-exam-bottom-nav {
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 160px) minmax(0, 1fr) !important;
+  overflow: hidden;
+}
+.mock-exam-focus-panel .mock-exam-bottom-nav .primary-action,
+.mock-exam-focus-panel .mock-exam-bottom-nav .secondary-action {
+  min-width: 0 !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mock-result-score-table,
+.mock-radar-panel,
+.mock-history-chart,
+.mock-exam-review-list {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.mock-save-status {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Submitted answer map: green=correct, red=wrong, gray=blank */
+.mock-page-shell .mock-question-nav-item[data-result="correct"] {
+  background: #ecfdf5 !important;
+  border-color: #86efac !important;
+  color: #047857 !important;
+}
+.mock-page-shell .mock-question-nav-item[data-result="wrong"] {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+.mock-page-shell .mock-question-nav-item[data-result="blank"] {
+  background: #f8fafc !important;
+  border-color: #e5e7eb !important;
+  color: #94a3b8 !important;
+}
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="correct"],
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="wrong"],
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="blank"] {
+  box-shadow: inset 0 0 0 2px #1d2027;
+}

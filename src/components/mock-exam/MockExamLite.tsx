@@ -795,18 +795,34 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           </div>
           <div className="mock-question-nav-scroll" ref={questionNavScrollRef}>
             <nav>
-              {flattenedQuestions.map(({ question }, index) => (
-                <button
-                  className="mock-question-nav-item"
-                  data-answered={Boolean(selectedAnswers[question.id])}
-                  data-current={index === currentQuestionIndex}
-                  key={question.id}
-                  onClick={() => setCurrentQuestionIndex(index)}
-                  type="button"
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {flattenedQuestions.map(({ question }, index) => {
+                const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+                const correctChoice = renderedCorrectChoice(question, renderedChoices);
+                const selectedChoice = selectedAnswers[question.id];
+                const resultState = !submitted
+                  ? undefined
+                  : selectedChoice
+                    ? selectedChoice === correctChoice
+                      ? "correct"
+                      : "wrong"
+                    : "blank";
+                const resultLabel = resultState === "correct" ? "정답" : resultState === "wrong" ? "오답" : resultState === "blank" ? "미응답" : "미풀이";
+
+                return (
+                  <button
+                    aria-label={`${index + 1}번 ${resultLabel}`}
+                    className="mock-question-nav-item"
+                    data-answered={Boolean(selectedChoice)}
+                    data-current={index === currentQuestionIndex}
+                    data-result={resultState}
+                    key={question.id}
+                    onClick={() => setCurrentQuestionIndex(index)}
+                    type="button"
+                  >
+                    {index + 1}
+                  </button>
+                );
+              })}
             </nav>
           </div>
           {submitWarning ? (

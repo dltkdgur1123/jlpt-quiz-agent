@@ -203,6 +203,11 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "flattenedQuestions",
     "mock-exam-focus-panel",
     "mock-question-nav-item",
+    "data-result",
+    "resultState",
+    "정답",
+    "오답",
+    "미응답",
     "mock-question-nav-scroll",
     "mock-question-nav-confirm",
     "mock-exam-submit-card",
@@ -238,4 +243,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   assert.match(styles, /\.mock-question-nav[\s\S]*position: fixed/);
   assert.match(styles, /max-height: calc\(100dvh - 140px\)/);
+  assert.match(styles, /data-result="correct"/);
+  assert.match(styles, /data-result="wrong"/);
+  assert.match(styles, /prevent controls\/results from bleeding into right rail/);
 });
