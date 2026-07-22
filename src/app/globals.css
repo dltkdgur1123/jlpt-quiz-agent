@@ -1028,3 +1028,47 @@ main:has(.home-shell) { padding: 0 0 80px; }
     text-align: center;
   }
 }
+
+/* Home screenshot QA fix: center login control and keep hero CTAs visible */
+.home-topbar {
+  align-items: center;
+}
+.home-auth-menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 44px;
+}
+.home-login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  min-height: 44px;
+  line-height: 1;
+}
+.home-hero {
+  height: auto;
+  min-height: 348px;
+  overflow: visible;
+  align-items: center;
+}
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 22px;
+  padding-bottom: 2px;
+}
+.home-hero-actions .primary-link,
+.home-hero-actions .secondary-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+@media (max-width: 1400px) and (min-width: 1181px) {
+  .home-hero {
+    min-height: 348px;
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+}
