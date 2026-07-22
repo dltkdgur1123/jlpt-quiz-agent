@@ -2330,7 +2330,7 @@ main,
   width: min(680px, 100%);
   min-height: 62px;
   overflow: hidden;
-  border: 1px solid rgba(105, 94, 78, .18);
+  border: 0;
   border-radius: 999px;
   background: rgba(255,255,255,.92);
 }
