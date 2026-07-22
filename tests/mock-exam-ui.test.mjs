@@ -28,8 +28,8 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
     "N5 필수 동사 会います 읽기",
     "home-shell",
     "home-level-grid",
-    "home-auth-menu",
-    "home-auth-popover",
+    "home-login-button",
+    "href=\"/login\"",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

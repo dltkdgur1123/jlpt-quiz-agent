@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AuthPanel } from "@/components/auth/AuthPanel";
 const levels = [
   { level: "N5", title: "입문 일본어", time: "예상 소요 45분", href: "/mock-exams/n5-realistic-001", tone: "mint" },
   { level: "N4", title: "초급 일본어", time: "예상 소요 55분", href: "/mock-exams/n5-lite-002", tone: "blue" },
@@ -29,12 +28,7 @@ export default function Home() {
             <a href="#continue-learning">학습 기록</a>
             <Link href="/dashboard">대시보드</Link>
           </nav>
-          <details className="home-auth-menu">
-            <summary className="home-login-button">로그인</summary>
-            <div className="home-auth-popover">
-              <AuthPanel />
-            </div>
-          </details>
+          <Link className="home-login-button" href="/login">로그인</Link>
         </header>
 
         <section className="home-hero" id="home">

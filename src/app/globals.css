@@ -1072,3 +1072,208 @@ main:has(.home-shell) { padding: 0 0 80px; }
     padding-bottom: 44px;
   }
 }
+
+/* Login page Figma collaboration extension */
+.login-page-main {
+  padding: 0 0 80px;
+}
+.login-page-shell {
+  width: 100%;
+  min-height: 100vh;
+  gap: 56px;
+}
+.login-topbar {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: max(80px, calc((100vw - 1280px) / 2));
+  padding-right: max(80px, calc((100vw - 1280px) / 2));
+  background: #fff;
+}
+.login-hero {
+  width: min(1280px, calc(100vw - 160px));
+  min-height: 620px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: 48px;
+  align-items: center;
+}
+.login-copy-card {
+  display: grid;
+  gap: 22px;
+  min-height: 520px;
+  padding: 56px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f7f8ff 56%, #ecfdf5 100%);
+  color: var(--figma-ink);
+}
+.login-copy-card h1 {
+  margin: 0;
+  max-width: 720px;
+  font-size: clamp(44px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.075em;
+}
+.login-copy-card p:not(.section-eyebrow) {
+  max-width: 620px;
+  margin: 0;
+  color: #6b7382;
+  font-size: 17px;
+  font-weight: 800;
+}
+.login-copy-card ul {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.login-copy-card li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #283244;
+  font-weight: 900;
+}
+.login-copy-card li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--figma-primary);
+}
+.auth-card--page {
+  display: grid;
+  gap: 20px;
+  width: 440px;
+  padding: 32px;
+  border: 1px solid var(--figma-border);
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: none;
+}
+.auth-card-head {
+  display: grid;
+  gap: 8px;
+}
+.auth-card-head h2 {
+  margin: 0;
+  color: var(--figma-ink);
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.055em;
+}
+.auth-card-head p:not(.section-eyebrow) {
+  margin: 0;
+  color: var(--figma-muted);
+  font-weight: 750;
+}
+.auth-provider-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.auth-provider-button,
+.auth-email-submit,
+.auth-signout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+  border-radius: 14px;
+  font-weight: 900;
+}
+.auth-provider-button span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 13px;
+}
+.auth-provider-google { border-color: #dfe3ec; background: #fff; color: #111827; }
+.auth-provider-kakao { border-color: #fee500; background: #fee500; color: #111827; }
+.auth-provider-naver { border-color: #03c75a; background: #03c75a; color: #fff; }
+.auth-provider-naver span { background: rgba(255,255,255,.18); color: #fff; }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9aa1ad;
+  font-size: 13px;
+  font-weight: 900;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eef0f6;
+}
+.auth-email-field {
+  display: grid;
+  gap: 8px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 900;
+}
+.auth-email-field input {
+  height: 50px;
+  border-radius: 14px;
+  border-color: #dfe3ec;
+  background: #fbfcff;
+}
+.auth-email-submit {
+  border: 0;
+  background: var(--figma-primary);
+  color: #fff;
+}
+.auth-signout-button {
+  border-color: #dfe3ec;
+  background: #fff;
+  color: #374151;
+}
+.auth-helper,
+.auth-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: var(--figma-muted);
+  font-weight: 800;
+}
+.auth-message { background: #eff6ff; color: #1d4ed8; }
+@media (max-width: 1180px) {
+  .login-page-main { padding: 0 24px 64px; }
+  .login-topbar { margin: 0; padding-left: 0; padding-right: 0; }
+  .login-hero {
+    width: 100%;
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .login-copy-card,
+  .auth-card--page {
+    width: 100%;
+  }
+}
+@media (max-width: 760px) {
+  .login-page-main { padding: 0 16px 56px; }
+  .login-page-shell { gap: 24px; }
+  .login-copy-card {
+    min-height: auto;
+    padding: 34px 22px;
+    border-radius: 24px;
+  }
+  .login-copy-card h1 { font-size: 34px; }
+  .auth-card--page {
+    padding: 22px;
+    border-radius: 24px;
+  }
+}
