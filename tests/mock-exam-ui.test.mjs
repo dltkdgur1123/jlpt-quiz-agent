@@ -174,6 +174,8 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "미응답",
     "타이머",
     "Mock Test Result",
+    "mock-score-table-section-head",
+    "mock-score-table-total-head",
     "合否 結果通知書",
     "학습 참고용 모의 합격 여부",
     "상세 결과",

@@ -638,11 +638,10 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 <dd>Guest Learner</dd>
               </dl>
               <div className="mock-result-score-table" aria-label="모의 성적표">
-                <strong>得点区分別得点<br /><span>Scores by Scoring Section</span></strong>
-                <strong>総合得点<br /><span>Total Score</span></strong>
+                <strong className="mock-score-table-section-head">得点区分別得点<br /><span>Scores by Scoring Section</span></strong>
+                <strong className="mock-score-table-total-head">総合得点<br /><span>Total Score</span></strong>
                 <span>言語知識・読解<br />Language Knowledge / Reading</span>
                 <span>聴解<br />Listening</span>
-                <span>{totalMockScore}/{MOCK_TOTAL_SCORE}</span>
                 <b>{languageReadingScore}/{MOCK_LANGUAGE_READING_SCORE}</b>
                 <b>{listeningScore}/{MOCK_LISTENING_SCORE}</b>
                 <b>{totalMockScore}/{MOCK_TOTAL_SCORE}</b>
