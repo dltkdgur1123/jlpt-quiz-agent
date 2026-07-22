@@ -43,7 +43,7 @@ Raw values only:
 - colors: ink, muted, primary, neutral, feedback
 - spacing: 4, 8, 12, 16, 20, 24, 32, 48, 64
 - radius: 10, 12, 14, 18, 20, 22, 28, pill
-- typography: body, nav, page title, exam prompt, helper, caption
+- typography: Pretendard via `--font-sans`; body, nav, page title, exam prompt, helper, caption
 - shadows: mostly none; subtle only when needed
 
 ### 2. Semantic tokens

@@ -1,4 +1,7 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
 :root {
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
   /* Hermes-side design token ladder: primitive → semantic → component. */
   --primitive-color-white: #ffffff;
   --primitive-color-neutral-50: #f8fafc;
@@ -82,7 +85,7 @@ body {
   margin: 0;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 main {
   min-height: 100vh;
@@ -486,7 +489,7 @@ dd { margin: 0; color: var(--muted); }
 }
 
 /* Figma screenshot alignment pass */
-.figma-main, main:has(.figma-shell), main:has(.home-shell) { background: #f7f8fc; font-family: Inter, Arial, Helvetica, sans-serif; }
+.figma-main, main:has(.figma-shell), main:has(.home-shell) { background: #f7f8fc; font-family: var(--font-sans); }
 .figma-shell, .home-shell { width: min(1180px, 100%); }
 .figma-topbar, .home-topbar { min-height: 76px; padding: 0; }
 .figma-brand, .home-brand { font-size: 1.05rem; font-weight: 900; letter-spacing: -0.04em; }
@@ -637,7 +640,7 @@ dd { margin: 0; color: var(--muted); }
 }
 main:has(.home-shell), .figma-main, main:has(.mock-exam-shell) {
   background: var(--figma-bg);
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 main:has(.home-shell) {
   padding: 0 80px 80px;
@@ -1614,7 +1617,7 @@ main:has(.mock-page-shell) {
   display: none;
 }
 .home-redesign-shell .home-brand strong {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: clamp(1.45rem, 2.2vw, 2.05rem);
   letter-spacing: .08em;
   font-weight: 700;
@@ -1673,7 +1676,7 @@ main:has(.mock-page-shell) {
 .home-redesign-hero h1 {
   margin: 0;
   color: #1f1b16;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: clamp(2.55rem, 5vw, 5rem);
   font-weight: 500;
   letter-spacing: -.045em;
@@ -1700,7 +1703,7 @@ main:has(.mock-page-shell) {
 .home-start-console h2 {
   margin: 0;
   color: #2b261f;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: 1.18rem;
   font-weight: 500;
 }
@@ -1734,7 +1737,7 @@ main:has(.mock-page-shell) {
   color: #2b2117;
 }
 .home-level-segment-item strong {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: 1.18rem;
   font-weight: 600;
 }
@@ -1796,7 +1799,7 @@ main:has(.mock-page-shell) {
 }
 .home-start-button span {
   justify-self: center;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: clamp(1.25rem, 2vw, 1.55rem);
   font-weight: 500;
 }
@@ -1883,7 +1886,7 @@ main:has(.mock-page-shell) {
 .home-redesign-section-head h2 {
   margin: 6px 0 0;
   color: #242019;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-size: clamp(1.45rem, 3vw, 2.2rem);
   font-weight: 500;
   letter-spacing: -.04em;
@@ -1919,7 +1922,7 @@ main:has(.mock-page-shell) {
   border-radius: 999px;
   background: #f2e8dc;
   color: #4b3724;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-sans);
   font-weight: 700;
 }
 .home-shorts-level-row strong {

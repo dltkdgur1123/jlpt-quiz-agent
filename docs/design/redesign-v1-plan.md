@@ -127,10 +127,12 @@ Design notes:
 
 ### Typography
 
+- Font family: Pretendard only, via `--font-sans`
 - Korean/Japanese readability first
 - Large calm headings
 - Strong but not decorative navigation
 - Exam text should be high contrast and comfortable
+- Do not mix serif, Geist, Inter, Arial, or page-specific typefaces unless explicitly approved
 
 ### Shape
 
