@@ -50,7 +50,14 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(headerSource, /home-nav/);
   assert.match(headerSource, /AuthHeaderButton/);
   assert.match(headerButtonSource, /getSession/);
-  assert.match(headerButtonSource, /대시보드/);
+  assert.match(headerButtonSource, /auth-profile-trigger/);
+  assert.match(headerButtonSource, /auth-profile-avatar/);
+  assert.match(headerButtonSource, /auth-profile-name/);
+  assert.match(headerButtonSource, /auth-profile-dropdown/);
+  assert.match(headerButtonSource, /학습 기록/);
+  assert.match(headerButtonSource, /설정/);
+  assert.match(headerButtonSource, /로그아웃/);
+  assert.doesNotMatch(headerSource, />대시보드</);
   assert.match(panelSource, /auth-provider-button/);
   assert.match(panelSource, /auth-divider/);
 });

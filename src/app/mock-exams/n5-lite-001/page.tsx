@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import Link from "next/link";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { MockExamLite } from "@/components/mock-exam/MockExamLite";
 
 function loadMockExamSet() {
@@ -13,9 +13,11 @@ export default function N5MockExamLite001Page() {
 
   return (
     <main>
-      <div className="page-stack">
-        <Link href="/">홈으로 돌아가기</Link>
-        <MockExamLite artifact={artifact} />
+      <div className="mock-page-shell">
+        <SiteHeader active="mock" />
+        <div className="page-stack mock-lite-page-stack">
+          <MockExamLite artifact={artifact} />
+        </div>
       </div>
     </main>
   );

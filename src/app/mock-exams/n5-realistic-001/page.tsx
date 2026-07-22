@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import Link from "next/link";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { MockExamLite } from "@/components/mock-exam/MockExamLite";
 
 function loadMockExamSet() {
@@ -22,13 +22,15 @@ export default function N5RealisticMockExam001Page() {
 
   return (
     <main>
-      <div className="exam-portal-layout">
-        <AdSidebar side="left" />
-        <div className="exam-main-column">
-          <Link className="back-link" href="/">홈으로 돌아가기</Link>
-          <MockExamLite artifact={artifact} />
+      <div className="mock-page-shell">
+        <SiteHeader active="mock" />
+        <div className="exam-portal-layout">
+          <AdSidebar side="left" />
+          <div className="exam-main-column">
+            <MockExamLite artifact={artifact} />
+          </div>
+          <AdSidebar side="right" />
         </div>
-        <AdSidebar side="right" />
       </div>
     </main>
   );

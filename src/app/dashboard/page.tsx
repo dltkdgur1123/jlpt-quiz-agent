@@ -26,7 +26,7 @@ export default function DashboardPage() {
   return (
     <main className="figma-main">
       <div className="figma-shell dashboard-page">
-        <SiteHeader active="dashboard" />
+        <SiteHeader active="history" />
 
         <section className="dashboard-hero">
           <div>

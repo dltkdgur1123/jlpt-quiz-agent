@@ -43,6 +43,7 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
 
 test("dashboard page matches Figma learning dashboard sections", () => {
   const source = dashboardPage();
+  assert.match(source, /<SiteHeader active="history"/);
   for (const phrase of [
     "안녕하세요, 효쿠님",
     "학습 요약",
@@ -80,12 +81,14 @@ test("mock exam attempt API validates login and writes attempt answer result row
 test("N5 mock exam page loads generated set artifact", () => {
   const source = mockExamPage();
   assert.match(source, /n5-mock-exam-lite-set-002\.json/);
+  assert.match(source, /<SiteHeader active="mock"/);
   assert.match(source, /MockExamLite/);
 });
 
 test("N5 realistic mock exam page loads generated 50-question set", () => {
   const source = realisticMockExamPage();
   assert.match(source, /n5-realistic-mock-exam-001\.json/);
+  assert.match(source, /<SiteHeader active="mock"/);
   assert.match(source, /MockExamLite/);
   assert.match(source, /exam-portal-layout/);
   assert.match(source, /exam-ad-sidebar/);
