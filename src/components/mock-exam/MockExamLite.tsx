@@ -397,7 +397,9 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
         <span className="mock-exam-timer">타이머 {artifact.set.time_limit_minutes}:00</span>
       </section>
 
-      {artifact.sections.map((section) => {
+      <div className="mock-exam-workspace">
+        <div className="mock-exam-paper-column">
+          {artifact.sections.map((section) => {
         const problems = PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === section.section_key);
         return (
           <section className="mock-exam-section" key={section.section_key}>
@@ -670,6 +672,25 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           </>
         )}
       </section>
+        </div>
+        <aside className="mock-question-nav" aria-label="문제 목록">
+          <div>
+            <strong>문제 목록</strong>
+            <span>{answeredCount}/{artifact.set.question_count}</span>
+          </div>
+          <nav>
+            {artifact.questions.map((question, index) => (
+              <a
+                data-answered={Boolean(selectedAnswers[question.id])}
+                href={`#question-${question.id}`}
+                key={question.id}
+              >
+                {index + 1}
+              </a>
+            ))}
+          </nav>
+        </aside>
+      </div>
     </div>
   );
 }

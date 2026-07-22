@@ -27,7 +27,7 @@ export default function Home() {
             <a href="#home">홈</a>
             <Link href="/mock-exams/n5-realistic-001">모의고사</Link>
             <a href="#continue-learning">학습 기록</a>
-            <a href="#dashboard-preview">대시보드</a>
+            <Link href="/dashboard">대시보드</Link>
           </nav>
           <details className="home-auth-menu">
             <summary className="home-login-button">로그인</summary>

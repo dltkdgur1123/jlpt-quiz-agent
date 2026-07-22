@@ -6,6 +6,7 @@ const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.u
 const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-002/page.tsx", import.meta.url), "utf8");
 const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
+const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 
@@ -30,6 +31,22 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
   }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
   assert.match(source, /\/mock-exams\/n5-lite-002/);
+});
+
+test("dashboard page matches Figma learning dashboard sections", () => {
+  const source = dashboardPage();
+  for (const phrase of [
+    "안녕하세요, 효쿠님",
+    "학습 요약",
+    "주간 학습 활동",
+    "7월 목표",
+    "최근 모의고사",
+    "현재 취약 영역",
+    "dashboard-stat-grid",
+    "dashboard-goal-card",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
 });
 
 test("N5 mock exam page loads generated set artifact", () => {
@@ -94,6 +111,8 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "progressPercent",
     "mock-exam-progress-bar",
     "mock-exam-hero",
+    "mock-question-nav",
+    "문제 목록",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
