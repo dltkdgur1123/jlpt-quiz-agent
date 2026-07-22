@@ -2491,3 +2491,51 @@ main,
   font-weight: 650 !important;
   text-align: right;
 }
+
+/* Cross-page header/button consistency fix */
+.site-header .home-nav a::after,
+.site-header .home-nav a.active::after,
+.home-redesign-shell .home-nav a:first-child::after,
+.mock-page-shell .home-nav a.active::after {
+  content: none !important;
+  display: none !important;
+}
+.mock-page-shell .site-header .home-nav a.active,
+.home-redesign-shell .site-header .home-nav a.active,
+.home-redesign-shell .site-header .home-nav a:first-child {
+  color: #1f1b16 !important;
+}
+.mock-page-shell .primary-action,
+.mock-page-shell .mock-exam-start-card .primary-action,
+.mock-page-shell .mock-exam-bottom-nav .primary-action {
+  background: #1d2027 !important;
+  border-color: #1d2027 !important;
+  color: #fff !important;
+  box-shadow: 0 18px 44px rgba(29, 32, 39, .16) !important;
+}
+.mock-page-shell .primary-action:hover:not(:disabled),
+.mock-page-shell .mock-exam-start-card .primary-action:hover:not(:disabled),
+.mock-page-shell .mock-exam-bottom-nav .primary-action:hover:not(:disabled) {
+  background: #111318 !important;
+  border-color: #111318 !important;
+}
+.mock-page-shell .mock-question-nav a[data-answered="true"],
+.mock-page-shell .mock-question-nav a[aria-current="page"],
+.mock-page-shell .mock-question-nav-item[data-current="true"],
+.mock-page-shell .mock-question-nav-item[data-answered="true"] {
+  background: #1d2027 !important;
+  border-color: #1d2027 !important;
+  color: #fff !important;
+}
+.mock-page-shell .mock-question-nav-submit {
+  border-color: #1d2027 !important;
+  background: #fff !important;
+  color: #1d2027 !important;
+}
+.mock-page-shell .mock-question-nav-submit:hover:not(:disabled) {
+  background: rgba(29, 32, 39, .06) !important;
+}
+.mock-page-shell .mock-question-nav-confirm button:last-child {
+  border-color: #1d2027 !important;
+  color: #1d2027 !important;
+}
