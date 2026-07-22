@@ -341,7 +341,14 @@ dd { margin: 0; color: var(--muted); }
 .home-nav { display: none; gap: 8px; padding: 6px; border: 1px solid #e7e9f2; border-radius: 999px; background: #fff; }
 .home-nav a { padding: 9px 14px; border-radius: 999px; color: #707489; text-decoration: none; font-size: .9rem; font-weight: 900; }
 .home-nav a:first-child { background: #171923; color: #fff; }
-.home-profile { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; border: 1px solid #e7e9f2; background: #fff; color: #5b5cf6; font-weight: 900; }
+.home-profile { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; border: 1px solid #e7e9f2; background: #fff; color: #5b5cf6; font-weight: 900; cursor: pointer; list-style: none; }
+.home-profile::-webkit-details-marker { display: none; }
+.home-auth-menu { position: relative; }
+.home-auth-popover { position: absolute; right: 0; top: calc(100% + 12px); z-index: 20; width: min(360px, calc(100vw - 32px)); display: none; }
+.home-auth-menu[open] .home-auth-popover { display: block; }
+.home-auth-popover .auth-card { border-radius: 22px; box-shadow: 0 24px 70px rgba(31, 35, 71, .18); }
+.home-auth-popover .auth-card h2 { font-size: 1.35rem; }
+.home-auth-popover .auth-provider-grid { grid-template-columns: 1fr; }
 .home-dashboard-hero { display: grid; grid-template-columns: 1fr; gap: 18px; }
 .home-welcome-card, .home-goal-card, .home-stat-grid strong, .home-panel {
   border: 1px solid #e7e9f2;

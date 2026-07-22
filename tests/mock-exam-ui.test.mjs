@@ -20,6 +20,8 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
     "현재 취약 영역",
     "home-dashboard-shell",
     "home-shorts-grid",
+    "home-auth-menu",
+    "home-auth-popover",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

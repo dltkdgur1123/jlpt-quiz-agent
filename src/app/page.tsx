@@ -33,7 +33,12 @@ export default function Home() {
             <a href="#recent-shorts">JLPT 쇼츠</a>
             <a href="#learning-record">대시보드</a>
           </nav>
-          <div aria-label="프로필" className="home-profile">H</div>
+          <details className="home-auth-menu">
+            <summary aria-label="로그인 메뉴" className="home-profile">H</summary>
+            <div className="home-auth-popover">
+              <AuthPanel />
+            </div>
+          </details>
         </header>
 
         <section className="home-dashboard-hero" id="home-dashboard">
@@ -128,7 +133,6 @@ export default function Home() {
         </section>
 
         <section className="home-legacy-grid">
-          <AuthPanel />
           <QuizMvp />
         </section>
       </div>
