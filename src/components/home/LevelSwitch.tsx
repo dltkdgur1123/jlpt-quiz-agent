@@ -13,16 +13,25 @@ type LevelOption = {
 
 export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const activeIndicatorIndex = previewIndex ?? selectedIndex;
   const selectedLevel = levels[selectedIndex] ?? levels[0];
   const switchStyle = useMemo(
-    () => ({ "--active-level-index": selectedIndex }) as React.CSSProperties,
-    [selectedIndex],
+    () => ({ "--active-level-index": activeIndicatorIndex }) as React.CSSProperties,
+    [activeIndicatorIndex],
   );
 
   return (
     <section className="home-start-console" aria-labelledby="level-title">
       <h2 id="level-title">JLPT 레벨 선택</h2>
-      <div className="home-level-switch" role="tablist" aria-label="JLPT 레벨 선택" style={switchStyle}>
+      <div
+        className="home-level-switch"
+        onMouseLeave={() => setPreviewIndex(null)}
+        onPointerLeave={() => setPreviewIndex(null)}
+        role="tablist"
+        aria-label="JLPT 레벨 선택"
+        style={switchStyle}
+      >
         <span className="home-level-switch-indicator" aria-hidden="true" />
         {levels.map((item, index) => (
           <button
@@ -30,9 +39,14 @@ export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
             aria-selected={index === selectedIndex}
             className="home-level-switch-item"
             data-selected={index === selectedIndex ? "true" : undefined}
+            data-previewed={index === previewIndex ? "true" : undefined}
             id={`home-level-tab-${item.level.toLowerCase()}`}
             key={item.level}
             onClick={() => setSelectedIndex(index)}
+            onBlur={() => setPreviewIndex(null)}
+            onFocus={() => setPreviewIndex(index)}
+            onMouseEnter={() => setPreviewIndex(index)}
+            onPointerEnter={() => setPreviewIndex(index)}
             role="tab"
             type="button"
           >

@@ -54,7 +54,21 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   }
   assert.ok(readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8").includes("home-login-button"));
   const levelSwitchSource = readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
-  for (const phrase of ["use client", "useState", "home-level-switch-indicator", "aria-selected", "setSelectedIndex", "--active-level-index"]) {
+  for (const phrase of [
+    "use client",
+    "useState",
+    "previewIndex",
+    "activeIndicatorIndex",
+    "home-level-switch-indicator",
+    "aria-selected",
+    "setSelectedIndex",
+    "setPreviewIndex",
+    "onMouseEnter",
+    "onMouseLeave",
+    "onPointerEnter",
+    "onPointerLeave",
+    "--active-level-index",
+  ]) {
     assert.ok(levelSwitchSource.includes(phrase), phrase);
   }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
