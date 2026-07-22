@@ -26,10 +26,11 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "모의고사 시작",
     "최근 학습",
     "최근 성적",
-    "레벨별 유튜브 숏츠",
+    "최신 유튜브 Shorts",
     "https://www.youtube.com/@hyokujlpt/shorts",
+    "getLatestHyokuShorts",
+    "i.ytimg.com/vi",
     "home-page-frame",
-    "home-ad-rail",
     "home-redesign-panel",
     "home-level-segment",
     "home-progress-grid",
@@ -40,6 +41,8 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   assert.doesNotMatch(source, /home-level-grid/);
   assert.doesNotMatch(source, /home-hero-actions/);
   assert.doesNotMatch(source, /home-shorts-level-row/);
+  assert.doesNotMatch(source, /Google Ad/);
+  assert.doesNotMatch(source, /home-ad-rail/);
   assert.doesNotMatch(source, /조사 に \/ で 구분/);
   assert.doesNotMatch(source, /@JLPThyo_bot/);
   for (const phrase of ["HYOKU JLPT", "AuthHeaderButton"]) {

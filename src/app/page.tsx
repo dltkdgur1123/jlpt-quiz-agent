@@ -12,16 +12,47 @@ const levels = [
 const youtubeShortsUrl = "https://www.youtube.com/@hyokujlpt/shorts";
 const shortsLevels = ["N1", "N2", "N3", "N4", "N5"];
 
-export default function Home() {
+type YouTubeShort = {
+  id: string;
+  href: string;
+  thumbnail: string;
+};
+
+async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
+  try {
+    const response = await fetch(youtubeShortsUrl, {
+      headers: {
+        "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+        "user-agent": "Mozilla/5.0 (compatible; JLPTQuizBot/1.0; +https://jlpt-quiz-agent.vercel.app)",
+      },
+      next: { revalidate: 60 * 60 },
+    });
+
+    if (!response.ok) return [];
+
+    const html = await response.text();
+    const ids = Array.from(html.matchAll(/"videoId":"([A-Za-z0-9_-]{11})"/g))
+      .map((match) => match[1])
+      .filter((id, index, all) => all.indexOf(id) === index)
+      .slice(0, 5);
+
+    return ids.map((id) => ({
+      id,
+      href: `https://www.youtube.com/shorts/${id}`,
+      thumbnail: `https://i.ytimg.com/vi/${id}/hq720.jpg`,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
   const selectedLevel = levels[0];
+  const latestShorts = await getLatestHyokuShorts();
 
   return (
     <main>
       <div className="home-page-frame">
-        <aside className="home-ad-rail home-ad-rail-left" aria-label="Google Ad left placeholder">
-          <span>Google Ad</span>
-        </aside>
-
         <div className="home-shell home-redesign-shell">
           <SiteHeader active="home" />
 
@@ -102,23 +133,27 @@ export default function Home() {
             <div className="home-redesign-section-head">
               <div>
                 <p>JLPT SHORTS</p>
-                <h2 id="shorts-title">레벨별 유튜브 숏츠</h2>
+                <h2 id="shorts-title">최신 유튜브 Shorts</h2>
               </div>
-              <a href={youtubeShortsUrl} rel="noreferrer" target="_blank">YouTube 보기 →</a>
+              <a href={youtubeShortsUrl} rel="noreferrer" target="_blank">Shorts 보기 →</a>
             </div>
-            <div className="home-shorts-grid" aria-label="JLPT 레벨별 Shorts 링크">
-              {shortsLevels.map((level) => (
-                <a className="home-shorts-grid-link" href={youtubeShortsUrl} key={level} rel="noreferrer" target="_blank">
-                  <span>{level}</span>
-                </a>
-              ))}
+            <div className="home-shorts-grid" aria-label="최신 JLPT Shorts 썸네일">
+              {(latestShorts.length ? latestShorts : shortsLevels.map(() => null)).map((short, index) => {
+                const level = shortsLevels[index] ?? `N${index + 1}`;
+                const href = short?.href ?? youtubeShortsUrl;
+                return (
+                  <a className="home-shorts-grid-link" href={href} key={short?.id ?? level} rel="noreferrer" target="_blank">
+                    {short ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img alt={`${level} 최신 Shorts 썸네일`} src={short.thumbnail} />
+                    ) : null}
+                    <span>{level}</span>
+                  </a>
+                );
+              })}
             </div>
           </section>
         </div>
-
-        <aside className="home-ad-rail home-ad-rail-right" aria-label="Google Ad right placeholder">
-          <span>Google Ad</span>
-        </aside>
       </div>
     </main>
   );

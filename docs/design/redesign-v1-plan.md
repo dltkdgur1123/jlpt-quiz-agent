@@ -64,7 +64,7 @@ Priority order:
 2. Level selection
 3. Start mock exam CTA
 4. Recent/continue learning
-5. Shorts/content bridge as a Shorts-only level grid linked to `https://www.youtube.com/@hyokujlpt/shorts`; do not show fabricated video titles
+5. Shorts/content bridge uses latest Shorts thumbnails from `https://www.youtube.com/@hyokujlpt/shorts`; do not show fabricated video titles. If a YouTube Data API key is available, use API v3; otherwise server-fetch the public Shorts page and render real `ytimg` thumbnails.
 
 Design notes:
 
@@ -72,6 +72,8 @@ Design notes:
 - Avoid multiple boxed sections stacked like generic SaaS cards.
 - Home should feel like one calm premium entry surface, not a dashboard grid.
 - Below the main start surface, prefer grid/list sections with thin dividers over rounded card containers.
+- Keep the overall page background pure white.
+- Reserve side-space logic for future Google Ads, but do not display ad placeholders before ad integration.
 - Use the good parts of the Result concept: spacious report-like composition, restrained typography, white premium surface, subtle dividers, and calm hierarchy.
 - Level selection can be a refined segmented control, horizontal selector, or integrated exam-start panel rather than many separate cards.
 - Hero should not feel like a marketing landing page first.
