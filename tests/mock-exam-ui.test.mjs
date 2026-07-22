@@ -13,13 +13,16 @@ test("home page promotes dashboard mock exam and Shorts entries", () => {
   const source = homePage();
   for (const phrase of [
     "HYOKU JLPT",
-    "안녕하세요,",
-    "새 모의고사 시작",
-    "최근 JLPT 쇼츠",
+    "실전처럼 풀고,",
+    "데이터로 합격에 가까워지세요.",
+    "무료 모의고사 시작",
+    "레벨별 모의고사",
+    "이어서 학습하기",
+    "최근 성적",
+    "JLPT 쇼츠로 예열하기",
     "N5 필수 동사 会います 읽기",
-    "현재 취약 영역",
-    "home-dashboard-shell",
-    "home-shorts-grid",
+    "home-shell",
+    "home-level-grid",
     "home-auth-menu",
     "home-auth-popover",
   ]) {
