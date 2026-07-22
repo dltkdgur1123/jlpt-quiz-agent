@@ -2228,3 +2228,41 @@ main,
 .home-shorts-grid-link::after {
   background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.08));
 }
+/* Home refinement v5: remove AI-like hero shadow and reduce Shorts thumbnails */
+.home-redesign-panel {
+  border-color: rgba(105, 94, 78, .10) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+.home-start-button {
+  box-shadow: none !important;
+}
+.home-shorts-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  max-width: 980px;
+}
+.home-shorts-grid-link {
+  aspect-ratio: 16 / 10;
+  max-height: 150px;
+}
+.home-shorts-grid-link img {
+  object-fit: cover;
+}
+@media (max-width: 920px) {
+  .home-shorts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
+  }
+  .home-shorts-grid-link {
+    aspect-ratio: 16 / 9;
+    max-height: 180px;
+  }
+}
+@media (max-width: 520px) {
+  .home-shorts-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-shorts-grid-link {
+    max-height: 168px;
+  }
+}
