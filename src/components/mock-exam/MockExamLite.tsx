@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { mergeRecentQuestionHistory, recentQuestionIdSet } from "@/lib/mock-exam/recent-history";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -271,6 +271,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [submitted, setSubmitted] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
@@ -282,6 +283,12 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     const nextRecentQuestionCount = artifact.questions.filter((question) => recentIds.has(question.id)).length;
     queueMicrotask(() => setRecentQuestionCount(nextRecentQuestionCount));
   }, [artifact.questions]);
+
+  useEffect(() => {
+    if (!examStarted || submitted) return;
+    const activeButton = questionNavScrollRef.current?.querySelector<HTMLButtonElement>('[data-current="true"]');
+    requestAnimationFrame(() => activeButton?.scrollIntoView({ block: "center", inline: "nearest" }));
+  }, [currentQuestionIndex, examStarted, submitted]);
 
   const renderedChoiceMap = useMemo(
     () =>
@@ -786,7 +793,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <strong>문제 목록</strong>
             <span>{answeredCount}/{artifact.set.question_count}</span>
           </div>
-          <div className="mock-question-nav-scroll">
+          <div className="mock-question-nav-scroll" ref={questionNavScrollRef}>
             <nav>
               {flattenedQuestions.map(({ question }, index) => (
                 <button

@@ -1000,3 +1000,31 @@ main:has(.home-shell) { padding: 0 0 80px; }
 @media (max-width: 1180px) {
   .mock-exam-submit-card { display: block; }
 }
+
+/* Mock exam screenshot QA fix: desktop rail/status top alignment and uniform bottom buttons */
+@media (min-width: 1181px) {
+  .mock-question-nav {
+    top: 92px;
+  }
+  .mock-exam-bottom-nav {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: stretch;
+    gap: 14px;
+    margin-top: 80px;
+  }
+  .mock-exam-bottom-nav .secondary-action,
+  .mock-exam-bottom-nav .primary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    min-height: 48px;
+    padding: 0 18px;
+    white-space: nowrap;
+    line-height: 1;
+    text-align: center;
+  }
+}
