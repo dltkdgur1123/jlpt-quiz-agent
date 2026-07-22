@@ -41,6 +41,7 @@ supabase/policies/       RLS/auth policy draft
 data/import/             Small sample import data
 scripts/                 Import utility scripts
 docs/architecture/       Ticket-level architecture notes
+docs/design/             Hermes-side UI token/design working rules
 docs/qa/                 QA checklists and smoke test notes
 tests/                   Node test runner test suite
 ```

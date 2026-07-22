@@ -15,24 +15,27 @@ const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 
-test("home page promotes dashboard mock exam and Shorts entries", () => {
+test("home page uses premium start cockpit and keeps learning/Shorts entries", () => {
   const source = homePage();
   const headerSource = siteHeader();
   for (const phrase of [
     "SiteHeader",
-    "실전처럼 풀고,",
-    "데이터로 합격에 가까워지세요.",
-    "무료 모의고사 시작",
-    "레벨별 모의고사",
-    "이어서 학습하기",
+    "JLPT 모의고사를",
+    "차분하게 시작하세요",
+    "JLPT 레벨 선택",
+    "모의고사 시작",
+    "최근 학습",
     "최근 성적",
-    "JLPT 쇼츠로 예열하기",
-    "N5 필수 동사 会います 읽기",
-    "home-shell",
-    "home-level-grid",
+    "레벨별 유튜브 숏츠 업데이트",
+    "home-redesign-panel",
+    "home-level-segment",
+    "home-progress-row",
+    "home-shorts-level-section",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
+  assert.doesNotMatch(source, /home-level-grid/);
+  assert.doesNotMatch(source, /home-hero-actions/);
   for (const phrase of ["HYOKU JLPT", "AuthHeaderButton"]) {
     assert.ok(headerSource.includes(phrase), phrase);
   }

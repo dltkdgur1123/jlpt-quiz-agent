@@ -1,92 +1,122 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+
 const levels = [
-  { level: "N5", title: "입문 일본어", time: "예상 소요 45분", href: "/mock-exams/n5-realistic-001", tone: "mint" },
-  { level: "N4", title: "초급 일본어", time: "예상 소요 55분", href: "/mock-exams/n5-lite-002", tone: "blue" },
-  { level: "N3", title: "중급 일본어", time: "예상 소요 70분", href: "/mock-exams/n5-realistic-001", tone: "orange" },
-  { level: "N2", title: "고급 일본어", time: "예상 소요 105분", href: "/mock-exams/n5-realistic-001", tone: "pink" },
-  { level: "N1", title: "최상급 일본어", time: "예상 소요 110분", href: "/mock-exams/n5-realistic-001", tone: "purple" },
+  { level: "N5", title: "입문", time: "45분", href: "/mock-exams/n5-realistic-001", description: "문자·어휘 중심 기초 점검" },
+  { level: "N4", title: "초급", time: "55분", href: "/mock-exams/n5-lite-002", description: "기초 문법과 독해 확장" },
+  { level: "N3", title: "중급", time: "70분", href: "/mock-exams/n5-realistic-001", description: "문법·독해 균형 점검" },
+  { level: "N2", title: "고급", time: "105분", href: "/mock-exams/n5-realistic-001", description: "실전 독해 밀도 강화" },
+  { level: "N1", title: "최상급", time: "110분", href: "/mock-exams/n5-realistic-001", description: "고난도 문맥 판단 연습" },
 ];
 
-const shorts = [
-  { title: "N5 필수 동사 会います 읽기", meta: "Vocab · 1분" },
-  { title: "헷갈리는 조사 に / で 구분", meta: "Grammar · N5" },
-  { title: "독해에서 시간표 읽는 법", meta: "Reading · N5" },
+const shortsByLevel = [
+  { level: "N5", title: "조사 に / で 구분", meta: "Grammar · 45초", href: "https://www.youtube.com/@JLPThyo_bot" },
+  { level: "N4", title: "자주 나오는 동사 표현", meta: "Vocab · 58초", href: "https://www.youtube.com/@JLPThyo_bot" },
+  { level: "N3", title: "독해 시간표 읽기", meta: "Reading · 1분", href: "https://www.youtube.com/@JLPThyo_bot" },
+  { level: "N2", title: "문맥상 알맞은 표현", meta: "Grammar · 52초", href: "https://www.youtube.com/@JLPThyo_bot" },
+  { level: "N1", title: "고난도 유의어 감각", meta: "Vocab · 1분", href: "https://www.youtube.com/@JLPThyo_bot" },
 ];
 
 export default function Home() {
+  const selectedLevel = levels[0];
+
   return (
     <main>
-      <div className="home-shell">
+      <div className="home-shell home-redesign-shell">
         <SiteHeader active="home" />
 
-        <section className="home-hero" id="home">
-          <div>
-            <p className="section-eyebrow">JLPT MOCK TEST PLATFORM</p>
-            <h1>실전처럼 풀고,<br />데이터로 합격에 가까워지세요.</h1>
-            <p>N5부터 N1까지 실제 시험 흐름에 맞춘 모의고사와 영역별 분석을 제공합니다.</p>
-            <div className="home-hero-actions">
-              <Link className="primary-link" href="/mock-exams/n5-realistic-001">무료 모의고사 시작</Link>
-              <a className="secondary-link" href="#continue-learning">학습 기록 보기</a>
+        <section className="home-redesign-panel" id="home" aria-labelledby="home-title">
+          <div className="home-redesign-hero">
+            <p className="home-redesign-kicker">JLPT MOCK EXAM</p>
+            <h1 id="home-title">JLPT 모의고사를<br />차분하게 시작하세요</h1>
+            <p>실전처럼 연습하고, 결과 리포트로 취약점을 확인하세요.</p>
+          </div>
+
+          <div className="home-redesign-divider" aria-hidden="true" />
+
+          <section className="home-start-console" aria-labelledby="level-title">
+            <h2 id="level-title">JLPT 레벨 선택</h2>
+            <div className="home-level-segment" role="list" aria-label="JLPT 레벨 선택">
+              {levels.map((item) => (
+                <Link
+                  aria-current={item.level === selectedLevel.level ? "page" : undefined}
+                  className="home-level-segment-item"
+                  href={item.href}
+                  key={item.level}
+                  role="listitem"
+                >
+                  <strong>{item.level}</strong>
+                  <span>{item.title}</span>
+                </Link>
+              ))}
             </div>
-          </div>
-          <aside className="home-week-card">
-            <span>이번 주 학습</span>
-            <strong>4일 연속</strong>
-            <p>총 126문제 풀이</p>
-            <i aria-hidden="true" />
-          </aside>
+
+            <div className="home-exam-summary" aria-label="선택한 모의고사 요약">
+              <dl>
+                <div>
+                  <dt>선택 레벨</dt>
+                  <dd>{selectedLevel.level} · {selectedLevel.title}</dd>
+                </div>
+                <div>
+                  <dt>구성</dt>
+                  <dd>문자·어휘 / 문법 / 독해</dd>
+                </div>
+                <div>
+                  <dt>예상 소요</dt>
+                  <dd>{selectedLevel.time}</dd>
+                </div>
+              </dl>
+              <p>{selectedLevel.description}</p>
+            </div>
+
+            <Link className="home-start-button" href={selectedLevel.href}>
+              <span>{selectedLevel.level} 모의고사 시작</span>
+              <b aria-hidden="true">→</b>
+            </Link>
+          </section>
+
+          <Link className="home-recent-line" href="/dashboard">
+            <span aria-hidden="true">◷</span>
+            <strong>최근 학습: N5 문자·어휘</strong>
+            <em>12분 전 이어서 보기</em>
+            <b aria-hidden="true">›</b>
+          </Link>
         </section>
 
-        <section className="home-section" aria-labelledby="level-title">
-          <div className="home-section-head">
-            <h2 id="level-title">레벨별 모의고사</h2>
-            <Link href="/mock-exams/n5-realistic-001">전체 보기 →</Link>
-          </div>
-          <div className="home-level-grid">
-            {levels.map((item) => (
-              <Link className="home-level-card" href={item.href} key={item.level}>
-                <span className={`home-level-badge home-level-${item.tone}`}>{item.level}</span>
-                <strong>{item.title}</strong>
-                <p>문자·어휘 / 문법 / 독해 / 청해</p>
-                <small>{item.time}</small>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="home-bottom-grid" id="continue-learning">
-          <article className="home-continue-panel">
-            <h2>이어서 학습하기</h2>
-            <strong>N3 실전 모의고사 · 2회차</strong>
-            <p>문법·독해 영역 18 / 40문제 완료</p>
-            <div className="home-wide-progress" aria-hidden="true"><i /></div>
-            <Link className="primary-link" href="/mock-exams/n5-realistic-001">계속 풀기</Link>
+        <section className="home-progress-row" id="continue-learning" aria-label="최근 학습과 최근 성적">
+          <article className="home-progress-item">
+            <span>최근 학습</span>
+            <strong>N5 문자·어휘 · 18 / 50문항</strong>
+            <p>다음 문제부터 바로 이어서 풀 수 있습니다.</p>
+            <Link href="/mock-exams/n5-realistic-001">계속 풀기 →</Link>
           </article>
-          <article className="home-score-panel" id="dashboard-preview">
-            <h2>최근 성적</h2>
-            <p>N4 모의고사 · 7월 20일</p>
-            <strong>128 / 180</strong>
-            <span>합격 예상 · 상위 24%</span>
-            <Link href="/mock-exams/n5-realistic-001">오답 17개 다시 보기 →</Link>
+          <article className="home-progress-item home-progress-score">
+            <span>최근 성적</span>
+            <strong>정답률 72%</strong>
+            <p>문법 빈칸 문제에서 오답이 가장 많았습니다.</p>
+            <Link href="/dashboard">학습 기록 보기 →</Link>
           </article>
         </section>
 
-        <section className="home-shorts-strip" id="recent-shorts" aria-labelledby="shorts-title">
-          <div className="home-section-head">
-            <h2 id="shorts-title">JLPT 쇼츠로 예열하기</h2>
+        <section className="home-shorts-level-section" id="recent-shorts" aria-labelledby="shorts-title">
+          <div className="home-redesign-section-head">
+            <div>
+              <p>JLPT SHORTS</p>
+              <h2 id="shorts-title">레벨별 유튜브 숏츠 업데이트</h2>
+            </div>
             <a href="https://www.youtube.com/@JLPThyo_bot" rel="noreferrer" target="_blank">YouTube 보기 →</a>
           </div>
-          <div className="home-shorts-row">
-            {shorts.map((short) => (
-              <article className="home-short-pill" key={short.title}>
-                <div aria-hidden="true">JLPT</div>
-                <span><strong>{short.title}</strong><small>{short.meta}</small></span>
-              </article>
+          <div className="home-shorts-level-list">
+            {shortsByLevel.map((short) => (
+              <a className="home-shorts-level-row" href={short.href} key={short.level} rel="noreferrer" target="_blank">
+                <span>{short.level}</span>
+                <strong>{short.title}</strong>
+                <em>{short.meta}</em>
+                <b aria-hidden="true">→</b>
+              </a>
             ))}
           </div>
         </section>
-
       </div>
     </main>
   );
