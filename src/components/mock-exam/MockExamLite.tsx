@@ -212,10 +212,6 @@ function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition
   return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
 }
 
-function formatQuestionNumber(problem: ProblemDefinition, questionIndex: number) {
-  return `${problem.problemNo}-${questionIndex + 1}`;
-}
-
 function problemForQuestion(question: MockExamQuestion) {
   return PROBLEM_DEFINITIONS.find((problem) => problem.questionTypes.includes(question.question_type));
 }
@@ -270,6 +266,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
   const [recentQuestionCount, setRecentQuestionCount] = useState(0);
   const [examStarted, setExamStarted] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [submitWarning, setSubmitWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
@@ -293,6 +290,22 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
       ) as Record<string, RenderedChoice[]>,
     [artifact.questions, attemptSeed],
   );
+
+  const flattenedQuestions = useMemo(
+    () =>
+      PROBLEM_DEFINITIONS.flatMap((problem) =>
+        problemQuestions(artifact, problem).map((question, questionIndex) => ({ problem, question, questionIndex })),
+      ),
+    [artifact],
+  );
+  const currentQuestion = flattenedQuestions[currentQuestionIndex] ?? flattenedQuestions[0];
+  const currentQuestionNumber = currentQuestionIndex + 1;
+  const currentRenderedChoices = currentQuestion
+    ? renderedChoiceMap[currentQuestion.question.id] ?? buildRenderedChoices(currentQuestion.question, attemptSeed)
+    : [];
+  const currentCorrectChoice = currentQuestion
+    ? renderedCorrectChoice(currentQuestion.question, currentRenderedChoices)
+    : "A";
 
   const answeredCount = Object.keys(selectedAnswers).length;
   const unansweredCount = artifact.set.question_count - answeredCount;
@@ -497,110 +510,92 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
 
       <div className="mock-exam-workspace">
         <div className="mock-exam-paper-column">
-          {artifact.sections.map((section) => {
-        const problems = PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === section.section_key);
-        return (
-          <section className="mock-exam-section" key={section.section_key}>
-            <div className="mock-exam-section-header">
-              <p className="section-eyebrow">Section {section.sort_order}</p>
-              <h2>{section.section_title}</h2>
-              <p>
-                {section.question_count}문항 · 권장 {section.time_limit_minutes}분
-              </p>
-            </div>
-
-            {problems.map((problem) => {
-              const questions = problemQuestions(artifact, problem);
-              if (questions.length === 0) return null;
-
-              return (
-                <section className="mock-exam-problem-group" key={problem.problemNo}>
-                  <div className="mock-exam-problem-instruction">
-                    <p className="section-eyebrow">{problem.title}</p>
-                    <h3>{problem.instructionJa}</h3>
-                    <p>풀이 안내: {problem.instructionKo}</p>
-                  </div>
-
-                  {questions.map((question, questionIndex) => (
-                    <article className="quiz-card" id={`question-${question.id}`} key={question.id}>
-                      <p className="section-eyebrow">
-                        問題{problem.problemNo} · {formatQuestionNumber(problem, questionIndex)} / {artifact.set.question_count}
-                      </p>
-                      <h4>{question.question_text}</h4>
-                      <div className="choice-list">
-                        {(renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed)).map((choice) => {
-                          const renderedKey = choice.renderedKey;
-                          const questionCorrectChoice = renderedCorrectChoice(
-                            question,
-                            renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
-                          );
-                          const selected = selectedAnswers[question.id] === renderedKey;
-                          const correct = submitted && questionCorrectChoice === renderedKey;
-                          const wrongSelected = submitted && selected && !correct;
-                          return (
-                            <button
-                              className="choice-button"
-                              data-selected={selected}
-                              data-correct={correct}
-                              data-wrong={wrongSelected}
-                              disabled={submitted}
-                              key={renderedKey}
-                              onClick={() => setSelectedAnswers((answers) => ({ ...answers, [question.id]: renderedKey }))}
-                              type="button"
-                            >
-                              <span>{CHOICE_NUMBERS[renderedKey]}</span>
-                              {choice.text}
-                            </button>
-                          );
-                        })}
+          {currentQuestion ? (
+            <section className="mock-exam-section mock-exam-focus-panel" aria-label="현재 문제">
+              <div className="mock-exam-question-meta">
+                <strong>{artifact.set.jlpt_level}</strong>
+                <span>{artifact.set.set_title}</span>
+                <em>
+                  {currentQuestionNumber} / {artifact.set.question_count}
+                </em>
+              </div>
+              <div className="mock-exam-problem-instruction">
+                <p className="section-eyebrow">問題{currentQuestion.problem.problemNo} · {currentQuestion.problem.title}</p>
+                <h3>{currentQuestion.problem.instructionJa}</h3>
+                <p>풀이 안내: {currentQuestion.problem.instructionKo}</p>
+              </div>
+              <article className="quiz-card mock-exam-current-card" id={`question-${currentQuestion.question.id}`}>
+                <div className="mock-current-question-head">
+                  <p className="section-eyebrow">문제 {currentQuestionNumber}</p>
+                  <button type="button" aria-label="북마크">북마크 ☆</button>
+                </div>
+                <h4>{currentQuestion.question.question_text}</h4>
+                <div className="choice-list">
+                  {currentRenderedChoices.map((choice) => {
+                    const renderedKey = choice.renderedKey;
+                    const selected = selectedAnswers[currentQuestion.question.id] === renderedKey;
+                    const correct = submitted && currentCorrectChoice === renderedKey;
+                    const wrongSelected = submitted && selected && !correct;
+                    return (
+                      <button
+                        className="choice-button"
+                        data-selected={selected}
+                        data-correct={correct}
+                        data-wrong={wrongSelected}
+                        disabled={submitted}
+                        key={renderedKey}
+                        onClick={() => setSelectedAnswers((answers) => ({ ...answers, [currentQuestion.question.id]: renderedKey }))}
+                        type="button"
+                      >
+                        <span>{CHOICE_NUMBERS[renderedKey]}.</span>
+                        {choice.text}
+                      </button>
+                    );
+                  })}
+                </div>
+                {submitted ? (
+                  <div className="result-card mock-exam-answer-review">
+                    <strong>{selectedAnswers[currentQuestion.question.id] === currentCorrectChoice ? "정답" : "오답"}</strong>
+                    <p>정답: {CHOICE_NUMBERS[currentCorrectChoice]}</p>
+                    <p>{currentQuestion.question.explanation}</p>
+                    <div className="mock-exam-seen-feedback">
+                      <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
+                      <div className="feedback-buttons">
+                        {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
+                          <button
+                            data-selected={seenFeedbacks[currentQuestion.question.id] === feedback}
+                            key={feedback}
+                            onClick={() => setSeenFeedbacks((feedbacks) => ({ ...feedbacks, [currentQuestion.question.id]: feedback }))}
+                            type="button"
+                          >
+                            {FEEDBACK_LABELS[feedback]}
+                          </button>
+                        ))}
                       </div>
-                      {submitted ? (
-                        <div className="result-card mock-exam-answer-review">
-                          <strong>
-                            {selectedAnswers[question.id] ===
-                            renderedCorrectChoice(
-                              question,
-                              renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
-                            )
-                              ? "정답"
-                              : "오답"}
-                          </strong>
-                          <p>
-                            정답: {CHOICE_NUMBERS[
-                              renderedCorrectChoice(
-                                question,
-                                renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed),
-                              )
-                            ]}
-                          </p>
-                          <p>{question.explanation}</p>
-                          <div className="mock-exam-seen-feedback">
-                            <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
-                            <div className="feedback-buttons">
-                              {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
-                                <button
-                                  data-selected={seenFeedbacks[question.id] === feedback}
-                                  key={feedback}
-                                  onClick={() =>
-                                    setSeenFeedbacks((feedbacks) => ({ ...feedbacks, [question.id]: feedback }))
-                                  }
-                                  type="button"
-                                >
-                                  {FEEDBACK_LABELS[feedback]}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </article>
-                  ))}
-                </section>
-              );
-            })}
-          </section>
-        );
-      })}
+                    </div>
+                  </div>
+                ) : null}
+              </article>
+              <div className="mock-exam-bottom-nav">
+                <button
+                  className="secondary-action"
+                  disabled={currentQuestionIndex === 0}
+                  onClick={() => setCurrentQuestionIndex((index) => Math.max(0, index - 1))}
+                  type="button"
+                >
+                  ← 이전 문제
+                </button>
+                <button
+                  className="primary-action"
+                  disabled={currentQuestionIndex >= flattenedQuestions.length - 1}
+                  onClick={() => setCurrentQuestionIndex((index) => Math.min(flattenedQuestions.length - 1, index + 1))}
+                  type="button"
+                >
+                  다음 문제 →
+                </button>
+              </div>
+            </section>
+          ) : null}
 
       <section className="result-card">
         {submitted ? (
@@ -786,14 +781,17 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <span>{answeredCount}/{artifact.set.question_count}</span>
           </div>
           <nav>
-            {artifact.questions.map((question, index) => (
-              <a
+            {flattenedQuestions.map(({ question }, index) => (
+              <button
+                className="mock-question-nav-item"
                 data-answered={Boolean(selectedAnswers[question.id])}
-                href={`#question-${question.id}`}
+                data-current={index === currentQuestionIndex}
                 key={question.id}
+                onClick={() => setCurrentQuestionIndex(index)}
+                type="button"
               >
                 {index + 1}
-              </a>
+              </button>
             ))}
           </nav>
           <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>

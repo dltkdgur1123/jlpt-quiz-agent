@@ -43,6 +43,7 @@ supabase/.temp/
 # generated/local review artifacts
 /artifacts/
 /data/source/
+/.hermes/
 
 # typescript
 *.tsbuildinfo

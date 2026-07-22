@@ -121,7 +121,12 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "「　」 안 단어의 읽는 법을 고르세요.",
     "問題１　「　」のことばはどう読みますか。１・２・３・４から一つ選びなさい。",
     "CHOICE_NUMBERS",
-    "問題{problem.problemNo}",
+    "問題{currentQuestion.problem.problemNo}",
+    "currentQuestionIndex",
+    "flattenedQuestions",
+    "mock-exam-focus-panel",
+    "mock-question-nav-item",
+    "mock-exam-bottom-nav",
     "grammar_sentence_build",
     "attemptSeed",
     "buildRenderedChoices",
@@ -152,5 +157,5 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(source, /청해 없이/);
   const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   assert.match(styles, /\.mock-question-nav[\s\S]*position: fixed/);
-  assert.match(styles, /max-height: calc\(100dvh - 124px\)/);
+  assert.match(styles, /max-height: calc\(100dvh - 140px\)/);
 });

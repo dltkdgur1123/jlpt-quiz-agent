@@ -770,3 +770,115 @@ main:has(.home-shell) { padding: 0 0 80px; }
   .home-level-card { padding: 20px; }
   .home-bottom-grid { grid-template-columns: minmax(0, 1fr) 400px; }
 }
+
+/* Figma collaboration interaction pass */
+.mock-exam-focus-panel {
+  min-height: 786px;
+  display: grid;
+  align-content: start;
+  gap: 24px;
+}
+.mock-exam-question-meta,
+.mock-current-question-head,
+.mock-exam-bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.mock-exam-question-meta strong {
+  color: var(--figma-primary);
+  font-size: 14px;
+}
+.mock-exam-question-meta span {
+  flex: 1;
+  color: var(--figma-ink);
+  font-size: 18px;
+  font-weight: 700;
+}
+.mock-exam-question-meta em {
+  color: var(--figma-muted);
+  font-style: normal;
+  font-weight: 700;
+}
+.mock-exam-current-card {
+  min-height: 444px;
+}
+.mock-current-question-head button {
+  border: 0;
+  background: transparent;
+  color: var(--figma-muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+.mock-exam-bottom-nav {
+  margin-top: 80px;
+}
+.mock-exam-bottom-nav .primary-action,
+.mock-exam-bottom-nav .secondary-action {
+  min-width: 108px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+}
+.mock-exam-bottom-nav button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.mock-question-nav-item {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--figma-border);
+  background: #fff;
+  color: var(--figma-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mock-question-nav-item[data-answered="true"] {
+  background: #eef2ff;
+  border-color: #eef2ff;
+  color: var(--figma-primary);
+}
+.mock-question-nav-item[data-current="true"] {
+  background: var(--figma-primary);
+  border-color: var(--figma-primary);
+  color: #fff;
+}
+.mock-question-nav a { display: none; }
+@media (max-width: 1180px) {
+  .mock-exam-focus-panel { min-height: auto; }
+  .mock-exam-bottom-nav { margin-top: 32px; }
+}
+
+/* Figma desktop responsive rail correction */
+@media (min-width: 1181px) and (max-width: 1379px) {
+  main:has(.mock-exam-shell) { padding-left: 32px; padding-right: 32px; }
+  .exam-portal-layout { width: 100%; }
+  .mock-exam-workspace { grid-template-columns: minmax(0, calc(100vw - 450px)) 340px; gap: 20px; }
+  .mock-exam-start-card,
+  .mock-exam-section,
+  .result-card { width: calc(100vw - 450px); }
+  .mock-question-nav {
+    right: 32px;
+    width: 340px;
+    padding: 24px 20px;
+  }
+  .mock-question-nav nav { grid-template-columns: repeat(6, 40px); gap: 9px; }
+  .mock-question-nav-item { width: 40px; height: 40px; }
+  .quiz-card h4 { font-size: 24px; }
+}
+
+/* Keep submit CTA visible inside fixed question navigator */
+.mock-question-nav-submit {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 -12px 18px rgba(248, 250, 252, .92);
+}
+.mock-question-nav-submit:hover {
+  background: #fff5f5;
+}
