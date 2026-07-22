@@ -53,6 +53,17 @@ function assertValidBody(body: MockExamAttemptInput) {
   if (!Array.isArray(body.section_results) || body.section_results.length === 0) throw new Error("invalid section results");
 }
 
+function errorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object") {
+    const maybeError = error as { message?: unknown; error_description?: unknown; details?: unknown; hint?: unknown };
+    for (const value of [maybeError.message, maybeError.error_description, maybeError.details, maybeError.hint]) {
+      if (typeof value === "string" && value.trim()) return value;
+    }
+  }
+  return fallback;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as MockExamAttemptInput;
@@ -101,7 +112,7 @@ export async function POST(request: NextRequest) {
       time_limit_minutes: Math.round(body.time_limit_minutes / body.section_results.length),
     }));
     const { error: sectionError } = await client.from("mock_exam_sections").upsert(sections, {
-      onConflict: "mock_exam_set_id,section_key",
+      onConflict: "mock_exam_set_id,sort_order",
     });
     if (sectionError) throw sectionError;
 
@@ -167,7 +178,7 @@ export async function POST(request: NextRequest) {
       submitted_at: attempt.submitted_at,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "failed to save mock exam attempt";
+    const message = errorMessage(error, "failed to save mock exam attempt");
     const status = message.includes("login required") ? 401 : message.includes("invalid") ? 400 : 500;
     return NextResponse.json({ error: message }, { status });
   }
@@ -210,7 +221,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ attempts: attempts ?? [], total_questions: totalQuestions, average_rate: averageRate });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "failed to load mock exam attempts";
+    const message = errorMessage(error, "failed to load mock exam attempts");
     const status = message.includes("login required") ? 401 : 500;
     return NextResponse.json({ error: message }, { status });
   }

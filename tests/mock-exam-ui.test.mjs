@@ -107,6 +107,8 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "mock_exam_section_results",
     "deterministicUuid",
     "auth.getUser",
+    "onConflict: \"mock_exam_set_id,sort_order\"",
+    "errorMessage",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
