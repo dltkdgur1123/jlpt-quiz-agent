@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LevelSwitch } from "@/components/home/LevelSwitch";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const levels = [
@@ -82,7 +83,6 @@ async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
 }
 
 export default async function Home() {
-  const selectedLevel = levels[0];
   const latestShorts = await getLatestHyokuShorts();
 
   return (
@@ -100,46 +100,7 @@ export default async function Home() {
 
             <div className="home-redesign-divider" aria-hidden="true" />
 
-            <section className="home-start-console" aria-labelledby="level-title">
-              <h2 id="level-title">JLPT 레벨 선택</h2>
-              <div className="home-level-segment" role="list" aria-label="JLPT 레벨 선택">
-                {levels.map((item) => (
-                  <Link
-                    aria-current={item.level === selectedLevel.level ? "page" : undefined}
-                    className="home-level-segment-item"
-                    href={item.href}
-                    key={item.level}
-                    role="listitem"
-                  >
-                    <strong>{item.level}</strong>
-                    <span>{item.title}</span>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="home-exam-summary" aria-label="선택한 모의고사 요약">
-                <dl>
-                  <div>
-                    <dt>선택 레벨</dt>
-                    <dd>{selectedLevel.level} · {selectedLevel.title}</dd>
-                  </div>
-                  <div>
-                    <dt>구성</dt>
-                    <dd>문자·어휘 / 문법 / 독해</dd>
-                  </div>
-                  <div>
-                    <dt>예상 소요</dt>
-                    <dd>{selectedLevel.time}</dd>
-                  </div>
-                </dl>
-                <p>{selectedLevel.description}</p>
-              </div>
-
-              <Link className="home-start-button" href={selectedLevel.href}>
-                <span>{selectedLevel.level} 모의고사 시작</span>
-                <b aria-hidden="true">→</b>
-              </Link>
-            </section>
+            <LevelSwitch levels={levels} />
 
             <Link className="home-recent-line" href="/dashboard">
               <span aria-hidden="true">◷</span>

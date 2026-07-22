@@ -14,9 +14,10 @@ const mockExamAttemptRoute = () =>
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
+const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
 
 test("home page uses premium start cockpit and keeps learning/Shorts entries", () => {
-  const source = homePage();
+  const source = `${homePage()}\n${levelSwitch()}`;
   const headerSource = siteHeader();
   for (const phrase of [
     "SiteHeader",
@@ -34,7 +35,8 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "i.ytimg.com/vi",
     "home-page-frame",
     "home-redesign-panel",
-    "home-level-segment",
+    "LevelSwitch",
+    "home-level-switch",
     "home-progress-grid",
     "home-shorts-grid-section",
   ]) {
@@ -51,6 +53,10 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     assert.ok(headerSource.includes(phrase), phrase);
   }
   assert.ok(readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8").includes("home-login-button"));
+  const levelSwitchSource = readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
+  for (const phrase of ["use client", "useState", "home-level-switch-indicator", "aria-selected", "setSelectedIndex", "--active-level-index"]) {
+    assert.ok(levelSwitchSource.includes(phrase), phrase);
+  }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
   assert.match(source, /\/mock-exams\/n5-lite-002/);
 });
