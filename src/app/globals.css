@@ -2539,3 +2539,49 @@ main,
   border-color: #1d2027 !important;
   color: #1d2027 !important;
 }
+
+/* Shared fixed header: keep header position identical across page transitions */
+:root {
+  --site-header-height: 80px;
+  --site-header-top: 0px;
+  --site-header-side: 48px;
+  --site-header-width: min(1320px, calc(100vw - (var(--site-header-side) * 2)));
+  --site-content-top-offset: 116px;
+}
+.site-header {
+  position: fixed !important;
+  top: var(--site-header-top) !important;
+  left: 50% !important;
+  right: auto !important;
+  z-index: 1000 !important;
+  width: var(--site-header-width) !important;
+  height: var(--site-header-height) !important;
+  min-height: var(--site-header-height) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translateX(-50%) !important;
+  background: #fff !important;
+}
+.home-redesign-shell,
+.mock-page-shell,
+.login-page-shell,
+.figma-shell.dashboard-page {
+  padding-top: var(--site-content-top-offset) !important;
+}
+.login-page-shell {
+  min-height: calc(100vh - var(--site-content-top-offset)) !important;
+}
+@media (max-width: 1180px) {
+  :root {
+    --site-header-side: 24px;
+    --site-header-width: calc(100vw - 48px);
+  }
+}
+@media (max-width: 760px) {
+  :root {
+    --site-header-height: 64px;
+    --site-header-side: 16px;
+    --site-header-width: calc(100vw - 32px);
+    --site-content-top-offset: 88px;
+  }
+}
