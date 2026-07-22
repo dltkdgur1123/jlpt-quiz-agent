@@ -64,13 +64,14 @@ Priority order:
 2. Level selection
 3. Start mock exam CTA
 4. Recent/continue learning
-5. Shorts/content bridge as a light secondary element only if it does not create card-section clutter
+5. Shorts/content bridge as a Shorts-only level grid linked to `https://www.youtube.com/@hyokujlpt/shorts`; do not show fabricated video titles
 
 Design notes:
 
 - Do **not** use a card-section-heavy homepage.
 - Avoid multiple boxed sections stacked like generic SaaS cards.
 - Home should feel like one calm premium entry surface, not a dashboard grid.
+- Below the main start surface, prefer grid/list sections with thin dividers over rounded card containers.
 - Use the good parts of the Result concept: spacious report-like composition, restrained typography, white premium surface, subtle dividers, and calm hierarchy.
 - Level selection can be a refined segmented control, horizontal selector, or integrated exam-start panel rather than many separate cards.
 - Hero should not feel like a marketing landing page first.

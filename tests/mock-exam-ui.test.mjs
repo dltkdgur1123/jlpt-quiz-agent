@@ -26,16 +26,22 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "모의고사 시작",
     "최근 학습",
     "최근 성적",
-    "레벨별 유튜브 숏츠 업데이트",
+    "레벨별 유튜브 숏츠",
+    "https://www.youtube.com/@hyokujlpt/shorts",
+    "home-page-frame",
+    "home-ad-rail",
     "home-redesign-panel",
     "home-level-segment",
-    "home-progress-row",
-    "home-shorts-level-section",
+    "home-progress-grid",
+    "home-shorts-grid-section",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
   assert.doesNotMatch(source, /home-level-grid/);
   assert.doesNotMatch(source, /home-hero-actions/);
+  assert.doesNotMatch(source, /home-shorts-level-row/);
+  assert.doesNotMatch(source, /조사 に \/ で 구분/);
+  assert.doesNotMatch(source, /@JLPThyo_bot/);
   for (const phrase of ["HYOKU JLPT", "AuthHeaderButton"]) {
     assert.ok(headerSource.includes(phrase), phrase);
   }
