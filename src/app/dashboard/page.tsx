@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DashboardAttemptData } from "@/components/dashboard/DashboardAttemptData";
 
 const stats = [
   { label: "연속 학습", value: "12일", note: "지난주보다 +3일", tone: "blue" },
@@ -53,6 +54,8 @@ export default function DashboardPage() {
             </article>
           ))}
         </section>
+
+        <DashboardAttemptData />
 
         <section className="dashboard-grid-top">
           <article className="dashboard-panel dashboard-activity">

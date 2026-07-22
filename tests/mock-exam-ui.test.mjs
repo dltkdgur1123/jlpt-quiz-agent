@@ -7,6 +7,10 @@ const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-0
 const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
+const dashboardAttemptData = () =>
+  readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
+const mockExamAttemptRoute = () =>
+  readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 
@@ -44,6 +48,26 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "현재 취약 영역",
     "dashboard-stat-grid",
     "dashboard-goal-card",
+    "DashboardAttemptData",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+  const clientSource = dashboardAttemptData();
+  assert.match(clientSource, /\/api\/mock-exams\/attempts/);
+  assert.match(clientSource, /getSession/);
+  assert.match(clientSource, /저장된 최근 기록/);
+});
+
+test("mock exam attempt API validates login and writes attempt answer result rows", () => {
+  const source = mockExamAttemptRoute();
+  for (const phrase of [
+    "login required",
+    "mock_exam_sets",
+    "mock_exam_attempts",
+    "mock_exam_answers",
+    "mock_exam_section_results",
+    "deterministicUuid",
+    "auth.getUser",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
@@ -113,6 +137,8 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-exam-hero",
     "mock-question-nav",
     "문제 목록",
+    "모의고사 기록을 저장했습니다",
+    "/api/mock-exams/attempts",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }

@@ -515,6 +515,15 @@ dd { margin: 0; color: var(--muted); }
 .primary-action { border-radius: 15px; background: #635bff; border-color: #635bff; }
 .mock-detail-result, .mock-teacher-card, .mock-history-card, .mock-exam-feedback-summary { border-color: #eceef5; border-radius: 24px; box-shadow: 0 12px 30px rgba(28,34,58,.04); }
 .mock-detail-scorebox { background: #fff2f3; border-radius: 22px; }
+.mock-save-status { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: #eff6ff; color: #1d4ed8; font-weight: 900; }
+.mock-save-status[data-status="saved"] { background: #ecfdf5; color: #047857; }
+.mock-save-status[data-status="login_required"] { background: #fff7ed; color: #c2410c; }
+.mock-save-status[data-status="error"] { background: #fef2f2; color: #b91c1c; }
+.dashboard-live-note, .dashboard-live-data { margin: 0; padding: 18px 22px; border: 1px solid #eceef5; border-radius: 22px; background: #fff; color: #73798a; font-weight: 900; box-shadow: 0 16px 38px rgba(28,34,58,.05); }
+.dashboard-live-data { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.dashboard-live-data p { margin: 0; color: #73798a; }
+.dashboard-live-data strong { font-size: 1.45rem; color: #151827; }
+.dashboard-live-data span { color: #635bff; font-weight: 900; }
 .mock-radar-card { border-radius: 18px; background: #f7f8fc; }
 
 @media (min-width: 760px) {

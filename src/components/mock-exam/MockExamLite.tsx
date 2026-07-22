@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { mergeRecentQuestionHistory, recentQuestionIdSet } from "@/lib/mock-exam/recent-history";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 type FeedbackValue = "yes" | "no" | "unknown";
@@ -269,6 +270,8 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
   const [recentQuestionCount, setRecentQuestionCount] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
@@ -364,9 +367,71 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     unknown: Object.values(seenFeedbacks).filter((feedback) => feedback === "unknown").length,
   };
 
-  function submitMockExam() {
+  async function submitMockExam() {
     setSubmitted(true);
+    setSaveStatus("saving");
+    setSaveMessage("로그인 상태를 확인하고 모의고사 기록을 저장하는 중입니다.");
     setRecentQuestionCount(writeRecentQuestionHistory(artifact.questions.map((question) => question.id)));
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+
+      if (!accessToken) {
+        setSaveStatus("login_required");
+        setSaveMessage("로그인하면 이 모의고사 결과가 대시보드에 저장됩니다.");
+        return;
+      }
+
+      const answerRows = artifact.questions.map((question) => {
+        const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+        const selectedChoice = selectedAnswers[question.id] ?? null;
+        return {
+          question_id: question.id,
+          section_key: question.section_key,
+          selected_choice: selectedChoice,
+          is_correct: selectedChoice === renderedCorrectChoice(question, renderedChoices),
+        };
+      });
+
+      const response = await fetch("/api/mock-exams/attempts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          set_code: artifact.set.set_code,
+          set_title: artifact.set.set_title,
+          jlpt_level: artifact.set.jlpt_level,
+          time_limit_minutes: artifact.set.time_limit_minutes,
+          question_count: artifact.set.question_count,
+          score_total: totalMockScore,
+          score_max: MOCK_TOTAL_SCORE,
+          correct_count: score,
+          elapsed_seconds: null,
+          answers: answerRows,
+          section_results: sectionResults.map((section) => ({
+            section_key: section.section_key,
+            correct: section.correct,
+            question_count: section.question_count,
+            rate: section.rate,
+          })),
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error ?? "failed to save mock exam attempt");
+      }
+
+      setSaveStatus("saved");
+      setSaveMessage("모의고사 기록을 저장했습니다. 대시보드에서 최근 성적을 확인할 수 있습니다.");
+    } catch (error) {
+      setSaveStatus("error");
+      setSaveMessage(error instanceof Error ? error.message : "모의고사 기록 저장에 실패했습니다.");
+    }
   }
 
   return (
@@ -511,6 +576,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <h2>
               {score} / {artifact.set.question_count}
             </h2>
+            {saveMessage ? <p className="mock-save-status" data-status={saveStatus}>{saveMessage}</p> : null}
             <div className="mock-result-certificate" data-passed={mockPassed}>
               <div className="mock-result-certificate-head">
                 <div>
