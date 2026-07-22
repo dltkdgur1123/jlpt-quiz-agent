@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type LevelOption = {
   level: string;
@@ -14,8 +14,24 @@ type LevelOption = {
 export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [isLiquidMoving, setIsLiquidMoving] = useState(false);
+  const [motionDirection, setMotionDirection] = useState<"left" | "right" | "none">("none");
   const activeIndicatorIndex = previewIndex ?? selectedIndex;
+  const previousIndicatorIndexRef = useRef(activeIndicatorIndex);
   const selectedLevel = levels[selectedIndex] ?? levels[0];
+
+  useEffect(() => {
+    const previousIndex = previousIndicatorIndexRef.current;
+    if (previousIndex === activeIndicatorIndex) return;
+
+    setMotionDirection(activeIndicatorIndex > previousIndex ? "right" : "left");
+    setIsLiquidMoving(true);
+    previousIndicatorIndexRef.current = activeIndicatorIndex;
+
+    const timer = window.setTimeout(() => setIsLiquidMoving(false), 460);
+    return () => window.clearTimeout(timer);
+  }, [activeIndicatorIndex]);
+
   const switchStyle = useMemo(
     () => ({ "--active-level-index": activeIndicatorIndex }) as React.CSSProperties,
     [activeIndicatorIndex],
@@ -30,6 +46,8 @@ export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
         onPointerLeave={() => setPreviewIndex(null)}
         role="tablist"
         aria-label="JLPT 레벨 선택"
+        data-liquid-moving={isLiquidMoving ? "true" : undefined}
+        data-motion-direction={motionDirection}
         style={switchStyle}
       >
         <span className="home-level-switch-indicator" aria-hidden="true" />
