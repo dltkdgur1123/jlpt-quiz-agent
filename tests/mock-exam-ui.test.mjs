@@ -150,4 +150,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   }
   assert.match(source, /submitted \? \(/);
   assert.match(source, /청해 없이/);
+  const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.mock-question-nav[\s\S]*position: fixed/);
+  assert.match(styles, /max-height: calc\(100dvh - 124px\)/);
 });
