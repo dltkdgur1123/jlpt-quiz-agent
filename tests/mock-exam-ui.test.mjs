@@ -92,6 +92,12 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   const source = mockExamClient();
   for (const phrase of [
     "전체 제출",
+    "시험 시작",
+    "준비가 되면 시험을 시작하세요",
+    "requestSubmitMockExam",
+    "미응답 ${unansweredCount}문항이 있습니다",
+    "mock-submit-warning",
+    "mock-question-nav-submit",
     "미응답",
     "타이머",
     "Mock Test Result",

@@ -269,6 +269,8 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
   const [recentQuestionCount, setRecentQuestionCount] = useState(0);
+  const [examStarted, setExamStarted] = useState(false);
+  const [submitWarning, setSubmitWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -367,6 +369,16 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     unknown: Object.values(seenFeedbacks).filter((feedback) => feedback === "unknown").length,
   };
 
+  function requestSubmitMockExam() {
+    if (submitted || saveStatus === "saving") return;
+    if (unansweredCount > 0 && !submitWarning) {
+      setSubmitWarning(`미응답 ${unansweredCount}문항이 있습니다. 그래도 제출하시겠습니까?`);
+      return;
+    }
+    setSubmitWarning(null);
+    void submitMockExam();
+  }
+
   async function submitMockExam() {
     setSubmitted(true);
     setSaveStatus("saving");
@@ -451,6 +463,27 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
         </div>
       </section>
 
+      {!examStarted ? (
+        <section className="mock-exam-start-card" aria-label="시험 시작 안내">
+          <div>
+            <p className="section-eyebrow">Before you start</p>
+            <h2>준비가 되면 시험을 시작하세요</h2>
+            <p>
+              시작 후에는 50문항이 시험 화면에 표시됩니다. 정답과 해설은 전체 제출 후에만 공개되고,
+              우측 문제 목록에서 답변 상태를 확인하며 원하는 문제로 이동할 수 있습니다.
+            </p>
+          </div>
+          <ul>
+            <li>청해 제외 · 문자·어휘/문법/독해</li>
+            <li>제한 시간 {artifact.set.time_limit_minutes}분</li>
+            <li>미응답 문항은 제출 전 한 번 더 확인</li>
+          </ul>
+          <button className="primary-action" onClick={() => setExamStarted(true)} type="button">
+            시험 시작
+          </button>
+        </section>
+      ) : (
+        <>
       <section className="mock-exam-sticky-status" aria-label="응시 현황">
         <div className="mock-exam-progress-copy">
           <strong>진행률 {progressPercent}%</strong>
@@ -731,8 +764,16 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           </>
         ) : (
           <>
-            <p>전체 제출 전까지 정답 여부와 한국어 해설은 숨겨집니다.</p>
-            <button className="primary-action" onClick={submitMockExam} type="button">
+            {submitWarning ? (
+              <div className="mock-submit-warning" role="alert">
+                <strong>{submitWarning}</strong>
+                <div>
+                  <button className="secondary-action" onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
+                  <button className="primary-action" onClick={requestSubmitMockExam} type="button">그래도 제출</button>
+                </div>
+              </div>
+            ) : null}
+            <button className="primary-action" onClick={requestSubmitMockExam} type="button">
               전체 제출
             </button>
           </>
@@ -755,8 +796,14 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               </a>
             ))}
           </nav>
+          <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
+            제출하기
+          </button>
+          {submitWarning ? <p className="mock-question-nav-warning">미응답 {unansweredCount}문항 확인 필요</p> : null}
         </aside>
       </div>
+        </>
+      )}
     </div>
   );
 }
