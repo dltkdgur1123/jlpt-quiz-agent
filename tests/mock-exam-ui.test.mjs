@@ -174,6 +174,12 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
     ".mock-exam-focus-panel .choice-button",
     "border-radius: 0 !important",
     "box-shadow: inset 3px 0 0 #9a8467",
+    "Common mock-exam start screen contract",
+    ".mock-exam-shell--start",
+    "width: min(636px, calc(100vw - 96px)) !important",
+    ".exam-portal-layout:has(.mock-exam-shell--start) .exam-ad-sidebar",
+    "display: none !important",
+    "height: 44px !important",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }

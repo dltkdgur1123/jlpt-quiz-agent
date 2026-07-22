@@ -473,7 +473,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   }
 
   return (
-    <div className="mock-exam-shell">
+    <div className={`mock-exam-shell ${examStarted ? "mock-exam-shell--active" : "mock-exam-shell--start"}`}>
       <section className="hero-copy mock-exam-hero">
         <p className="section-eyebrow">JLPT Mock Exam Lite</p>
         <h1>{artifact.set.set_title}</h1>
@@ -495,7 +495,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <p className="section-eyebrow">Before you start</p>
             <h2>준비가 되면 시험을 시작하세요</h2>
             <p>
-              시작 후에는 50문항이 시험 화면에 표시됩니다. 정답과 해설은 전체 제출 후에만 공개되고,
+              시작 후에는 {artifact.set.question_count}문항이 시험 화면에 표시됩니다. 정답과 해설은 전체 제출 후에만 공개되고,
               우측 문제 목록에서 답변 상태를 확인하며 원하는 문제로 이동할 수 있습니다.
             </p>
           </div>
