@@ -2306,6 +2306,12 @@ main,
   color: #5f574e;
   font-family: var(--font-sans);
 }
+.home-level-switch-item:hover:not(:disabled),
+.home-level-switch-item:focus,
+.home-level-switch-item:focus-visible {
+  border-color: transparent;
+  background: transparent;
+}
 .home-level-switch-item + .home-level-switch-item {
   border-left: 1px solid rgba(105, 94, 78, .09);
 }
