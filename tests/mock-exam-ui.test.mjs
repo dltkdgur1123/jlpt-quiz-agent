@@ -119,6 +119,21 @@ test("N5 mock exam page loads generated set artifact", () => {
   assert.match(source, /MockExamLite/);
 });
 
+test("mock exam CSS keeps current question panel paper-like rather than SaaS cards", () => {
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  for (const phrase of [
+    "real paper-like question sheet",
+    "repeating-linear-gradient",
+    ".mock-exam-focus-panel .mock-exam-problem-instruction",
+    "border-top: 2px solid #2b251f",
+    ".mock-exam-focus-panel .choice-button",
+    "border-radius: 0 !important",
+    "box-shadow: inset 3px 0 0 #2b251f",
+  ]) {
+    assert.ok(css.includes(phrase), phrase);
+  }
+});
+
 test("N5 realistic mock exam page loads generated 50-question set", () => {
   const source = realisticMockExamPage();
   assert.match(source, /n5-realistic-mock-exam-001\.json/);
