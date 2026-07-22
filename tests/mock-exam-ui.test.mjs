@@ -4,6 +4,10 @@ import test from "node:test";
 
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
 const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-002/page.tsx", import.meta.url), "utf8");
+const levelMockExamPage = (level) =>
+  readFileSync(new URL(`../src/app/mock-exams/${level.toLowerCase()}-lite-001/page.tsx`, import.meta.url), "utf8");
+const levelMockExamArtifact = (level) =>
+  JSON.parse(readFileSync(new URL(`../data/generated/${level.toLowerCase()}-mock-exam-lite-001.json`, import.meta.url), "utf8"));
 const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
@@ -72,7 +76,9 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     assert.ok(levelSwitchSource.includes(phrase), phrase);
   }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
-  assert.match(source, /\/mock-exams\/n5-lite-002/);
+  for (const route of ["n4-lite-001", "n3-lite-001", "n2-lite-001", "n1-lite-001"]) {
+    assert.match(source, new RegExp(`/mock-exams/${route}`));
+  }
 });
 
 test("dashboard page matches Figma learning dashboard sections", () => {
@@ -119,6 +125,29 @@ test("N5 mock exam page loads generated set artifact", () => {
   assert.match(source, /n5-mock-exam-lite-set-002\.json/);
   assert.match(source, /<SiteHeader active="mock"/);
   assert.match(source, /MockExamLite/);
+});
+
+test("N4 through N1 mock exam pages load real 35-question non-listening draft artifacts", () => {
+  for (const level of ["N4", "N3", "N2", "N1"]) {
+    const pageSource = levelMockExamPage(level);
+    const artifact = levelMockExamArtifact(level);
+    const lower = level.toLowerCase();
+
+    assert.match(pageSource, new RegExp(`${lower}-mock-exam-lite-001\\.json`));
+    assert.match(pageSource, /<SiteHeader active="mock"/);
+    assert.match(pageSource, /MockExamLite/);
+    assert.equal(artifact.set.set_code, `${lower}-mock-exam-lite-001`);
+    assert.equal(artifact.set.jlpt_level, level);
+    assert.equal(artifact.set.question_count, 35);
+    assert.equal(artifact.set.listening_included, false);
+    assert.deepEqual(
+      artifact.sections.map((section) => `${section.section_key}:${section.question_count}`),
+      ["vocab:15", "grammar:15", "reading:5"],
+    );
+    assert.equal(artifact.questions.length, 35);
+    assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
+    assert.equal(artifact.questions.every((question) => question.review_status === "draft"), true);
+  }
 });
 
 test("mock exam CSS keeps current question panel paper-like while aligned with home tone", () => {

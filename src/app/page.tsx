@@ -3,11 +3,11 @@ import { LevelSwitch } from "@/components/home/LevelSwitch";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const levels = [
-  { level: "N5", title: "입문", time: "45분", href: "/mock-exams/n5-realistic-001", description: "문자·어휘 중심 기초 점검" },
-  { level: "N4", title: "초급", time: "55분", href: "/mock-exams/n5-lite-002", description: "기초 문법과 독해 확장" },
-  { level: "N3", title: "중급", time: "70분", href: "/mock-exams/n5-realistic-001", description: "문법·독해 균형 점검" },
-  { level: "N2", title: "고급", time: "105분", href: "/mock-exams/n5-realistic-001", description: "실전 독해 밀도 강화" },
-  { level: "N1", title: "최상급", time: "110분", href: "/mock-exams/n5-realistic-001", description: "고난도 문맥 판단 연습" },
+  { level: "N5", title: "입문", time: "45분", href: "/mock-exams/n5-realistic-001" },
+  { level: "N4", title: "초급", time: "55분", href: "/mock-exams/n4-lite-001" },
+  { level: "N3", title: "중급", time: "70분", href: "/mock-exams/n3-lite-001" },
+  { level: "N2", title: "고급", time: "105분", href: "/mock-exams/n2-lite-001" },
+  { level: "N1", title: "최상급", time: "110분", href: "/mock-exams/n1-lite-001" },
 ];
 
 const youtubeShortsUrl = "https://www.youtube.com/@hyokujlpt/shorts";

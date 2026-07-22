@@ -8,7 +8,6 @@ type LevelOption = {
   title: string;
   time: string;
   href: string;
-  description: string;
 };
 
 export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
@@ -77,7 +76,6 @@ export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
             <dd>{selectedLevel.time}</dd>
           </div>
         </dl>
-        <p>{selectedLevel.description}</p>
       </div>
 
       <Link className="home-start-button" href={selectedLevel.href}>
