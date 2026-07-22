@@ -180,6 +180,10 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
     ".exam-portal-layout:has(.mock-exam-shell--start) .exam-ad-sidebar",
     "display: none !important",
     "height: 44px !important",
+    "Common active mock-exam contract",
+    ".mock-lite-page-stack:has(.mock-exam-shell--active)",
+    "margin-left: 0 !important",
+    "margin-right: 0 !important",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }

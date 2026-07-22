@@ -2798,3 +2798,17 @@ main,
     padding: 24px 20px !important;
   }
 }
+
+/* Common active mock-exam contract: N4~N1 must use the same exam lane as N5 */
+.mock-page-shell:has(.mock-exam-shell--active) {
+  justify-items: stretch !important;
+}
+.mock-lite-page-stack:has(.mock-exam-shell--active) {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.mock-lite-page-stack:has(.mock-exam-shell--active) .mock-exam-shell {
+  width: 100% !important;
+}
