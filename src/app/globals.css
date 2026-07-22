@@ -2341,68 +2341,11 @@ main,
   bottom: 4px;
   left: 4px;
   width: calc((100% - 8px) / 5);
-  overflow: hidden;
   border-radius: 999px;
-  background: linear-gradient(135deg, #f7efe4 0%, #ead7c2 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.78), 0 10px 22px rgba(126, 95, 63, .1);
+  background: #f2e8dc;
   transform: translateX(calc(var(--active-level-index) * 100%));
-  transition:
-    transform .42s cubic-bezier(.22, 1, .36, 1),
-    border-radius .24s ease,
-    background-color .18s ease;
-  will-change: transform, border-radius;
-}
-.home-level-switch-indicator::before,
-.home-level-switch-indicator::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  border-radius: inherit;
-}
-.home-level-switch-indicator::before {
-  inset: 0;
-  background:
-    radial-gradient(circle at 32% 24%, rgba(255,255,255,.7) 0 13%, transparent 32%),
-    linear-gradient(90deg, rgba(255,255,255,.32), transparent 42%, rgba(145, 105, 67, .08));
-  opacity: .74;
-  transition: transform .42s cubic-bezier(.22, 1, .36, 1), opacity .18s ease;
-}
-.home-level-switch-indicator::after {
-  top: 50%;
-  width: 18px;
-  height: 18px;
-  background: rgba(255,255,255,.42);
-  opacity: 0;
-  transform: translateY(-50%) scale(.68);
-}
-.home-level-switch[data-liquid-moving="true"] .home-level-switch-indicator {
-  border-radius: 58% 42% 46% 54% / 50% 56% 44% 50%;
-}
-.home-level-switch[data-liquid-moving="true"] .home-level-switch-indicator::before {
-  animation: liquid-pill-shimmer .46s cubic-bezier(.22, 1, .36, 1) both;
-}
-.home-level-switch[data-liquid-moving="true"][data-motion-direction="right"] .home-level-switch-indicator::after {
-  right: 12px;
-  animation: liquid-droplet-right .46s cubic-bezier(.22, 1, .36, 1) both;
-}
-.home-level-switch[data-liquid-moving="true"][data-motion-direction="left"] .home-level-switch-indicator::after {
-  left: 12px;
-  animation: liquid-droplet-left .46s cubic-bezier(.22, 1, .36, 1) both;
-}
-@keyframes liquid-pill-shimmer {
-  0% { transform: scaleX(.94) translateX(0); opacity: .56; }
-  45% { transform: scaleX(1.1) translateX(0); opacity: .82; }
-  100% { transform: scaleX(1) translateX(0); opacity: .74; }
-}
-@keyframes liquid-droplet-right {
-  0% { opacity: .5; transform: translate(-22px, -50%) scale(.62); }
-  55% { opacity: .44; transform: translate(4px, -50%) scale(1.02); }
-  100% { opacity: 0; transform: translate(14px, -50%) scale(.72); }
-}
-@keyframes liquid-droplet-left {
-  0% { opacity: .5; transform: translate(22px, -50%) scale(.62); }
-  55% { opacity: .44; transform: translate(-4px, -50%) scale(1.02); }
-  100% { opacity: 0; transform: translate(-14px, -50%) scale(.72); }
+  transition: transform .28s cubic-bezier(.22, 1, .36, 1), background-color .18s ease;
+  will-change: transform;
 }
 .home-level-switch-item {
   position: relative;
@@ -2463,14 +2406,11 @@ main,
 }
 @media (prefers-reduced-motion: reduce) {
   .home-level-switch-indicator,
-  .home-level-switch-indicator::before,
-  .home-level-switch-indicator::after,
   .home-level-switch-item strong,
   .home-level-switch-item span,
   .home-exam-summary,
   .home-start-button span {
     transition: none;
-    animation: none;
   }
 }
 /* Home refinement v8: ensure level switch clicks pass through moving indicator */
