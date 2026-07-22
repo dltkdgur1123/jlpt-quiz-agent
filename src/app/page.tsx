@@ -15,8 +15,28 @@ const shortsLevels = ["N1", "N2", "N3", "N4", "N5"];
 type YouTubeShort = {
   id: string;
   href: string;
+  level: string;
   thumbnail: string;
 };
+
+async function getShortLevel(id: string): Promise<string | null> {
+  try {
+    const params = new URLSearchParams({
+      format: "json",
+      url: `https://www.youtube.com/shorts/${id}`,
+    });
+    const response = await fetch(`https://www.youtube.com/oembed?${params.toString()}`, {
+      next: { revalidate: 60 * 60 },
+    });
+
+    if (!response.ok) return null;
+
+    const data = (await response.json()) as { title?: string };
+    return data.title?.match(/\bN[1-5]\b/i)?.[0].toUpperCase() ?? null;
+  } catch {
+    return null;
+  }
+}
 
 async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
   try {
@@ -34,13 +54,28 @@ async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
     const ids = Array.from(html.matchAll(/"videoId":"([A-Za-z0-9_-]{11})"/g))
       .map((match) => match[1])
       .filter((id, index, all) => all.indexOf(id) === index)
-      .slice(0, 5);
+      .slice(0, 80);
 
-    return ids.map((id) => ({
-      id,
-      href: `https://www.youtube.com/shorts/${id}`,
-      thumbnail: `https://i.ytimg.com/vi/${id}/hq720.jpg`,
-    }));
+    const shortsByLevel = new Map<string, YouTubeShort>();
+
+    for (const id of ids) {
+      if (shortsByLevel.size === shortsLevels.length) break;
+
+      const level = await getShortLevel(id);
+      if (!level || shortsByLevel.has(level)) continue;
+
+      shortsByLevel.set(level, {
+        id,
+        href: `https://www.youtube.com/shorts/${id}`,
+        level,
+        thumbnail: `https://i.ytimg.com/vi/${id}/hq720.jpg`,
+      });
+    }
+
+    return shortsLevels.flatMap((level) => {
+      const short = shortsByLevel.get(level);
+      return short ? [short] : [];
+    });
   } catch {
     return [];
   }
@@ -139,7 +174,7 @@ export default async function Home() {
             </div>
             <div className="home-shorts-grid" aria-label="최신 JLPT Shorts 썸네일">
               {(latestShorts.length ? latestShorts : shortsLevels.map(() => null)).map((short, index) => {
-                const level = shortsLevels[index] ?? `N${index + 1}`;
+                const level = short?.level ?? shortsLevels[index] ?? `N${index + 1}`;
                 const href = short?.href ?? youtubeShortsUrl;
                 return (
                   <a className="home-shorts-grid-link" href={href} key={short?.id ?? level} rel="noreferrer" target="_blank">

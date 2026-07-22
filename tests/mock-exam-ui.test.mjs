@@ -29,6 +29,8 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "최신 유튜브 Shorts",
     "https://www.youtube.com/@hyokujlpt/shorts",
     "getLatestHyokuShorts",
+    "getShortLevel",
+    "shortsByLevel",
     "i.ytimg.com/vi",
     "home-page-frame",
     "home-redesign-panel",

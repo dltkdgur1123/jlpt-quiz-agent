@@ -2266,3 +2266,11 @@ main,
     max-height: 168px;
   }
 }
+/* Home refinement v6: center ordered level Shorts */
+.home-shorts-grid {
+  justify-self: center;
+  margin-inline: auto;
+}
+.home-shorts-grid-section {
+  justify-items: stretch;
+}
