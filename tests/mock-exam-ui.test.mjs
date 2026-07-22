@@ -19,9 +19,11 @@ const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
+const homeRecentMockExam = () =>
+  readFileSync(new URL("../src/components/home/HomeRecentMockExam.tsx", import.meta.url), "utf8");
 
 test("home page uses premium start cockpit and keeps learning/Shorts entries", () => {
-  const source = `${homePage()}\n${levelSwitch()}`;
+  const source = `${homePage()}\n${levelSwitch()}\n${homeRecentMockExam()}`;
   const headerSource = siteHeader();
   for (const phrase of [
     "SiteHeader",
@@ -31,6 +33,13 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "모의고사 시작",
     "최근 모의고사",
     "최근 결과",
+    "getSession",
+    "onAuthStateChange",
+    "대시보드에서 이어서 보기",
+    "저장된 풀이 기록을 확인하세요",
+    "최근 기록 보기 →",
+    "로그인 후 이어서 풀기",
+    "로그인하면 풀이 기록이 저장됩니다",
     "레벨별 JLPT Shorts",
     "https://www.youtube.com/@hyokujlpt/shorts",
     "getLatestHyokuShorts",
@@ -49,6 +58,9 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   assert.doesNotMatch(source, /home-level-grid/);
   assert.doesNotMatch(source, /home-hero-actions/);
   assert.doesNotMatch(source, /home-shorts-level-row/);
+  assert.doesNotMatch(source, /N5 문자·어휘/);
+  assert.doesNotMatch(source, /12분 전/);
+  assert.doesNotMatch(source, /정답률 72%/);
   assert.doesNotMatch(source, /Google Ad/);
   assert.doesNotMatch(source, /home-ad-rail/);
   assert.doesNotMatch(source, /조사 に \/ で 구분/);

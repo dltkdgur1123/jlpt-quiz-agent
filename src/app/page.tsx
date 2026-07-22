@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { HomeRecentMockExamGrid, HomeRecentMockExamLine } from "@/components/home/HomeRecentMockExam";
 import { LevelSwitch } from "@/components/home/LevelSwitch";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
@@ -102,28 +102,10 @@ export default async function Home() {
 
             <LevelSwitch levels={levels} />
 
-            <Link className="home-recent-line" href="/dashboard">
-              <span aria-hidden="true">◷</span>
-              <strong>최근 모의고사 기록</strong>
-              <em>로그인 후 이어서 풀기</em>
-              <b aria-hidden="true">›</b>
-            </Link>
+            <HomeRecentMockExamLine />
           </section>
 
-          <section className="home-progress-grid" id="continue-learning" aria-label="최근 모의고사와 최근 결과">
-            <article className="home-progress-grid-item">
-              <span>최근 모의고사</span>
-              <strong>로그인하면 풀이 기록이 저장됩니다</strong>
-              <p>중단한 모의고사와 오답 복습을 이어서 볼 수 있습니다.</p>
-              <Link href="/login">로그인하고 기록 저장 →</Link>
-            </article>
-            <article className="home-progress-grid-item">
-              <span>최근 결과</span>
-              <strong>제출한 모의고사 리포트</strong>
-              <p>정답률, 미응답, 취약 유형을 학습 기록에서 확인합니다.</p>
-              <Link href="/dashboard">학습 기록 보기 →</Link>
-            </article>
-          </section>
+          <HomeRecentMockExamGrid />
 
           <section className="home-shorts-grid-section" id="recent-shorts" aria-labelledby="shorts-title">
             <div className="home-redesign-section-head">
