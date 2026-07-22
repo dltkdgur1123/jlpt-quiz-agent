@@ -104,23 +104,23 @@ export default async function Home() {
 
             <Link className="home-recent-line" href="/dashboard">
               <span aria-hidden="true">◷</span>
-              <strong>최근 학습: N5 문자·어휘</strong>
-              <em>12분 전 이어서 보기</em>
+              <strong>최근 모의고사 기록</strong>
+              <em>로그인 후 이어서 풀기</em>
               <b aria-hidden="true">›</b>
             </Link>
           </section>
 
-          <section className="home-progress-grid" id="continue-learning" aria-label="최근 학습과 최근 성적">
+          <section className="home-progress-grid" id="continue-learning" aria-label="최근 모의고사와 최근 결과">
             <article className="home-progress-grid-item">
-              <span>최근 학습</span>
-              <strong>N5 문자·어휘 · 18 / 50문항</strong>
-              <p>다음 문제부터 바로 이어서 풀 수 있습니다.</p>
-              <Link href="/mock-exams/n5-realistic-001">계속 풀기 →</Link>
+              <span>최근 모의고사</span>
+              <strong>로그인하면 풀이 기록이 저장됩니다</strong>
+              <p>중단한 모의고사와 오답 복습을 이어서 볼 수 있습니다.</p>
+              <Link href="/login">로그인하고 기록 저장 →</Link>
             </article>
             <article className="home-progress-grid-item">
-              <span>최근 성적</span>
-              <strong>정답률 72%</strong>
-              <p>문법 빈칸 문제에서 오답이 가장 많았습니다.</p>
+              <span>최근 결과</span>
+              <strong>제출한 모의고사 리포트</strong>
+              <p>정답률, 미응답, 취약 유형을 학습 기록에서 확인합니다.</p>
               <Link href="/dashboard">학습 기록 보기 →</Link>
             </article>
           </section>
