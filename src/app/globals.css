@@ -1360,12 +1360,47 @@ main:has(.mock-page-shell) {
   justify-content: center;
 }
 .mock-page-shell {
-  width: 100%;
+  width: min(1320px, 100%);
   display: grid;
-  gap: 24px;
+  gap: clamp(22px, 3vw, 36px);
 }
 .mock-page-shell .site-header {
   margin-bottom: 0;
+  color: #1d1a16;
+}
+.mock-page-shell .home-brand span {
+  display: none;
+}
+.mock-page-shell .home-brand strong {
+  font-family: var(--font-sans);
+  font-size: clamp(1.45rem, 2.2vw, 2.05rem);
+  letter-spacing: .08em;
+  font-weight: 700;
+}
+.mock-page-shell .home-nav a {
+  color: #4f4a43;
+  font-size: .98rem;
+  font-weight: 650;
+}
+.mock-page-shell .site-header .home-nav a.active {
+  color: #1f1b16;
+}
+.mock-page-shell .home-nav a.active::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: 22px;
+  border-radius: 999px;
+  background: #9a8467;
+}
+.mock-page-shell .home-login-button,
+.mock-page-shell .auth-profile-trigger {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #1f1b16;
+  font-weight: 650;
 }
 .mock-lite-page-stack {
   width: min(980px, 100%);
@@ -2362,43 +2397,45 @@ main,
 .home-level-switch-indicator {
   pointer-events: none;
 }
-/* Mock exam refinement: real paper-like question sheet */
+/* Mock exam refinement: align paper-like question sheet with Home visual tone */
 .mock-exam-focus-panel {
-  border-radius: 8px !important;
-  border-color: #d8d2c6 !important;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.88)),
-    repeating-linear-gradient(0deg, rgba(45, 35, 24, .025) 0, rgba(45, 35, 24, .025) 1px, transparent 1px, transparent 34px),
-    #fffdf7 !important;
+  border-radius: 14px !important;
+  border-color: rgba(105, 94, 78, .14) !important;
+  background: #fffdf9 !important;
+  box-shadow: none !important;
 }
 .mock-exam-focus-panel .mock-exam-question-meta {
-  border-bottom: 1px solid #d8d2c6;
+  border-bottom: 1px solid rgba(96, 82, 65, .18);
   padding-bottom: 14px;
 }
+.mock-exam-focus-panel .mock-exam-question-meta strong,
+.mock-exam-focus-panel .mock-exam-question-meta em {
+  color: #9a8467;
+}
 .mock-exam-focus-panel .mock-exam-problem-instruction {
-  border-top: 2px solid #2b251f !important;
-  border-bottom: 1px solid #2b251f !important;
+  border-top: 1px solid rgba(96, 82, 65, .28) !important;
+  border-bottom: 1px solid rgba(96, 82, 65, .18) !important;
   border-radius: 0 !important;
   background: transparent !important;
   padding: 16px 0 18px !important;
 }
 .mock-exam-focus-panel .mock-exam-problem-instruction .section-eyebrow {
-  color: #2b251f;
+  color: #9a8467;
   letter-spacing: .08em;
 }
 .mock-exam-focus-panel .mock-exam-problem-instruction h3 {
   margin: 8px 0 10px;
-  color: #15110c;
-  font-size: clamp(1.02rem, 1.4vw, 1.16rem);
-  font-weight: 650;
-  line-height: 1.85;
+  color: #1f1b16;
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  font-weight: 600;
+  line-height: 1.82;
 }
 .mock-exam-focus-panel .mock-exam-problem-instruction p:last-child {
-  color: #6f675d;
+  color: #6d665e;
   font-size: .9rem;
 }
 .mock-exam-focus-panel .quiz-card {
-  border-top: 1px solid #ddd6ca !important;
+  border-top: 1px solid rgba(96, 82, 65, .14) !important;
   background: transparent !important;
   padding: 30px 0 22px !important;
 }
@@ -2406,51 +2443,51 @@ main,
   margin-bottom: 16px;
 }
 .mock-exam-focus-panel .mock-current-question-head .section-eyebrow {
-  color: #2b251f;
+  color: #6d665e;
   font-size: .9rem;
   letter-spacing: .04em;
 }
 .mock-exam-focus-panel .mock-current-question-head button {
   border: 0;
   background: transparent;
-  color: #8b8174;
+  color: #9a8467;
 }
 .mock-exam-focus-panel .quiz-card h4 {
-  color: #111;
-  font-size: clamp(1.25rem, 2vw, 1.65rem) !important;
+  color: #1f1b16;
+  font-size: clamp(1.2rem, 1.9vw, 1.56rem) !important;
   font-weight: 500 !important;
-  letter-spacing: .01em;
+  letter-spacing: .005em;
   line-height: 1.9 !important;
 }
 .mock-exam-focus-panel .choice-list {
   gap: 0 !important;
   margin-top: 28px;
-  border-top: 1px solid #e1dbd0;
+  border-top: 1px solid rgba(96, 82, 65, .16);
 }
 .mock-exam-focus-panel .choice-button {
   min-height: 52px !important;
   justify-content: flex-start;
   gap: 16px;
   border: 0 !important;
-  border-bottom: 1px solid #e1dbd0 !important;
+  border-bottom: 1px solid rgba(96, 82, 65, .16) !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: #15110c;
+  color: #1f1b16;
   padding: 12px 6px !important;
   text-align: left;
   font-size: 1rem;
 }
 .mock-exam-focus-panel .choice-button:hover:not(:disabled),
 .mock-exam-focus-panel .choice-button:focus-visible {
-  background: rgba(242, 232, 220, .42) !important;
+  background: rgba(242, 232, 220, .35) !important;
 }
 .mock-exam-focus-panel .choice-button[data-selected="true"] {
-  background: rgba(242, 232, 220, .7) !important;
-  box-shadow: inset 3px 0 0 #2b251f;
+  background: rgba(242, 232, 220, .58) !important;
+  box-shadow: inset 3px 0 0 #9a8467;
 }
 .mock-exam-focus-panel .choice-button span {
   min-width: 2.3em !important;
-  color: #15110c !important;
+  color: #1f1b16 !important;
   font-weight: 650 !important;
   text-align: right;
 }

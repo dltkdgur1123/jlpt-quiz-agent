@@ -119,16 +119,18 @@ test("N5 mock exam page loads generated set artifact", () => {
   assert.match(source, /MockExamLite/);
 });
 
-test("mock exam CSS keeps current question panel paper-like rather than SaaS cards", () => {
+test("mock exam CSS keeps current question panel paper-like while aligned with home tone", () => {
   const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   for (const phrase of [
-    "real paper-like question sheet",
-    "repeating-linear-gradient",
+    "align paper-like question sheet with Home visual tone",
+    ".mock-page-shell .home-brand strong",
+    ".mock-page-shell .home-nav a.active::after",
     ".mock-exam-focus-panel .mock-exam-problem-instruction",
-    "border-top: 2px solid #2b251f",
+    "border-top: 1px solid rgba(96, 82, 65, .28)",
+    "background: #fffdf9 !important",
     ".mock-exam-focus-panel .choice-button",
     "border-radius: 0 !important",
-    "box-shadow: inset 3px 0 0 #2b251f",
+    "box-shadow: inset 3px 0 0 #9a8467",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
