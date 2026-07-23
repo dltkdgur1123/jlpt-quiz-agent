@@ -600,6 +600,10 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <li>청해 제외 · 문자·어휘/문법/독해</li>
             <li>제한 시간 {artifact.set.time_limit_minutes}분</li>
             <li>미응답 문항은 제출 전 한 번 더 확인</li>
+            <li>
+              본 모의고사는 공식 JLPT 기출문제가 아니며, JLPT 시험 형식을 참고해 제작한 학습용 연습 문제입니다.
+              결과와 점수는 학습 참고용으로 제공되며, 실제 시험의 합격 여부나 출제 가능성을 보장하지 않습니다.
+            </li>
           </ul>
           <button className="primary-action" onClick={() => setExamStarted(true)} type="button">
             시험 시작
