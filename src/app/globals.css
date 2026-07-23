@@ -4,20 +4,21 @@
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
   /* Hermes-side design token ladder: primitive → semantic → component. */
   --primitive-color-white: #ffffff;
-  --primitive-color-neutral-50: #f8fafc;
-  --primitive-color-neutral-100: #f3f4f6;
-  --primitive-color-neutral-200: #e5e7eb;
-  --primitive-color-neutral-300: #d7dce3;
-  --primitive-color-neutral-400: #aeb7c4;
-  --primitive-color-neutral-500: #6b7280;
-  --primitive-color-neutral-600: #5f6b7a;
-  --primitive-color-neutral-900: #111827;
-  --primitive-color-brand-50: #eef2ff;
-  --primitive-color-brand-500: #4f46e5;
-  --primitive-color-brand-600: #17345d;
-  --primitive-color-brand-700: #0f2747;
-  --primitive-color-success-600: #15803d;
-  --primitive-color-danger-600: #dc2626;
+  --primitive-color-neutral-50: #fafafa;
+  --primitive-color-neutral-100: #fafafa;
+  --primitive-color-neutral-200: #e5e5e5;
+  --primitive-color-neutral-300: #e5e5e5;
+  --primitive-color-neutral-400: #bdbdbd;
+  --primitive-color-neutral-500: #616161;
+  --primitive-color-neutral-600: #616161;
+  --primitive-color-neutral-900: #212121;
+  --primitive-color-brand-50: #fff5f5;
+  --primitive-color-brand-500: #d32f2f;
+  --primitive-color-brand-600: #d32f2f;
+  --primitive-color-brand-700: #b71c1c;
+  --primitive-color-success-600: #2e7d32;
+  --primitive-color-danger-600: #d32f2f;
+  --primitive-color-warning-500: #f9a825;
   --primitive-space-2: 8px;
   --primitive-space-3: 12px;
   --primitive-space-4: 16px;
@@ -48,8 +49,9 @@
   --semantic-brand-primary: var(--primitive-color-brand-600);
   --semantic-brand-ui: var(--primitive-color-brand-500);
   --semantic-brand-strong: var(--primitive-color-brand-700);
-  --semantic-brand-soft: #edf2f7;
+  --semantic-brand-soft: #ffebee;
   --semantic-success: var(--primitive-color-success-600);
+  --semantic-warning: var(--primitive-color-warning-500);
   --semantic-danger: var(--primitive-color-danger-600);
 
   --component-shell-max: 1280px;
@@ -2876,4 +2878,285 @@ main,
 }
 .mock-lite-page-stack:has(.mock-exam-shell--active) .mock-exam-shell {
   width: 100% !important;
+}
+
+/* JLPT red/white/gray theme override: #D32F2F primary, flat containers */
+:root {
+  --jlpt-primary: #d32f2f;
+  --jlpt-primary-hover: #b71c1c;
+  --jlpt-background: #fafafa;
+  --jlpt-card: #ffffff;
+  --jlpt-title: #212121;
+  --jlpt-text: #616161;
+  --jlpt-border: #e5e5e5;
+  --jlpt-success: #2e7d32;
+  --jlpt-warning: #f9a825;
+
+  --semantic-page-bg: var(--jlpt-background) !important;
+  --semantic-page-bg-soft: var(--jlpt-background) !important;
+  --semantic-surface: var(--jlpt-card) !important;
+  --semantic-surface-muted: #fff5f5 !important;
+  --semantic-text-primary: var(--jlpt-title) !important;
+  --semantic-text-muted: var(--jlpt-text) !important;
+  --semantic-text-subtle: var(--jlpt-text) !important;
+  --semantic-border-default: var(--jlpt-border) !important;
+  --semantic-border-soft: var(--jlpt-border) !important;
+  --semantic-border-strong: #bdbdbd !important;
+  --semantic-brand-primary: var(--jlpt-primary) !important;
+  --semantic-brand-ui: var(--jlpt-primary) !important;
+  --semantic-brand-strong: var(--jlpt-primary-hover) !important;
+  --semantic-brand-soft: #ffebee !important;
+  --semantic-success: var(--jlpt-success) !important;
+  --semantic-warning: var(--jlpt-warning) !important;
+  --semantic-danger: var(--jlpt-primary) !important;
+
+  --figma-bg: var(--jlpt-background) !important;
+  --figma-ink: var(--jlpt-title) !important;
+  --figma-muted: var(--jlpt-text) !important;
+  --figma-primary: var(--jlpt-primary) !important;
+  --figma-border: var(--jlpt-border) !important;
+  --background: var(--jlpt-background) !important;
+  --foreground: var(--jlpt-title) !important;
+  --muted: var(--jlpt-text) !important;
+  --card: var(--jlpt-card) !important;
+  --paper: var(--jlpt-card) !important;
+  --border: var(--jlpt-border) !important;
+  --border-strong: #bdbdbd !important;
+  --accent: var(--jlpt-primary) !important;
+  --accent-strong: var(--jlpt-primary-hover) !important;
+  --accent-soft: #ffebee !important;
+  --success: var(--jlpt-success) !important;
+  --danger: var(--jlpt-primary) !important;
+}
+body,
+main:has(.home-shell),
+.figma-main,
+main:has(.mock-exam-shell),
+.login-page-main,
+.figma-main:has(.dashboard-page) {
+  background: var(--jlpt-background) !important;
+  color: var(--jlpt-title) !important;
+}
+h1, h2, h3,
+.home-hero h1,
+.home-section-head h2,
+.dashboard-panel h2,
+.dashboard-stat-card strong,
+.dashboard-live-data strong,
+.mock-exam-start-card h2,
+.quiz-card h4,
+.mock-question-nav strong {
+  color: var(--jlpt-title) !important;
+}
+p,
+.home-hero p:not(.section-eyebrow),
+.dashboard-panel p,
+.dashboard-live-note,
+.dashboard-stat-card span,
+.dashboard-stat-card small,
+.mock-question-nav span,
+.mock-question-nav-item,
+.home-nav a,
+.site-header .home-nav a,
+.site-header .figma-nav a {
+  color: var(--jlpt-text) !important;
+}
+a,
+.back-link,
+.section-eyebrow,
+.home-section-head a,
+.panel-title-row a,
+.dashboard-live-data span,
+.site-header .home-nav a.active,
+.site-header .figma-nav a.active,
+.site-header .home-nav a:first-child.active,
+.home-nav a:first-child,
+.figma-nav a.active,
+.choice-button span,
+.review-choice-list span {
+  color: var(--jlpt-primary) !important;
+}
+.primary-link,
+.figma-primary,
+.primary-action,
+.home-start-button,
+.home-hero-actions .primary-link,
+.home-continue-panel .primary-link,
+.auth-email-submit,
+.mock-page-shell .primary-action,
+.mock-exam-shell--start .mock-exam-start-card .primary-action {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.primary-link:hover,
+.figma-primary:hover,
+.primary-action:hover:not(:disabled),
+.home-start-button:hover,
+.home-hero-actions .primary-link:hover,
+.home-continue-panel .primary-link:hover,
+.auth-email-submit:hover:not(:disabled),
+.mock-page-shell .primary-action:hover:not(:disabled),
+.mock-exam-shell--start .mock-exam-start-card .primary-action:hover:not(:disabled) {
+  background: var(--jlpt-primary-hover) !important;
+  border-color: var(--jlpt-primary-hover) !important;
+  color: #ffffff !important;
+}
+button:hover:not(:disabled),
+.home-level-card:hover,
+.home-shorts-grid-link:hover span,
+.mock-question-nav-item:hover:not([data-current="true"]),
+.auth-provider-button:hover:not(:disabled),
+.secondary-action:hover:not(:disabled),
+.secondary-link:hover {
+  border-color: var(--jlpt-primary) !important;
+}
+.home-level-card:hover,
+.auth-provider-button:hover:not(:disabled),
+.secondary-action:hover:not(:disabled),
+.secondary-link:hover {
+  background: #fff5f5 !important;
+  color: var(--jlpt-primary) !important;
+}
+.home-shorts-grid-link:hover span,
+.mock-question-nav-submit:hover:not(:disabled) {
+  background: var(--jlpt-primary-hover) !important;
+  border-color: var(--jlpt-primary-hover) !important;
+  color: #ffffff !important;
+}
+.home-brand span,
+.figma-brand span,
+.site-header .home-brand span,
+.site-header .figma-brand span,
+.auth-profile-avatar,
+.figma-nav b,
+.dashboard-bars .hot i,
+.home-wide-progress i,
+.home-week-card i::before {
+  background: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.home-hero,
+.home-redesign-panel,
+.home-week-card,
+.home-level-card,
+.home-continue-panel,
+.home-score-panel,
+.home-shorts-strip,
+.dashboard-stat-card,
+.dashboard-panel,
+.dashboard-goal-card,
+.dashboard-live-note,
+.dashboard-live-data,
+.recent-exam-row,
+.mock-exam-start-card,
+.mock-exam-sticky-status,
+.mock-question-nav,
+.mock-exam-section,
+.quiz-card,
+.result-card,
+.mock-detail-result,
+.mock-teacher-card,
+.mock-history-card,
+.mock-exam-feedback-summary,
+.auth-card,
+.auth-callback-card,
+.review-entry-card,
+.review-question-card {
+  border-color: var(--jlpt-border) !important;
+  background-color: var(--jlpt-card) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+.home-score-panel,
+.dashboard-goal-card {
+  background-color: var(--jlpt-card) !important;
+  color: var(--jlpt-title) !important;
+}
+.mock-question-nav-submit {
+  background-color: var(--jlpt-title) !important;
+  color: #ffffff !important;
+}
+.dashboard-goal-card h2,
+.dashboard-goal-card strong,
+.home-score-panel h2,
+.home-score-panel strong {
+  color: var(--jlpt-title) !important;
+}
+.mock-question-nav-submit {
+  color: #ffffff !important;
+}
+.choice-button[data-selected="true"],
+.mock-page-shell .mock-question-nav-item[data-current="true"],
+.mock-page-shell .mock-question-nav-item[data-answered="true"],
+.home-level-card[data-selected="true"],
+.home-level-tab[data-selected="true"] {
+  background: #ffebee !important;
+  border-color: var(--jlpt-primary) !important;
+  color: var(--jlpt-primary) !important;
+}
+.choice-button[data-correct="true"],
+.mock-page-shell .mock-question-nav-item[data-result="correct"],
+.recent-exam-row em[data-good="true"],
+.mock-save-status[data-status="saved"],
+.auth-status {
+  background: #e8f5e9 !important;
+  border-color: #a5d6a7 !important;
+  color: var(--jlpt-success) !important;
+}
+.choice-button[data-wrong="true"],
+.mock-page-shell .mock-question-nav-item[data-result="wrong"],
+.mock-save-status[data-status="error"] {
+  background: #ffebee !important;
+  border-color: #ef9a9a !important;
+  color: var(--jlpt-primary-hover) !important;
+}
+.mock-submit-warning,
+.mock-save-status[data-status="login_required"],
+.recent-exam-row em,
+.review-card-header span {
+  background: #fff8e1 !important;
+  border-color: #ffe082 !important;
+  color: #8a5f00 !important;
+}
+.weak-row i,
+.mock-radar-score {
+  background: var(--jlpt-warning) !important;
+  border-color: var(--jlpt-warning) !important;
+}
+.weak-blue i,
+.weak-purple i {
+  background: var(--jlpt-primary) !important;
+}
+.mock-save-status,
+.status-message,
+.auth-message,
+.review-summary-grid strong {
+  background: #fff5f5 !important;
+  color: var(--jlpt-primary) !important;
+}
+.secondary-link,
+.secondary-action {
+  border-color: var(--jlpt-primary) !important;
+  color: var(--jlpt-primary) !important;
+  box-shadow: none !important;
+}
+
+/* Red theme specificity patch: late screen-level containers stay flat */
+.mock-exam-shell--start .mock-exam-start-card,
+.mock-page-shell .mock-exam-start-card,
+.figma-shell.dashboard-page .dashboard-goal-card,
+.figma-shell.dashboard-page .home-score-panel {
+  background-color: var(--jlpt-card) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+.figma-shell.dashboard-page .dashboard-goal-card,
+.figma-shell.dashboard-page .dashboard-goal-card h2,
+.figma-shell.dashboard-page .dashboard-goal-card strong,
+.figma-shell.dashboard-page .dashboard-goal-card p,
+.figma-shell.dashboard-page .dashboard-goal-card span {
+  color: var(--jlpt-title) !important;
 }
