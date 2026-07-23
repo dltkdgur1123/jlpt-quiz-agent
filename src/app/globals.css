@@ -1737,12 +1737,44 @@ main:has(.mock-page-shell) {
   letter-spacing: -.045em;
   line-height: 1.18;
 }
+.home-dday-title {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.home-dday-title span {
+  font-size: clamp(1.28rem, 2vw, 2.05rem);
+  font-weight: 500;
+  letter-spacing: -.035em;
+}
+.home-dday-title strong {
+  color: #17130f;
+  font-size: clamp(4.4rem, 10vw, 9rem);
+  font-weight: 700;
+  letter-spacing: -.07em;
+  line-height: .92;
+}
 .home-redesign-hero p {
   margin: 22px auto 0;
   color: #6d665e;
   font-size: clamp(1rem, 1.5vw, 1.18rem);
   font-weight: 500;
   line-height: 1.75;
+}
+.home-dday-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.home-dday-meta a {
+  color: #8d6b45;
+  font-weight: 700;
+  text-decoration: none;
+}
+.home-dday-meta a:hover {
+  text-decoration: underline;
 }
 .home-redesign-divider {
   width: min(620px, 82%);

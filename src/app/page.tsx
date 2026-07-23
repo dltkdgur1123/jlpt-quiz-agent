@@ -1,6 +1,7 @@
 import { HomeRecentMockExamGrid, HomeRecentMockExamLine } from "@/components/home/HomeRecentMockExam";
 import { LevelSwitch } from "@/components/home/LevelSwitch";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { getNextJlptExam } from "@/lib/jlpt/exam-schedule";
 
 const levels = [
   { level: "N5", title: "입문", time: "45분", href: "/mock-exams/n5-realistic-001" },
@@ -84,6 +85,7 @@ async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
 
 export default async function Home() {
   const latestShorts = await getLatestHyokuShorts();
+  const nextJlptExam = getNextJlptExam();
 
   return (
     <main>
@@ -93,9 +95,15 @@ export default async function Home() {
 
           <section className="home-redesign-panel" id="home" aria-labelledby="home-title">
             <div className="home-redesign-hero">
-              <p className="home-redesign-kicker">JLPT MOCK EXAM</p>
-              <h1 id="home-title">JLPT 모의고사를<br />차분하게 시작하세요</h1>
-              <p>실전처럼 연습하고, 결과 리포트로 취약점을 확인하세요.</p>
+              <p className="home-redesign-kicker">JLPT D-DAY</p>
+              <h1 className="home-dday-title" id="home-title">
+                <span>다음 JLPT까지</span>
+                <strong>{nextJlptExam.dday === 0 ? "D-DAY" : `D-${nextJlptExam.dday}`}</strong>
+              </h1>
+              <p className="home-dday-meta">
+                <span>{nextJlptExam.label} · {nextJlptExam.displayDate} 기준</span>
+                <a href={nextJlptExam.sourceUrl} rel="noreferrer" target="_blank">공식 일정 확인</a>
+              </p>
             </div>
 
             <div className="home-redesign-divider" aria-hidden="true" />

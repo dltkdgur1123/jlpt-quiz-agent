@@ -21,14 +21,20 @@ const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHead
 const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
 const homeRecentMockExam = () =>
   readFileSync(new URL("../src/components/home/HomeRecentMockExam.tsx", import.meta.url), "utf8");
+const jlptExamSchedule = () => readFileSync(new URL("../src/lib/jlpt/exam-schedule.ts", import.meta.url), "utf8");
 
 test("home page uses premium start cockpit and keeps learning/Shorts entries", () => {
-  const source = `${homePage()}\n${levelSwitch()}\n${homeRecentMockExam()}`;
+  const source = `${homePage()}\n${levelSwitch()}\n${homeRecentMockExam()}\n${jlptExamSchedule()}`;
   const headerSource = siteHeader();
   for (const phrase of [
     "SiteHeader",
-    "JLPT 모의고사를",
-    "차분하게 시작하세요",
+    "JLPT D-DAY",
+    "다음 JLPT까지",
+    "getNextJlptExam",
+    "JLPT_EXAM_SCHEDULES",
+    "2026년 제2회 JLPT",
+    "2026-12-06",
+    "https://www.jlpt.or.kr/",
     "JLPT 레벨 선택",
     "모의고사 시작",
     "최근 모의고사 기록",
@@ -57,6 +63,7 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   assert.doesNotMatch(source, /home-level-grid/);
   assert.doesNotMatch(source, /home-hero-actions/);
   assert.doesNotMatch(source, /home-shorts-level-row/);
+  assert.doesNotMatch(source, /JLPT 모의고사를<br \/>차분하게 시작하세요/);
   assert.doesNotMatch(source, /N5 문자·어휘/);
   assert.doesNotMatch(source, /12분 전/);
   assert.doesNotMatch(source, /정답률 72%/);
