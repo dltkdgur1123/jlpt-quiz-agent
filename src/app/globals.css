@@ -2417,18 +2417,9 @@ main,
   line-height: 1;
   transition: color .18s ease, transform .18s ease;
 }
-.home-level-switch-item span {
-  color: #8a8178;
-  font-size: .72rem;
-  font-weight: 750;
-  transition: color .18s ease;
-}
 .home-level-switch-item[data-selected="true"] strong {
   color: #2b2117;
   transform: translateY(-1px);
-}
-.home-level-switch-item[data-selected="true"] span {
-  color: #5d4b39;
 }
 .home-exam-summary,
 .home-start-button span {
@@ -2447,7 +2438,6 @@ main,
 @media (prefers-reduced-motion: reduce) {
   .home-level-switch-indicator,
   .home-level-switch-item strong,
-  .home-level-switch-item span,
   .home-exam-summary,
   .home-start-button span {
     transition: none;

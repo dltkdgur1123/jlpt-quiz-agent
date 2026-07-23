@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 
 type LevelOption = {
   level: string;
-  title: string;
   time: string;
   href: string;
 };
@@ -50,7 +49,6 @@ export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
             type="button"
           >
             <strong>{item.level}</strong>
-            <span>{item.title}</span>
           </button>
         ))}
       </div>
@@ -65,7 +63,7 @@ export function LevelSwitch({ levels }: { levels: LevelOption[] }) {
         <dl>
           <div>
             <dt>선택 레벨</dt>
-            <dd>{selectedLevel.level} · {selectedLevel.title}</dd>
+            <dd>{selectedLevel.level}</dd>
           </div>
           <div>
             <dt>구성</dt>
