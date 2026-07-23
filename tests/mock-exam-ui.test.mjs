@@ -262,6 +262,8 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
     "gap: 18px",
     "border: 0 !important",
     "border-radius: 14px",
+    "mock-question-nav-progress-bar",
+    ".mock-exam-sticky-status {\n    display: none !important;",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
@@ -302,6 +304,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "미응답 ${unansweredCount}문항이 있습니다",
     "mock-submit-warning",
     "mock-question-nav-submit",
+    "mock-question-nav-head",
+    "mock-question-nav-progress-row",
+    "mock-question-nav-progress-bar",
     "미응답",
     "타이머",
     "Mock Test Result",

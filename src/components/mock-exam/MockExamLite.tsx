@@ -935,9 +935,15 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
       </section>
         </div>
         <aside className="mock-question-nav" aria-label="문제 목록">
-          <div>
+          <div className="mock-question-nav-head">
             <strong>문제 목록</strong>
-            <span>{answeredCount}/{artifact.set.question_count}</span>
+            <div className="mock-question-nav-progress-row">
+              <span>{answeredCount}/{artifact.set.question_count}</span>
+              <span>{artifact.set.time_limit_minutes}:00</span>
+            </div>
+            <div className="mock-question-nav-progress-bar" aria-hidden="true">
+              <span style={{ width: `${progressPercent}%` }} />
+            </div>
           </div>
           <div className="mock-question-nav-scroll" ref={questionNavScrollRef}>
             <nav>

@@ -3311,6 +3311,53 @@ button:hover:not(:disabled),
 }
 
 /* Mock exam restart flow: quiet button that expands in place */
+.mock-question-nav-head {
+  display: grid !important;
+  gap: 8px !important;
+  justify-content: stretch !important;
+  margin-bottom: 8px !important;
+}
+.mock-question-nav-head strong {
+  margin: 0 !important;
+}
+.mock-question-nav-progress-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+.mock-question-nav-progress-row span {
+  color: var(--jlpt-text) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  line-height: 1 !important;
+}
+.mock-question-nav-progress-bar {
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  background: #f1f1f1 !important;
+}
+.mock-question-nav-progress-bar span {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  background: #212121 !important;
+  transition: width .18s ease !important;
+}
+@media (min-width: 1181px) {
+  .mock-exam-sticky-status {
+    display: none !important;
+  }
+  .mock-exam-workspace {
+    margin-top: -24px !important;
+  }
+  .mock-question-nav {
+    top: 92px !important;
+  }
+}
+
 .mock-exam-restart-button,
 .mock-question-nav-restart-button,
 .mock-exam-restart-inline {
