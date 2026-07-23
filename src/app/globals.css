@@ -3160,3 +3160,81 @@ button:hover:not(:disabled),
 .figma-shell.dashboard-page .dashboard-goal-card span {
   color: var(--jlpt-title) !important;
 }
+
+/* Red theme interaction refinement: exam navigator is not red except actual wrong results */
+.mock-page-shell .mock-question-nav-item,
+.mock-page-shell .mock-question-nav-item[data-answered="true"] {
+  background: #ffffff !important;
+  border-color: var(--jlpt-border) !important;
+  color: var(--jlpt-text) !important;
+}
+.mock-page-shell .mock-question-nav-item[data-current="true"] {
+  background: #212121 !important;
+  border-color: #212121 !important;
+  color: #ffffff !important;
+}
+.mock-page-shell .mock-question-nav-item:hover:not([data-current="true"]):not([data-result]) {
+  background: #fafafa !important;
+  border-color: #bdbdbd !important;
+  color: var(--jlpt-title) !important;
+}
+.mock-page-shell .mock-question-nav-item[data-result="correct"] {
+  background: #e8f5e9 !important;
+  border-color: #a5d6a7 !important;
+  color: var(--jlpt-success) !important;
+}
+.mock-page-shell .mock-question-nav-item[data-result="wrong"] {
+  background: #ffebee !important;
+  border-color: #ef9a9a !important;
+  color: var(--jlpt-primary-hover) !important;
+}
+.mock-page-shell .mock-question-nav-item[data-result="blank"] {
+  background: #fafafa !important;
+  border-color: var(--jlpt-border) !important;
+  color: #9e9e9e !important;
+}
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="correct"],
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="wrong"],
+.mock-page-shell .mock-question-nav-item[data-current="true"][data-result="blank"] {
+  box-shadow: inset 0 0 0 2px #212121 !important;
+}
+
+/* Red theme level selector refinement: selected level uses primary red with white text */
+.home-level-tab {
+  color: var(--jlpt-text) !important;
+}
+.home-level-tab:hover {
+  background: #fff5f5 !important;
+  color: var(--jlpt-primary) !important;
+}
+.home-level-tab[data-selected="true"] {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+}
+.home-level-card[data-selected="true"] {
+  background: #ffffff !important;
+  border-color: var(--jlpt-primary) !important;
+  color: var(--jlpt-title) !important;
+}
+.home-level-card[data-selected="true"] strong,
+.home-level-card[data-selected="true"] p,
+.home-level-card[data-selected="true"] small {
+  color: inherit !important;
+}
+
+/* Red theme level switch actual class patch */
+.home-level-switch-item {
+  color: var(--jlpt-text) !important;
+  border-color: transparent !important;
+}
+.home-level-switch-item:hover {
+  background: #fff5f5 !important;
+  color: var(--jlpt-primary) !important;
+}
+.home-level-switch-item[data-selected="true"],
+.home-level-switch-item[aria-selected="true"] {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+}
