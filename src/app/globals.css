@@ -2602,7 +2602,12 @@ main,
   transform: translateX(-50%);
   background: #fff;
   border-bottom: 1px solid var(--jlpt-border, #e5e5e5);
+  opacity: 0;
   pointer-events: none;
+  transition: opacity .18s ease;
+}
+.site-header.is-scrolled::before {
+  opacity: 1;
 }
 .home-redesign-shell,
 .mock-page-shell,

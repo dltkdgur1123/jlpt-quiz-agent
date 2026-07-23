@@ -117,6 +117,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "Red theme level switch correction: keep animated indicator as the only selected background",
     ".home-level-switch .home-level-switch-indicator",
     ".site-header::before",
+    ".site-header.is-scrolled::before",
+    "opacity: 0",
     "width: 100vw",
     "--jlpt-primary: #d32f2f",
     "--jlpt-primary-hover: #b71c1c",

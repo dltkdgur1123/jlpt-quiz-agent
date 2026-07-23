@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { AuthHeaderButton } from "@/components/auth/AuthHeaderButton";
 
@@ -7,8 +10,17 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ active = "home" }: SiteHeaderProps) {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 8);
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrollState);
+  }, []);
+
   return (
-    <header className="home-topbar site-header">
+    <header className={`home-topbar site-header${isScrolled ? " is-scrolled" : ""}`}>
       <Link className="home-brand" href="/">
         <span aria-hidden="true" />
         <strong>HYOKU JLPT</strong>
