@@ -3238,3 +3238,33 @@ button:hover:not(:disabled),
   border-color: var(--jlpt-primary) !important;
   color: #ffffff !important;
 }
+
+/* Red theme level switch correction: keep animated indicator as the only selected background */
+.home-level-switch .home-level-switch-indicator {
+  background: var(--jlpt-primary) !important;
+}
+.home-level-switch .home-level-switch-item,
+.home-level-switch .home-level-switch-item:hover,
+.home-level-switch .home-level-switch-item:focus,
+.home-level-switch .home-level-switch-item:focus-visible,
+.home-level-switch .home-level-switch-item[data-selected="true"],
+.home-level-switch .home-level-switch-item[aria-selected="true"] {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--jlpt-text) !important;
+}
+.home-level-switch .home-level-switch-item strong {
+  color: var(--jlpt-title) !important;
+}
+.home-level-switch .home-level-switch-item[data-selected="true"] strong,
+.home-level-switch .home-level-switch-item[aria-selected="true"] strong,
+.home-level-switch .home-level-switch-item[data-previewed="true"] strong {
+  color: #ffffff !important;
+}
+.home-level-switch:has(.home-level-switch-item[data-previewed="true"]) .home-level-switch-item[data-selected="true"] strong,
+.home-level-switch:has(.home-level-switch-item[data-previewed="true"]) .home-level-switch-item[aria-selected="true"] strong {
+  color: var(--jlpt-title) !important;
+}
+.home-level-switch:has(.home-level-switch-item[data-previewed="true"]) .home-level-switch-item[data-previewed="true"] strong {
+  color: #ffffff !important;
+}

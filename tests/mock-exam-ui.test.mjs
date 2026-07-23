@@ -114,6 +114,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "Red theme interaction refinement: exam navigator is not red except actual wrong results",
     "Red theme level selector refinement: selected level uses primary red with white text",
     "Red theme level switch actual class patch",
+    "Red theme level switch correction: keep animated indicator as the only selected background",
+    ".home-level-switch .home-level-switch-indicator",
     "--jlpt-primary: #d32f2f",
     "--jlpt-primary-hover: #b71c1c",
     "--jlpt-background: #fafafa",
