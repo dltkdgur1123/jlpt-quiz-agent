@@ -2589,7 +2589,19 @@ main,
   margin: 0 !important;
   padding: 0 !important;
   transform: translateX(-50%) !important;
-  background: #fff !important;
+  background: transparent !important;
+}
+.site-header::before {
+  content: "";
+  position: fixed;
+  top: var(--site-header-top);
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: var(--site-header-height);
+  background: #fff;
+  border-bottom: 1px solid var(--jlpt-border, #e5e5e5);
+  pointer-events: none;
 }
 .home-redesign-shell,
 .mock-page-shell,
