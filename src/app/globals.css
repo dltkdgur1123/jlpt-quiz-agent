@@ -2339,9 +2339,28 @@ main,
   .home-shorts-grid-link {
     max-height: 168px;
   }
-}
-/* Home refinement v7: animated JLPT level switch */
-.home-level-switch {
+  }
+
+  /* Home Shorts spacing: match header inset and keep the lower area white */
+  .home-shorts-grid-section {
+    padding: clamp(30px, 4vw, 44px) var(--site-header-inner-x, 52px) clamp(72px, 8vw, 112px) !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+  }
+  .home-shorts-grid-section .home-redesign-section-head,
+  .home-shorts-grid-section .home-shorts-grid {
+    width: 100% !important;
+  }
+  .home-shorts-grid {
+    max-width: none !important;
+  }
+  @media (max-width: 760px) {
+    .home-shorts-grid-section {
+      padding: 30px 0 72px !important;
+    }
+  }
+  /* Home refinement v7: animated JLPT level switch */
+  .home-level-switch {
   --active-level-index: 0;
   position: relative;
   display: grid;
