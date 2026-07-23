@@ -2789,7 +2789,7 @@ main,
   width: 100% !important;
   min-height: 0 !important;
   display: grid !important;
-  gap: 16px !important;
+  gap: 18px !important;
   padding: 28px !important;
   border: 1px solid var(--figma-border) !important;
   border-radius: 22px !important;
@@ -2801,22 +2801,24 @@ main,
 }
 .mock-exam-shell--start .mock-exam-start-card ul {
   display: grid !important;
-  gap: 10px !important;
-  margin: 0 !important;
+  gap: 12px !important;
+  margin: 0 0 12px !important;
   padding: 0 !important;
   list-style: none !important;
 }
 .mock-exam-shell--start .mock-exam-start-card li {
-  min-height: 36px !important;
+  min-height: 48px !important;
   display: flex !important;
   align-items: center !important;
-  padding: 0 14px !important;
+  padding: 10px 16px !important;
   border-radius: 12px !important;
   background: #f7f8fc !important;
+  line-height: 1.55 !important;
 }
 .mock-exam-shell--start .mock-exam-start-card .primary-action {
   height: 44px !important;
   min-height: 44px !important;
+  margin-top: 4px !important;
   border-radius: 10px !important;
 }
 @media (max-width: 760px) {
