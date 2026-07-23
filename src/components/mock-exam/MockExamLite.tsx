@@ -73,6 +73,20 @@ type RenderedChoice = {
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
 const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "4" };
 const RECENT_HISTORY_STORAGE_KEY = "jlpt-mock-exam-recent-question-history";
+const IN_PROGRESS_STORAGE_KEY = "jlpt-mock-exam-in-progress";
+
+type MockExamDraft = {
+  set_code: string;
+  set_title: string;
+  jlpt_level: string;
+  question_count: number;
+  href: string;
+  attempt_seed: string;
+  selected_answers: Record<string, ChoiceKey>;
+  current_question_index: number;
+  updated_at: string;
+};
+
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
   yes: "본 적 있음",
   no: "본 적 없음",
@@ -260,6 +274,32 @@ function writeRecentQuestionHistory(questionIds: string[]) {
   return nextHistory.length;
 }
 
+function readInProgressDraft(setCode: string) {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const rawDraft = window.localStorage.getItem(IN_PROGRESS_STORAGE_KEY);
+    if (!rawDraft) return null;
+    const draft = JSON.parse(rawDraft) as Partial<MockExamDraft>;
+    if (draft.set_code !== setCode || typeof draft.attempt_seed !== "string") return null;
+    if (!draft.selected_answers || typeof draft.selected_answers !== "object") return null;
+    return draft as MockExamDraft;
+  } catch {
+    return null;
+  }
+}
+
+function writeInProgressDraft(draft: MockExamDraft) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(IN_PROGRESS_STORAGE_KEY, JSON.stringify(draft));
+}
+
+function clearInProgressDraft(setCode: string) {
+  if (typeof window === "undefined") return;
+  const draft = readInProgressDraft(setCode);
+  if (draft?.set_code === setCode) window.localStorage.removeItem(IN_PROGRESS_STORAGE_KEY);
+}
+
 export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [attemptSeed, setAttemptSeed] = useState(() => `${artifact.set.set_code}:initial`);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
@@ -274,9 +314,20 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const draft = readInProgressDraft(artifact.set.set_code);
+    if (draft) {
+      queueMicrotask(() => {
+        setAttemptSeed(draft.attempt_seed);
+        setSelectedAnswers(draft.selected_answers);
+        setCurrentQuestionIndex(Math.min(Math.max(0, draft.current_question_index ?? 0), artifact.questions.length - 1));
+        setExamStarted(true);
+      });
+      return;
+    }
+
     const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
     queueMicrotask(() => setAttemptSeed(nextAttemptSeed));
-  }, [artifact.set.set_code]);
+  }, [artifact.questions.length, artifact.set.set_code]);
 
   useEffect(() => {
     const recentIds = recentQuestionIdSet(readRecentQuestionHistory(), Date.now());
@@ -289,6 +340,21 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     const activeButton = questionNavScrollRef.current?.querySelector<HTMLButtonElement>('[data-current="true"]');
     requestAnimationFrame(() => activeButton?.scrollIntoView({ block: "center", inline: "nearest" }));
   }, [currentQuestionIndex, examStarted, submitted]);
+
+  useEffect(() => {
+    if (!examStarted || submitted) return;
+    writeInProgressDraft({
+      set_code: artifact.set.set_code,
+      set_title: artifact.set.set_title,
+      jlpt_level: artifact.set.jlpt_level,
+      question_count: artifact.set.question_count,
+      href: window.location.pathname,
+      attempt_seed: attemptSeed,
+      selected_answers: selectedAnswers,
+      current_question_index: currentQuestionIndex,
+      updated_at: new Date().toISOString(),
+    });
+  }, [artifact.set, attemptSeed, currentQuestionIndex, examStarted, selectedAnswers, submitted]);
 
   const renderedChoiceMap = useMemo(
     () =>
@@ -405,8 +471,39 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     void submitMockExam();
   }
 
+  function saveDraft(nextAnswers: Record<string, ChoiceKey>, nextQuestionIndex = currentQuestionIndex) {
+    if (submitted) return;
+    writeInProgressDraft({
+      set_code: artifact.set.set_code,
+      set_title: artifact.set.set_title,
+      jlpt_level: artifact.set.jlpt_level,
+      question_count: artifact.set.question_count,
+      href: window.location.pathname,
+      attempt_seed: attemptSeed,
+      selected_answers: nextAnswers,
+      current_question_index: nextQuestionIndex,
+      updated_at: new Date().toISOString(),
+    });
+  }
+
+  function selectAnswer(questionId: string, renderedKey: ChoiceKey) {
+    setSelectedAnswers((answers) => {
+      const nextAnswers = { ...answers, [questionId]: renderedKey };
+      saveDraft(nextAnswers);
+      return nextAnswers;
+    });
+  }
+
+  function moveQuestion(nextQuestionIndex: number) {
+    const boundedIndex = Math.min(Math.max(0, nextQuestionIndex), flattenedQuestions.length - 1);
+    const draftAnswers = readInProgressDraft(artifact.set.set_code)?.selected_answers;
+    setCurrentQuestionIndex(boundedIndex);
+    saveDraft(draftAnswers ?? selectedAnswers, boundedIndex);
+  }
+
   async function submitMockExam() {
     setSubmitted(true);
+    clearInProgressDraft(artifact.set.set_code);
     setSaveStatus("saving");
     setSaveMessage("로그인 상태를 확인하고 모의고사 기록을 저장하는 중입니다.");
     setRecentQuestionCount(writeRecentQuestionHistory(artifact.questions.map((question) => question.id)));
@@ -557,7 +654,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                         data-wrong={wrongSelected}
                         disabled={submitted}
                         key={renderedKey}
-                        onClick={() => setSelectedAnswers((answers) => ({ ...answers, [currentQuestion.question.id]: renderedKey }))}
+                        onClick={() => selectAnswer(currentQuestion.question.id, renderedKey)}
                         type="button"
                       >
                         <span>{CHOICE_NUMBERS[renderedKey]}.</span>
@@ -593,7 +690,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 <button
                   className="secondary-action"
                   disabled={currentQuestionIndex === 0}
-                  onClick={() => setCurrentQuestionIndex((index) => Math.max(0, index - 1))}
+                  onClick={() => moveQuestion(currentQuestionIndex - 1)}
                   type="button"
                 >
                   ← 이전 문제
@@ -601,7 +698,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 <button
                   className="primary-action"
                   disabled={currentQuestionIndex >= flattenedQuestions.length - 1}
-                  onClick={() => setCurrentQuestionIndex((index) => Math.min(flattenedQuestions.length - 1, index + 1))}
+                  onClick={() => moveQuestion(currentQuestionIndex + 1)}
                   type="button"
                 >
                   다음 문제 →
@@ -815,7 +912,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                     data-current={index === currentQuestionIndex}
                     data-result={resultState}
                     key={question.id}
-                    onClick={() => setCurrentQuestionIndex(index)}
+                    onClick={() => moveQuestion(index)}
                     type="button"
                   >
                     {index + 1}

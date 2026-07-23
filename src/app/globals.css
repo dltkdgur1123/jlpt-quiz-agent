@@ -1862,6 +1862,11 @@ main:has(.mock-page-shell) {
   font-size: 1.8rem;
   font-weight: 400;
 }
+.home-recent-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
 .home-recent-line {
   display: flex;
   align-items: center;
@@ -2022,6 +2027,9 @@ main:has(.mock-page-shell) {
   .home-start-button {
     min-height: 64px;
     padding: 0 20px;
+  }
+  .home-recent-actions {
+    grid-template-columns: 1fr;
   }
   .home-recent-line {
     flex-wrap: wrap;
