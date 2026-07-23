@@ -308,6 +308,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [examStarted, setExamStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [submitWarning, setSubmitWarning] = useState<string | null>(null);
+  const [restartWarning, setRestartWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -467,6 +468,43 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     void submitMockExam();
   }
 
+  function requestRestartMockExam() {
+    if (saveStatus === "saving") return;
+    setSubmitWarning(null);
+    setRestartWarning("현재 답안과 결과를 지우고 1번 문제부터 다시 시작할까요?");
+  }
+
+  function cancelRestartMockExam() {
+    setRestartWarning(null);
+  }
+
+  function confirmRestartMockExam() {
+    if (saveStatus === "saving") return;
+    const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
+    clearInProgressDraft(artifact.set.set_code);
+    setAttemptSeed(nextAttemptSeed);
+    setSelectedAnswers({});
+    setSeenFeedbacks({});
+    setCurrentQuestionIndex(0);
+    setSubmitWarning(null);
+    setRestartWarning(null);
+    setSubmitted(false);
+    setSaveStatus("idle");
+    setSaveMessage(null);
+    setExamStarted(true);
+    writeInProgressDraft({
+      set_code: artifact.set.set_code,
+      set_title: artifact.set.set_title,
+      jlpt_level: artifact.set.jlpt_level,
+      question_count: artifact.set.question_count,
+      href: window.location.pathname,
+      attempt_seed: nextAttemptSeed,
+      selected_answers: {},
+      current_question_index: 0,
+      updated_at: new Date().toISOString(),
+    });
+  }
+
   function saveDraft(nextAnswers: Record<string, ChoiceKey>, nextQuestionIndex = currentQuestionIndex) {
     if (submitted) return;
     writeInProgressDraft({
@@ -612,6 +650,9 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           <strong>진행률 {progressPercent}%</strong>
           <span>답변 {answeredCount}/{artifact.set.question_count} · 미응답 {unansweredCount}</span>
         </div>
+        <button className="mock-exam-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+          새로 시작
+        </button>
         <div className="mock-exam-progress-bar" aria-hidden="true">
           <span style={{ width: `${progressPercent}%` }} />
         </div>
@@ -870,6 +911,19 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 </div>
               </div>
             ) : null}
+            {restartWarning ? (
+              <div className="mock-submit-warning mock-restart-warning" role="alert">
+                <strong>{restartWarning}</strong>
+                <p>저장되지 않은 답안은 복구할 수 없습니다.</p>
+                <div>
+                  <button className="secondary-action" onClick={cancelRestartMockExam} type="button">취소</button>
+                  <button className="primary-action" onClick={confirmRestartMockExam} type="button">처음부터 다시</button>
+                </div>
+              </div>
+            ) : null}
+            <button className="secondary-action mock-exam-restart-inline" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+              새로 시작
+            </button>
             <button className="primary-action" onClick={requestSubmitMockExam} type="button">
               전체 제출
             </button>
@@ -921,6 +975,17 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
             </div>
           ) : null}
+          {restartWarning ? (
+            <div className="mock-question-nav-confirm mock-question-nav-restart" role="alert">
+              <strong>처음부터 다시 시작</strong>
+              <span>현재 답안이 모두 지워집니다.</span>
+              <button onClick={cancelRestartMockExam} type="button">취소</button>
+              <button onClick={confirmRestartMockExam} type="button">처음부터 다시</button>
+            </div>
+          ) : null}
+          <button className="mock-question-nav-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+            새로 시작
+          </button>
           <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
             제출하기
           </button>
