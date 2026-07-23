@@ -336,9 +336,11 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   }, [artifact.questions]);
 
   useEffect(() => {
-    if (!examStarted || submitted) return;
-    const activeButton = questionNavScrollRef.current?.querySelector<HTMLButtonElement>('[data-current="true"]');
-    requestAnimationFrame(() => activeButton?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" }));
+    if (!examStarted) return;
+    requestAnimationFrame(() => {
+      const activeButton = questionNavScrollRef.current?.querySelector<HTMLButtonElement>('[data-current="true"]');
+      activeButton?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    });
   }, [currentQuestionIndex, examStarted, submitted]);
 
   useEffect(() => {
