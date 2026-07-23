@@ -206,6 +206,9 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
     ".mock-lite-page-stack:has(.mock-exam-shell--active)",
     "margin-left: 0 !important",
     "margin-right: 0 !important",
+    "gap: 18px",
+    "border: 0 !important",
+    "border-radius: 14px",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
