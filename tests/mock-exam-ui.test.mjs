@@ -108,11 +108,14 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   for (const style of [
     "Dashboard spacing correction: make section gaps visible",
+    "Dashboard flat-container contract: no gradients or shadows on container boxes",
     ".figma-shell.dashboard-page",
     "display: grid !important",
     "gap: 38px !important",
     ".dashboard-live-note,",
     "padding: 22px 26px !important",
+    "box-shadow: none !important",
+    "background-image: none !important",
     "min-height: 92px !important",
     "border-radius: 18px !important",
   ]) {

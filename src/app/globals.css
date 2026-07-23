@@ -2601,10 +2601,21 @@ main,
   display: grid !important;
   gap: 38px !important;
 }
+/* Dashboard flat-container contract: no gradients or shadows on container boxes */
+.figma-shell.dashboard-page .dashboard-stat-card,
+.figma-shell.dashboard-page .dashboard-panel,
+.figma-shell.dashboard-page .dashboard-goal-card,
+.figma-shell.dashboard-page .dashboard-live-note,
+.figma-shell.dashboard-page .dashboard-live-data,
+.figma-shell.dashboard-page .recent-exam-row {
+  box-shadow: none !important;
+  background-image: none !important;
+}
 .dashboard-live-note,
 .dashboard-live-data {
   margin: 4px 0 !important;
   padding: 22px 26px !important;
+  box-shadow: none !important;
 }
 .dashboard-grid-top,
 .dashboard-grid-bottom {
