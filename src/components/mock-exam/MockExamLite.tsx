@@ -651,7 +651,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
           <span>답변 {answeredCount}/{artifact.set.question_count} · 미응답 {unansweredCount}</span>
         </div>
         <button className="mock-exam-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
-          새로 시작
+          ↺ 처음부터 다시
         </button>
         <div className="mock-exam-progress-bar" aria-hidden="true">
           <span style={{ width: `${progressPercent}%` }} />
@@ -911,19 +911,22 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 </div>
               </div>
             ) : null}
-            {restartWarning ? (
-              <div className="mock-submit-warning mock-restart-warning" role="alert">
-                <strong>{restartWarning}</strong>
-                <p>저장되지 않은 답안은 복구할 수 없습니다.</p>
-                <div>
-                  <button className="secondary-action" onClick={cancelRestartMockExam} type="button">취소</button>
-                  <button className="primary-action" onClick={confirmRestartMockExam} type="button">처음부터 다시</button>
+            <div className="mock-restart-slot mock-restart-slot--inline">
+              {restartWarning ? (
+                <div className="mock-restart-expanded" role="alert">
+                  <strong>처음부터 다시 시작할까요?</strong>
+                  <p>현재 답안이 모두 지워집니다.</p>
+                  <div>
+                    <button className="secondary-action" onClick={cancelRestartMockExam} type="button">취소</button>
+                    <button className="primary-action" onClick={confirmRestartMockExam} type="button">다시 시작</button>
+                  </div>
                 </div>
-              </div>
-            ) : null}
-            <button className="secondary-action mock-exam-restart-inline" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
-              새로 시작
-            </button>
+              ) : (
+                <button className="secondary-action mock-exam-restart-inline" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+                  ↺ 처음부터 다시
+                </button>
+              )}
+            </div>
             <button className="primary-action" onClick={requestSubmitMockExam} type="button">
               전체 제출
             </button>
@@ -975,17 +978,22 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
             </div>
           ) : null}
-          {restartWarning ? (
-            <div className="mock-question-nav-confirm mock-question-nav-restart" role="alert">
-              <strong>처음부터 다시 시작</strong>
-              <span>현재 답안이 모두 지워집니다.</span>
-              <button onClick={cancelRestartMockExam} type="button">취소</button>
-              <button onClick={confirmRestartMockExam} type="button">처음부터 다시</button>
-            </div>
-          ) : null}
-          <button className="mock-question-nav-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
-            새로 시작
-          </button>
+          <div className="mock-restart-slot mock-restart-slot--rail">
+            {restartWarning ? (
+              <div className="mock-restart-expanded" role="alert">
+                <strong>처음부터 다시 시작할까요?</strong>
+                <p>현재 답안이 모두 지워집니다.</p>
+                <div>
+                  <button onClick={cancelRestartMockExam} type="button">취소</button>
+                  <button onClick={confirmRestartMockExam} type="button">다시 시작</button>
+                </div>
+              </div>
+            ) : (
+              <button className="mock-question-nav-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+                ↺ 처음부터 다시
+              </button>
+            )}
+          </div>
           <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
             제출하기
           </button>

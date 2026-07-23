@@ -3310,7 +3310,7 @@ button:hover:not(:disabled),
   color: #ffffff !important;
 }
 
-/* Mock exam restart flow: safe reset during attempt/review */
+/* Mock exam restart flow: quiet button that expands in place */
 .mock-exam-restart-button,
 .mock-question-nav-restart-button,
 .mock-exam-restart-inline {
@@ -3340,29 +3340,75 @@ button:hover:not(:disabled),
   opacity: .5;
   cursor: not-allowed;
 }
-.mock-question-nav-restart-button {
+.mock-restart-slot {
   width: 100% !important;
-  margin-top: 0 !important;
+  display: grid !important;
 }
+.mock-question-nav-restart-button,
 .mock-exam-restart-inline {
   width: 100% !important;
   margin-top: 0 !important;
 }
-.mock-question-nav-restart {
-  border-color: var(--jlpt-border) !important;
+.mock-restart-expanded {
+  display: grid !important;
+  gap: 9px !important;
+  width: 100% !important;
+  padding: 14px !important;
+  border: 1px solid var(--jlpt-border) !important;
+  border-radius: 14px !important;
   background: #fafafa !important;
   color: var(--jlpt-title) !important;
+  box-shadow: none !important;
 }
-.mock-question-nav-restart span {
-  color: var(--jlpt-text) !important;
-}
-.mock-restart-warning {
-  border-color: var(--jlpt-border) !important;
-  background: #fafafa !important;
+.mock-restart-expanded strong {
   color: var(--jlpt-title) !important;
+  font-size: 15px !important;
+  font-weight: 850 !important;
+  line-height: 1.28 !important;
+  letter-spacing: -0.035em !important;
 }
-.mock-restart-warning p {
+.mock-restart-expanded p {
   margin: 0 !important;
+  color: var(--jlpt-text) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  line-height: 1.45 !important;
+}
+.mock-restart-expanded div {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+.mock-restart-expanded button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  border-radius: 11px !important;
+  border: 1px solid var(--jlpt-border) !important;
+  background: #ffffff !important;
+  color: var(--jlpt-text) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+.mock-restart-expanded button:last-child {
+  border-color: var(--jlpt-title) !important;
+  color: var(--jlpt-title) !important;
+}
+.mock-restart-expanded button:hover {
+  background: #ffffff !important;
+  border-color: #bdbdbd !important;
+  color: var(--jlpt-title) !important;
+}
+.mock-restart-expanded button:last-child:hover {
+  background: var(--jlpt-title) !important;
+  border-color: var(--jlpt-title) !important;
+  color: #ffffff !important;
 }
 @media (min-width: 760px) {
   .mock-exam-sticky-status {
