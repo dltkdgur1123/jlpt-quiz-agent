@@ -2595,6 +2595,51 @@ main,
 .figma-shell.dashboard-page {
   padding-top: var(--site-content-top-offset) !important;
 }
+
+/* Dashboard spacing correction: make section gaps visible, not just declared */
+.figma-shell.dashboard-page {
+  display: grid !important;
+  gap: 38px !important;
+}
+.dashboard-live-note,
+.dashboard-live-data {
+  margin: 4px 0 !important;
+  padding: 22px 26px !important;
+}
+.dashboard-grid-top,
+.dashboard-grid-bottom {
+  gap: 28px !important;
+}
+.dashboard-recent {
+  display: grid !important;
+  gap: 18px !important;
+}
+.dashboard-recent .panel-title-row {
+  margin-bottom: 2px !important;
+}
+.recent-exam-row {
+  min-height: 92px !important;
+  padding: 18px 16px !important;
+  border: 1px solid #eef0f6 !important;
+  border-radius: 18px !important;
+  background: #fbfcff !important;
+}
+.recent-exam-row + .recent-exam-row {
+  margin-top: 4px !important;
+}
+@media (max-width: 760px) {
+  .figma-shell.dashboard-page {
+    gap: 30px !important;
+  }
+  .dashboard-grid-top,
+  .dashboard-grid-bottom {
+    gap: 22px !important;
+  }
+  .recent-exam-row {
+    min-height: 104px !important;
+    padding: 18px !important;
+  }
+}
 .login-page-shell {
   min-height: calc(100vh - var(--site-content-top-offset)) !important;
 }

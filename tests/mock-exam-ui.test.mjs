@@ -105,6 +105,19 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
 test("dashboard page matches Figma learning dashboard sections", () => {
   const source = dashboardPage();
   assert.match(source, /<SiteHeader active="history"/);
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  for (const style of [
+    "Dashboard spacing correction: make section gaps visible",
+    ".figma-shell.dashboard-page",
+    "display: grid !important",
+    "gap: 38px !important",
+    ".dashboard-live-note,",
+    "padding: 22px 26px !important",
+    "min-height: 92px !important",
+    "border-radius: 18px !important",
+  ]) {
+    assert.ok(css.includes(style), style);
+  }
   for (const phrase of [
     "안녕하세요, 효쿠님",
     "학습 요약",
