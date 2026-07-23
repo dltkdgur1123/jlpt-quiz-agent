@@ -2595,10 +2595,11 @@ main,
   content: "";
   position: fixed;
   top: var(--site-header-top);
-  left: 0;
+  left: 50%;
   z-index: -1;
   width: 100vw;
   height: var(--site-header-height);
+  transform: translateX(-50%);
   background: #fff;
   border-bottom: 1px solid var(--jlpt-border, #e5e5e5);
   pointer-events: none;
