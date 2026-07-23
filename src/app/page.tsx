@@ -1,4 +1,4 @@
-import { HomeRecentMockExamGrid, HomeRecentMockExamLine } from "@/components/home/HomeRecentMockExam";
+import { HomeRecentMockExamGrid } from "@/components/home/HomeRecentMockExam";
 import { LevelSwitch } from "@/components/home/LevelSwitch";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getNextJlptExam } from "@/lib/jlpt/exam-schedule";
@@ -109,8 +109,6 @@ export default async function Home() {
             <div className="home-redesign-divider" aria-hidden="true" />
 
             <LevelSwitch levels={levels} />
-
-            <HomeRecentMockExamLine />
           </section>
 
           <HomeRecentMockExamGrid />

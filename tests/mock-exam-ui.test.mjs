@@ -39,7 +39,6 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     "모의고사 시작",
     "최근 모의고사 기록",
     "지난 문제 이어서 풀기",
-    "대시보드에서 보기",
     "대시보드로 이동 →",
     "IN_PROGRESS_STORAGE_KEY",
     "jlpt-mock-exam-in-progress",
@@ -62,6 +61,10 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   }
   assert.doesNotMatch(source, /home-level-grid/);
   assert.doesNotMatch(source, /home-hero-actions/);
+  assert.doesNotMatch(source, /home-recent-actions/);
+  assert.doesNotMatch(source, /home-recent-line/);
+  assert.doesNotMatch(source, /HomeRecentMockExamLine/);
+  assert.doesNotMatch(source, /최근 모의고사 빠른 이동/);
   assert.doesNotMatch(source, /home-shorts-level-row/);
   assert.doesNotMatch(source, /JLPT 모의고사를<br \/>차분하게 시작하세요/);
   assert.doesNotMatch(source, /N5 문자·어휘/);

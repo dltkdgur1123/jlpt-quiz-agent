@@ -1894,28 +1894,6 @@ main:has(.mock-page-shell) {
   font-size: 1.8rem;
   font-weight: 400;
 }
-.home-recent-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.home-recent-line {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: #564d43;
-  text-decoration: none;
-  font-size: .95rem;
-}
-.home-recent-line strong,
-.home-recent-line em {
-  font-style: normal;
-  font-weight: 650;
-}
-.home-recent-line em {
-  color: #8a8178;
-}
 .home-progress-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2059,13 +2037,6 @@ main:has(.mock-page-shell) {
   .home-start-button {
     min-height: 64px;
     padding: 0 20px;
-  }
-  .home-recent-actions {
-    grid-template-columns: 1fr;
-  }
-  .home-recent-line {
-    flex-wrap: wrap;
-    text-align: center;
   }
   .home-redesign-section-head {
     display: grid;

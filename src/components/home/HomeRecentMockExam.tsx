@@ -53,39 +53,6 @@ function readDraft() {
   }
 }
 
-export function HomeRecentMockExamLine() {
-  return (
-    <div className="home-recent-actions" aria-label="최근 모의고사 빠른 이동">
-      <Link className="home-recent-line" href="/dashboard">
-        <span aria-hidden="true">▦</span>
-        <strong>최근 모의고사 기록</strong>
-        <em>대시보드에서 보기</em>
-        <b aria-hidden="true">›</b>
-      </Link>
-      <ResumeMockExamLine />
-    </div>
-  );
-}
-
-function ResumeMockExamLine() {
-  const [draft, setDraft] = useState<MockExamDraft | null>(null);
-
-  useEffect(() => {
-    queueMicrotask(() => setDraft(readDraft()));
-  }, []);
-
-  const answeredCount = draft ? Object.keys(draft.selected_answers ?? {}).length : 0;
-
-  return (
-    <Link className="home-recent-line" href={draft?.href ?? "/mock-exams/n5-realistic-001"}>
-      <span aria-hidden="true">◷</span>
-      <strong>지난 문제 이어서 풀기</strong>
-      <em>{draft ? `${draft.jlpt_level} · ${answeredCount}/${draft.question_count} 진행 중` : "이어갈 문제가 없으면 새로 시작"}</em>
-      <b aria-hidden="true">›</b>
-    </Link>
-  );
-}
-
 export function HomeRecentMockExamGrid() {
   const authState = useHomeAuthState();
   const [draft, setDraft] = useState<MockExamDraft | null>(null);
