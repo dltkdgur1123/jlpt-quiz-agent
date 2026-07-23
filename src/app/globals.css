@@ -3309,3 +3309,29 @@ button:hover:not(:disabled),
 .home-level-switch:has(.home-level-switch-item[data-previewed="true"]) .home-level-switch-item[data-previewed="true"] strong {
   color: #ffffff !important;
 }
+
+/* Header/account menu active-state correction */
+.site-header .home-nav a,
+.site-header .figma-nav a,
+.site-header .home-nav a:first-child,
+.site-header .figma-nav a:first-child {
+  color: var(--jlpt-text) !important;
+}
+.site-header .home-nav a.active,
+.site-header .figma-nav a.active,
+.mock-page-shell .site-header .home-nav a.active,
+.home-redesign-shell .site-header .home-nav a.active,
+.figma-shell.dashboard-page .site-header .home-nav a.active {
+  color: var(--jlpt-title) !important;
+  font-weight: 650 !important;
+}
+.auth-profile-dropdown a {
+  color: var(--jlpt-text) !important;
+}
+.auth-profile-dropdown a:hover {
+  background: #fafafa !important;
+  color: var(--jlpt-title) !important;
+}
+.auth-profile-dropdown button {
+  color: var(--jlpt-primary-hover) !important;
+}
