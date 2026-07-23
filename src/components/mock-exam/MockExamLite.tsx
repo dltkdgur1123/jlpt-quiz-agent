@@ -338,7 +338,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   useEffect(() => {
     if (!examStarted || submitted) return;
     const activeButton = questionNavScrollRef.current?.querySelector<HTMLButtonElement>('[data-current="true"]');
-    requestAnimationFrame(() => activeButton?.scrollIntoView({ block: "center", inline: "nearest" }));
+    requestAnimationFrame(() => activeButton?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" }));
   }, [currentQuestionIndex, examStarted, submitted]);
 
   useEffect(() => {
@@ -448,12 +448,6 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     ? "현재 세트 기준으로는 합격권입니다. 오답 노트로 약한 영역만 정리하세요."
     : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
   const examDate = formatMockExamDate();
-
-  const feedbackSummary = {
-    yes: Object.values(seenFeedbacks).filter((feedback) => feedback === "yes").length,
-    no: Object.values(seenFeedbacks).filter((feedback) => feedback === "no").length,
-    unknown: Object.values(seenFeedbacks).filter((feedback) => feedback === "unknown").length,
-  };
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
@@ -861,13 +855,6 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               <h3>최근 출제 문항 기록</h3>
               <p>이번 세트의 {artifact.set.question_count}문항을 최근 풀이 기록에 저장했습니다.</p>
               <p>다음 랜덤 세트부터 같은 사용자에게 최근 7일 내 문항을 뒤로 미루는 회피 기준으로 사용합니다.</p>
-            </div>
-            <div className="mock-exam-feedback-summary">
-              <h3>출제 경험 체크</h3>
-              <p>
-                본 적 있음 {feedbackSummary.yes} · 본 적 없음 {feedbackSummary.no} · 모르겠음 {feedbackSummary.unknown}
-              </p>
-              <p>현재 모의고사 화면에서는 세트 내 임시 기록이며, 로그인 기반 저장/API 연결은 다음 티켓에서 반영합니다.</p>
             </div>
           </>
         ) : (

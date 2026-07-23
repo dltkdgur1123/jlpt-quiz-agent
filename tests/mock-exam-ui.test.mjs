@@ -258,9 +258,6 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "sectionResults",
     "selectedAnswers",
     "seenFeedbacks",
-    "출제 경험 체크",
-    "본 적 있음",
-    "로그인 기반 저장/API 연결은 다음 티켓",
     "問題６　次の文の ★ に入る最もよいものを、１・２・３・４から一つ選びなさい。",
     "풀이 안내:",
     "★ 자리에 들어갈 가장 알맞은 말을 고르세요.",
@@ -271,6 +268,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "currentQuestionIndex",
     "useRef",
     "scrollIntoView",
+    "behavior: \"smooth\"",
     "block: \"center\"",
     "questionNavScrollRef",
     "flattenedQuestions",
@@ -312,6 +310,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     assert.ok(source.includes(phrase), phrase);
   }
   assert.match(source, /submitted \? \(/);
+  assert.doesNotMatch(source, /feedbackSummary/);
+  assert.doesNotMatch(source, /출제 경험 체크/);
+  assert.doesNotMatch(source, /본 적 있음 \{feedbackSummary\.yes\}/);
   assert.match(source, /청해 없이/);
   const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   assert.match(styles, /\.mock-question-nav[\s\S]*position: fixed/);
