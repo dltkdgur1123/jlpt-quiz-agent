@@ -12,6 +12,7 @@ const levels = [
 ];
 
 const youtubeShortsUrl = "https://www.youtube.com/@hyokujlpt/shorts";
+const youtubeChannelHandle = "hyokujlpt";
 const shortsLevels = ["N1", "N2", "N3", "N4", "N5"];
 
 type YouTubeShort = {
@@ -21,56 +22,119 @@ type YouTubeShort = {
   thumbnail: string;
 };
 
-async function getShortLevel(id: string): Promise<string | null> {
-  try {
-    const params = new URLSearchParams({
-      format: "json",
-      url: `https://www.youtube.com/shorts/${id}`,
-    });
-    const response = await fetch(`https://www.youtube.com/oembed?${params.toString()}`, {
-      next: { revalidate: 60 * 60 },
-    });
+type YouTubeApiThumbnail = {
+  url?: string;
+};
 
-    if (!response.ok) return null;
+type YouTubeApiVideo = {
+  id: string;
+  snippet?: {
+    title?: string;
+    description?: string;
+    thumbnails?: Record<string, YouTubeApiThumbnail | undefined>;
+  };
+  contentDetails?: {
+    duration?: string;
+  };
+};
 
-    const data = (await response.json()) as { title?: string };
-    return data.title?.match(/\bN[1-5]\b/i)?.[0].toUpperCase() ?? null;
-  } catch {
-    return null;
-  }
+function getShortLevelFromText(text: string): string | null {
+  return text.match(/\bN[1-5]\b/i)?.[0].toUpperCase() ?? null;
+}
+
+function parseIsoDurationSeconds(duration?: string): number | null {
+  if (!duration) return null;
+  const match = duration.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  if (!match) return null;
+  const [, hours = "0", minutes = "0", seconds = "0"] = match;
+  return Number(hours) * 3600 + Number(minutes) * 60 + Number(seconds);
+}
+
+function getBestThumbnail(thumbnails?: Record<string, YouTubeApiThumbnail | undefined>): string | null {
+  return thumbnails?.maxres?.url ?? thumbnails?.standard?.url ?? thumbnails?.high?.url ?? thumbnails?.medium?.url ?? thumbnails?.default?.url ?? null;
+}
+
+async function getHyokuUploadsVideoIds(apiKey: string): Promise<string[]> {
+  const channelParams = new URLSearchParams({
+    key: apiKey,
+    part: "contentDetails",
+    forHandle: youtubeChannelHandle,
+  });
+  const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?${channelParams.toString()}`, {
+    next: { revalidate: 15 * 60 },
+  });
+  if (!channelResponse.ok) return [];
+
+  const channelData = (await channelResponse.json()) as {
+    items?: Array<{ contentDetails?: { relatedPlaylists?: { uploads?: string } } }>;
+  };
+  const uploadsPlaylistId = channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+  if (!uploadsPlaylistId) return [];
+
+  const playlistParams = new URLSearchParams({
+    key: apiKey,
+    part: "contentDetails",
+    playlistId: uploadsPlaylistId,
+    maxResults: "50",
+  });
+  const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?${playlistParams.toString()}`, {
+    next: { revalidate: 15 * 60 },
+  });
+  if (!playlistResponse.ok) return [];
+
+  const playlistData = (await playlistResponse.json()) as {
+    items?: Array<{ contentDetails?: { videoId?: string } }>;
+  };
+
+  return (playlistData.items ?? [])
+    .map((item) => item.contentDetails?.videoId)
+    .filter((id): id is string => Boolean(id));
 }
 
 async function getLatestHyokuShorts(): Promise<YouTubeShort[]> {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) return [];
+
   try {
-    const response = await fetch(youtubeShortsUrl, {
-      headers: {
-        "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-        "user-agent": "Mozilla/5.0 (compatible; JLPTQuizBot/1.0; +https://jlpt-quiz-agent.vercel.app)",
-      },
-      next: { revalidate: 60 * 60 },
+    const ids = await getHyokuUploadsVideoIds(apiKey);
+    if (!ids.length) return [];
+
+    const videoParams = new URLSearchParams({
+      key: apiKey,
+      part: "snippet,contentDetails",
+      id: ids.join(","),
+      maxResults: "50",
     });
+    const videoResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`, {
+      next: { revalidate: 15 * 60 },
+    });
+    if (!videoResponse.ok) return [];
 
-    if (!response.ok) return [];
-
-    const html = await response.text();
-    const ids = Array.from(html.matchAll(/"videoId":"([A-Za-z0-9_-]{11})"/g))
-      .map((match) => match[1])
-      .filter((id, index, all) => all.indexOf(id) === index)
-      .slice(0, 80);
+    const videoData = (await videoResponse.json()) as { items?: YouTubeApiVideo[] };
+    const videosById = new Map((videoData.items ?? []).map((video) => [video.id, video]));
 
     const shortsByLevel = new Map<string, YouTubeShort>();
 
     for (const id of ids) {
       if (shortsByLevel.size === shortsLevels.length) break;
 
-      const level = await getShortLevel(id);
+      const video = videosById.get(id);
+      if (!video) continue;
+
+      const durationSeconds = parseIsoDurationSeconds(video.contentDetails?.duration);
+      if (durationSeconds === null || durationSeconds > 180) continue;
+
+      const level = getShortLevelFromText(`${video.snippet?.title ?? ""} ${video.snippet?.description ?? ""}`);
       if (!level || shortsByLevel.has(level)) continue;
+
+      const thumbnail = getBestThumbnail(video.snippet?.thumbnails);
+      if (!thumbnail) continue;
 
       shortsByLevel.set(level, {
         id,
         href: `https://www.youtube.com/shorts/${id}`,
         level,
-        thumbnail: `https://i.ytimg.com/vi/${id}/hq720.jpg`,
+        thumbnail,
       });
     }
 
