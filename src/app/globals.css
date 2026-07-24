@@ -5350,18 +5350,20 @@ main:has(.home-page-frame) {
     background: #ffffff !important;
   }
   /* Mobile dashboard connected document flow: remove gray breaks between content sections */
+  /* Mobile dashboard section gaps: give every learning-record section a consistent soft break */
   /* Mobile dashboard soft dividers: keep section lines quiet and non-boxy */
   /* Mobile dashboard breathing room: connected sections keep comfortable vertical padding */
   /* Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing */
   .figma-shell.dashboard-page {
     --dashboard-mobile-divider: #f1f1f1;
+    --dashboard-mobile-section-gap: 12px;
     --dashboard-mobile-section-y: 30px;
     --dashboard-mobile-summary-y: 22px;
     --dashboard-mobile-section-bottom-room: 18px;
     width: 100% !important;
     max-width: none !important;
-    gap: 0 !important;
-    background: #ffffff !important;
+    gap: var(--dashboard-mobile-section-gap) !important;
+    background: #fafafa !important;
     padding-bottom: 24px !important;
   }
   .figma-shell.dashboard-page .dashboard-hero {
@@ -5373,11 +5375,16 @@ main:has(.home-page-frame) {
   .figma-shell.dashboard-page .dashboard-grid-bottom,
   .figma-shell.dashboard-page .dashboard-weak-full {
     width: 100% !important;
-    gap: 0 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-grid-top,
+  .figma-shell.dashboard-page .dashboard-grid-bottom,
+  .figma-shell.dashboard-page .dashboard-weak-full {
+    gap: var(--dashboard-mobile-section-gap) !important;
   }
   /* Mobile dashboard summary cards use a two-by-two grid */
   .figma-shell.dashboard-page .dashboard-stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0 !important;
     padding: 0 !important;
     border-bottom: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
   }
