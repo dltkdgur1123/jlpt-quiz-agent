@@ -277,6 +277,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?width: 100% !important;[\s\S]*?max-width: none !important/);
   assert.match(css, /Mobile dashboard summary cards use a two-by-two grid/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/);
+  assert.match(css, /Mobile dashboard connected document flow: remove gray breaks between content sections/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?gap: 0 !important;[\s\S]*?background: #ffffff !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-top,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-bottom,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-weak-full \{[\s\S]*?gap: 0 !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
