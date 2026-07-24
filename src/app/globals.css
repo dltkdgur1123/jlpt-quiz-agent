@@ -2827,6 +2827,14 @@ main,
 .dashboard-grid-bottom {
   gap: 28px !important;
 }
+/* Dashboard card column alignment: top and bottom rows share the same left/right edges */
+@media (min-width: 761px) {
+  .dashboard-grid-top,
+  .dashboard-grid-bottom {
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr) !important;
+    align-items: stretch !important;
+  }
+}
 .dashboard-recent {
   display: grid !important;
   gap: 18px !important;

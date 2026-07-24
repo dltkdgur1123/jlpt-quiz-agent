@@ -112,6 +112,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   for (const style of [
     "Dashboard spacing correction: make section gaps visible",
     "Dashboard flat-container contract: no gradients or shadows on container boxes",
+    "Dashboard card column alignment: top and bottom rows share the same left/right edges",
+    "grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr) !important",
     "JLPT red/white/gray theme override: #D32F2F primary, flat containers",
     "Red theme specificity patch: late screen-level containers stay flat",
     "Red theme interaction refinement: exam navigator is not red except actual wrong results",
