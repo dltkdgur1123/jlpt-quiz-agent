@@ -73,8 +73,9 @@ export default function DashboardPage() {
               <div className="dashboard-bars-goal" aria-hidden="true"><span>목표 {weeklyGoal}</span></div>
               {bars.map((bar, index) => (
                 <div className={index === weeklyPeakIndex ? "hot" : ""} key={days[index]}>
-                  <b>{bar}<small>문항</small></b>
-                  <i style={{ height: `${Math.max(18, Math.round((bar / weeklyMax) * 168))}px` }} />
+                  <i style={{ height: `${Math.max(56, Math.round((bar / weeklyMax) * 168))}px` }}>
+                    <b>{bar}<small>문항</small></b>
+                  </i>
                   <span>{weekLabels[index]}</span>
                 </div>
               ))}
