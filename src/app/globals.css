@@ -5341,3 +5341,47 @@ main:has(.home-page-frame) {
     margin-top: 0 !important;
   }
 }
+
+/* Mobile dashboard page should not look like narrow centered cards */
+@media (max-width: 760px) {
+  main:has(.dashboard-page) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: #ffffff !important;
+  }
+  .figma-shell.dashboard-page {
+    width: 100% !important;
+    max-width: none !important;
+    gap: 22px !important;
+    padding-bottom: 24px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-hero {
+    padding: 22px 18px 4px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-grid,
+  .figma-shell.dashboard-page .dashboard-grid-top,
+  .figma-shell.dashboard-page .dashboard-grid-bottom,
+  .figma-shell.dashboard-page .dashboard-weak-full {
+    width: 100% !important;
+    gap: 14px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-panel,
+  .figma-shell.dashboard-page .dashboard-goal-card,
+  .figma-shell.dashboard-page .dashboard-stat-card {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 22px 18px !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .figma-shell.dashboard-page .dashboard-live-note,
+  .figma-shell.dashboard-page .dashboard-live-data,
+  .figma-shell.dashboard-page .dashboard-wrong-note-card {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}

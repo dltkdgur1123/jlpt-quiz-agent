@@ -235,6 +235,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".settings-toggle-row:hover i[data-on=\"true\"]",
     "background: var(--jlpt-primary) !important",
     ".settings-toggle-row i::after",
+    "Mobile dashboard page should not look like narrow centered cards",
+    "main:has(.dashboard-page)",
+    ".figma-shell.dashboard-page",
+    ".figma-shell.dashboard-page .dashboard-panel",
+    "border-radius: 0 !important",
   ]) {
     assert.ok(css.includes(style), style);
   }
@@ -267,6 +272,10 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     assert.ok(source.includes(phrase), phrase);
   }
   const clientSource = dashboardAttemptData();
+  assert.match(css, /Mobile dashboard page should not look like narrow centered cards/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.dashboard-page\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?width: 100% !important;[\s\S]*?max-width: none !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /저장된 최근 기록/);
