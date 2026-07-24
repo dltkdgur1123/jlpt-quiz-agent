@@ -276,6 +276,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.dashboard-page\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?width: 100% !important;[\s\S]*?max-width: none !important/);
   assert.match(css, /Mobile dashboard summary cards use a two-by-two grid/);
+  assert.match(css, /Mobile dashboard summary cards remove vertical dividers for a boundaryless metric group/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/);
   assert.match(css, /Mobile dashboard connected document flow: remove gray breaks between content sections/);
   assert.match(css, /Mobile dashboard section gaps: give every learning-record section a consistent soft break/);
@@ -288,7 +289,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /--dashboard-mobile-summary-y: 22px/);
   assert.match(css, /--dashboard-mobile-divider: #f1f1f1/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-hero \{[\s\S]*?border-bottom: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
-  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(odd\) \{[\s\S]*?border-right: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
+  assert.doesNotMatch(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(odd\) \{[\s\S]*?border-right: 1px solid/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(odd\) \{[\s\S]*?border-right: 0 !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(n \+ 3\) \{[\s\S]*?border-top: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-section-y\) 18px !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-summary-y\) 14px !important/);
