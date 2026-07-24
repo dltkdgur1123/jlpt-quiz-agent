@@ -421,6 +421,22 @@ test("N5 realistic mock exam page loads generated 50-question set", () => {
   assert.match(source, /Google Ad/);
 });
 
+test("mock exam start screen is optimized for mobile before the exam begins", () => {
+  const clientSource = mockExamClient();
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+
+  assert.match(clientSource, /mock-exam-start-summary/);
+  assert.match(clientSource, /mock-exam-start-checklist/);
+  assert.match(clientSource, /시험 시작/);
+  assert.match(css, /Mobile mock exam start screen: full-width calm pre-exam briefing/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.mock-exam-shell--start\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--start \{[\s\S]*?gap: 12px !important;[\s\S]*?background: #fafafa !important/);
+  assert.match(css, /\.mock-exam-shell--start \.mock-exam-hero \{[\s\S]*?display: grid !important/);
+  assert.match(css, /\.mock-exam-shell--start \.mock-exam-status-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/);
+  assert.match(css, /\.mock-exam-start-summary \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.mock-exam-shell--start \.mock-exam-start-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
+});
+
 test("mock exam client keeps answers hidden until full submit and shows section results", () => {
   const source = mockExamClient();
   for (const phrase of [

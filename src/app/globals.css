@@ -1002,6 +1002,33 @@ main:has(.mock-exam-shell) {
   border-color: var(--figma-border);
   box-shadow: none;
 }
+.mock-exam-start-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.mock-exam-start-summary strong {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid #eef0f4;
+  border-radius: 16px;
+  background: #fbfcff;
+  color: #1f2937;
+}
+.mock-exam-start-summary span {
+  color: var(--figma-muted, #6b7280);
+  font-size: 12px;
+  font-weight: 750;
+}
+.mock-exam-start-checklist {
+  display: grid;
+  gap: 10px;
+}
+.mock-exam-start-checklist li {
+  line-height: 1.58;
+}
 .mock-exam-sticky-status {
   min-height: 76px;
   top: 0;
@@ -3609,6 +3636,102 @@ main,
 .login-page-shell,
 .figma-shell.dashboard-page {
   padding-top: var(--site-content-top-offset) !important;
+}
+
+/* Mobile mock exam start screen: full-width calm pre-exam briefing */
+@media (max-width: 760px) {
+  main:has(.mock-exam-shell--start) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fafafa !important;
+  }
+  .mock-exam-shell--start {
+    gap: 12px !important;
+    background: #fafafa !important;
+  }
+  .mock-exam-shell--start .mock-exam-hero {
+    display: grid !important;
+    gap: 18px !important;
+    margin: 0 !important;
+    padding: 26px 20px 22px !important;
+    border: 0 !important;
+    border-bottom: 1px solid #f1f1f1 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .mock-exam-shell--start .mock-exam-hero h1 {
+    font-size: 28px !important;
+    line-height: 1.18 !important;
+    word-break: keep-all !important;
+  }
+  .mock-exam-shell--start .mock-exam-hero p:not(.section-eyebrow) {
+    font-size: 15px !important;
+    line-height: 1.62 !important;
+    word-break: keep-all !important;
+  }
+  .mock-exam-shell--start .mock-exam-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    border: 1px solid #f1f1f1 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+  }
+  .mock-exam-shell--start .mock-exam-status-grid strong {
+    min-height: 74px !important;
+    padding: 14px 12px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .mock-exam-shell--start .mock-exam-start-card {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 26px 20px 28px !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+  .mock-exam-start-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 !important;
+    margin: 18px 0 20px !important;
+    border: 1px solid #f1f1f1 !important;
+    background: #fff !important;
+  }
+  .mock-exam-start-summary strong {
+    min-height: 70px !important;
+    padding: 13px 14px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+  }
+  .mock-exam-start-summary strong:nth-child(n + 3) {
+    border-top: 1px solid #f1f1f1 !important;
+  }
+  .mock-exam-start-summary span {
+    white-space: nowrap !important;
+  }
+  .mock-exam-start-checklist {
+    gap: 12px !important;
+    margin: 0 0 22px !important;
+    padding-left: 20px !important;
+  }
+  .mock-exam-start-checklist li {
+    line-height: 1.62 !important;
+    word-break: keep-all !important;
+  }
+  .mock-exam-shell--start .primary-action {
+    width: 100% !important;
+    min-height: 52px !important;
+    border-radius: 14px !important;
+  }
 }
 
 /* Dashboard spacing correction: make section gaps visible, not just declared */

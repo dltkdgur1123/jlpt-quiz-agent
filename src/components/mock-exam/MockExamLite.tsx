@@ -692,7 +692,13 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               우측 문제 목록에서 답변 상태를 확인하며 원하는 문제로 이동할 수 있습니다.
             </p>
           </div>
-          <ul>
+          <div className="mock-exam-start-summary" aria-label="시작 전 요약">
+            <strong><span>문항</span>{artifact.set.question_count}문항</strong>
+            <strong><span>시간</span>{artifact.set.time_limit_minutes}분</strong>
+            <strong><span>범위</span>청해 제외</strong>
+            <strong><span>해설</span>제출 후 공개</strong>
+          </div>
+          <ul className="mock-exam-start-checklist">
             <li>청해 제외 · 문자·어휘/문법/독해</li>
             <li>제한 시간 {artifact.set.time_limit_minutes}분</li>
             <li>미응답 문항은 제출 전 한 번 더 확인</li>
