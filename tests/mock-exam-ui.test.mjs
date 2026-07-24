@@ -306,7 +306,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-question-nav-submit",
     "mock-submit-confirm-panel",
     "아직 답하지 않은 문제가 있습니다.",
-    "실제 시험 문제처럼 느껴졌나요?",
+    "이 문제를 시험에서 본 적이 있습니까?",
     "그렇게 느껴짐",
     "그렇지 않음",
     "잘 모르겠음",

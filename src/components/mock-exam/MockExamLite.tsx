@@ -710,7 +710,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                     <p>정답: {CHOICE_NUMBERS[currentCorrectChoice]}</p>
                     <p>{currentQuestion.question.explanation}</p>
                     <div className="mock-exam-seen-feedback">
-                      <h4>실제 시험 문제처럼 느껴졌나요?</h4>
+                      <h4>이 문제를 시험에서 본 적이 있습니까?</h4>
                       <div className="feedback-buttons">
                         {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
                           <button
