@@ -73,6 +73,17 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.match(source, /출처 : JLPT 서울실시위원회 참고/);
   assert.match(source, /실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요/);
   assert.match(source, /시험 당일 준비물/);
+  assert.match(source, /"신분증, HB연필 또는 샤프,"/);
+  assert.match(source, /"지우개를 준비하세요\."/);
+  assert.match(source, /"볼펜·사인펜으로 작성한 답안지는"/);
+  assert.match(source, /"채점이 어려울 수 있습니다\."/);
+  assert.match(source, /"신분증 미지참 시 응시가 불가합니다\."/);
+  assert.match(source, /"모바일 신분증은 네트워크 문제에 대비해"/);
+  assert.match(source, /"실물 신분증 지참을 권장합니다\."/);
+  assert.match(source, /"휴대전화, 스마트워치 등"/);
+  assert.match(source, /"통신·촬영 기능이 있는"/);
+  assert.match(source, /"전자기기는 시험 중 전원이 꺼져 있어야 합니다\."/);
+  assert.match(source, /card\.body\.map/);
   assert.match(source, /규정 신분증 요약/);
   assert.match(source, /부정행위로 처리될 수 있는 경우/);
   assert.match(source, /성적·주소 관련 유의사항/);

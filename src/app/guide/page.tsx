@@ -6,17 +6,30 @@ const guideCards = [
   {
     no: "01",
     title: "시험 당일 준비물",
-    body: "신분증, HB연필 또는 샤프, 지우개를 준비하세요. 볼펜·사인펜으로 작성한 답안지는 채점이 어려울 수 있습니다.",
+    body: [
+      "신분증, HB연필 또는 샤프,",
+      "지우개를 준비하세요.",
+      "볼펜·사인펜으로 작성한 답안지는",
+      "채점이 어려울 수 있습니다.",
+    ],
   },
   {
     no: "02",
     title: "규정 신분증 확인",
-    body: "신분증 미지참 시 응시가 불가합니다. 모바일 신분증은 네트워크 문제에 대비해 실물 신분증 지참을 권장합니다.",
+    body: [
+      "신분증 미지참 시 응시가 불가합니다.",
+      "모바일 신분증은 네트워크 문제에 대비해",
+      "실물 신분증 지참을 권장합니다.",
+    ],
   },
   {
     no: "03",
     title: "전자기기 전원 차단",
-    body: "휴대전화, 스마트워치 등 통신·촬영 기능이 있는 전자기기는 시험 중 전원이 꺼져 있어야 합니다.",
+    body: [
+      "휴대전화, 스마트워치 등",
+      "통신·촬영 기능이 있는",
+      "전자기기는 시험 중 전원이 꺼져 있어야 합니다.",
+    ],
   },
 ];
 
@@ -62,7 +75,11 @@ export default function GuidePage() {
             <article className="dashboard-panel guide-panel" key={card.no}>
               <span>{card.no}</span>
               <h2>{card.title}</h2>
-              <p>{card.body}</p>
+              <p>
+                {card.body.map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </p>
             </article>
           ))}
         </section>
