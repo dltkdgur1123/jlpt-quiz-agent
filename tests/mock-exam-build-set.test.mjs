@@ -157,3 +157,46 @@ test("realistic N5 mock exam 001 has 50 non-listening questions", () => {
   assert.equal(artifact.questions.filter((question) => question.section_key === "reading").length, 10);
   assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
 });
+
+test("realistic N5 mock exam 002 has production-ready draft composition", () => {
+  const artifact = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-002.json", import.meta.url), "utf8"),
+  );
+  const preAnswerFields = ["question_text", "choice_a", "choice_b", "choice_c", "choice_d"];
+  const hasKorean = /[가-힣]/;
+
+  assert.equal(artifact.set.set_code, "n5-realistic-mock-exam-002");
+  assert.equal(artifact.set.question_count, 50);
+  assert.equal(artifact.set.listening_included, false);
+  assert.deepEqual(
+    artifact.sections.map((section) => `${section.section_key}:${section.question_count}`),
+    ["vocab:20", "grammar:20", "reading:10"],
+  );
+  assert.deepEqual(
+    Object.fromEntries(["vocab", "grammar", "reading"].map((section) => [
+      section,
+      artifact.questions.filter((question) => question.section_key === section).length,
+    ])),
+    { vocab: 20, grammar: 20, reading: 10 },
+  );
+  assert.equal(new Set(artifact.questions.map((question) => question.question_text)).size, artifact.questions.length);
+  assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
+  assert.equal(
+    artifact.questions.some((question) => preAnswerFields.some((field) => hasKorean.test(String(question[field] ?? "")))),
+    false,
+  );
+  for (const questionType of [
+    "vocab_reading",
+    "vocab_orthography",
+    "vocab_context_blank",
+    "vocab_paraphrase",
+    "grammar_sentence_blank",
+    "grammar_sentence_build",
+    "grammar_text_blank",
+    "reading_short",
+    "reading_medium",
+    "reading_info",
+  ]) {
+    assert.ok(artifact.questions.some((question) => question.question_type === questionType), `${questionType} missing`);
+  }
+});

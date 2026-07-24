@@ -10,6 +10,8 @@ const levelMockExamArtifact = (level) =>
   JSON.parse(readFileSync(new URL(`../data/generated/${level.toLowerCase()}-mock-exam-lite-001.json`, import.meta.url), "utf8"));
 const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
+const realisticMockExam002Page = () =>
+  readFileSync(new URL("../src/app/mock-exams/n5-realistic-002/page.tsx", import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
 const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
@@ -413,12 +415,17 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
 
 test("N5 realistic mock exam page loads generated 50-question set", () => {
   const source = realisticMockExamPage();
+  const source002 = realisticMockExam002Page();
   assert.match(source, /n5-realistic-mock-exam-001\.json/);
   assert.match(source, /<SiteHeader active="mock"/);
   assert.match(source, /MockExamLite/);
   assert.match(source, /exam-portal-layout/);
   assert.match(source, /exam-ad-sidebar/);
   assert.match(source, /Google Ad/);
+  assert.match(source002, /n5-realistic-mock-exam-002\.json/);
+  assert.match(source002, /<SiteHeader active="mock"/);
+  assert.match(source002, /MockExamLite/);
+  assert.match(source002, /exam-portal-layout/);
 });
 
 test("mock exam start screen is optimized for mobile before the exam begins", () => {
