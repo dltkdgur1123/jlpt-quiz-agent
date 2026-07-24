@@ -5354,6 +5354,7 @@ main:has(.home-page-frame) {
   /* Mobile dashboard soft dividers: keep section lines quiet and non-boxy */
   /* Mobile dashboard breathing room: connected sections keep comfortable vertical padding */
   /* Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing */
+  /* Mobile dashboard weak area cards: stack as readable full-width rows on phones */
   .figma-shell.dashboard-page {
     --dashboard-mobile-divider: #f1f1f1;
     --dashboard-mobile-section-gap: 12px;
@@ -5447,5 +5448,42 @@ main:has(.home-page-frame) {
   }
   .figma-shell.dashboard-page .dashboard-stat-card:nth-child(n + 3) {
     border-top: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px 16px !important;
+    min-height: 0 !important;
+    padding: 16px 18px !important;
+    border-radius: 16px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row p {
+    grid-column: 1 / 2 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row p b {
+    font-size: 1rem !important;
+    letter-spacing: -0.04em !important;
+    white-space: nowrap !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row p strong {
+    font-size: 1.08rem !important;
+    white-space: nowrap !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row div {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-grid .weak-row span {
+    grid-column: 1 / -1 !important;
+    margin-top: 0 !important;
+    line-height: 1.45 !important;
   }
 }

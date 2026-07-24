@@ -283,6 +283,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /Mobile dashboard soft dividers: keep section lines quiet and non-boxy/);
   assert.match(css, /Mobile dashboard breathing room: connected sections keep comfortable vertical padding/);
   assert.match(css, /Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing/);
+  assert.match(css, /Mobile dashboard weak area cards: stack as readable full-width rows on phones/);
   assert.match(css, /--dashboard-mobile-section-gap: 12px/);
   assert.match(css, /--dashboard-mobile-section-bottom-room: 18px/);
   assert.match(css, /--dashboard-mobile-section-y: 30px/);
@@ -299,7 +300,10 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?gap: var\(--dashboard-mobile-section-gap\) !important;[\s\S]*?background: #fafafa !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-top,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-bottom,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-weak-full \{[\s\S]*?gap: var\(--dashboard-mobile-section-gap\) !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important;[\s\S]*?gap: 0 !important/);
-  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-grid \{[\s\S]*?grid-template-columns: 1fr !important;[\s\S]*?gap: 12px !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-grid \.weak-row \{[\s\S]*?display: grid !important;[\s\S]*?grid-template-columns: minmax\(0, 1fr\) auto/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-grid \.weak-row p \{[\s\S]*?white-space: nowrap !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /저장된 최근 기록/);
