@@ -94,15 +94,15 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.doesNotMatch(source, /window\.location\.href\.includes/);
 });
 
-test("auth callback keeps tokens scrubbed and exposes a safe return link", () => {
+test("auth callback skips the success screen and auto-redirects after session handling", () => {
   const source = callbackPage();
   assert.match(source, /safeNextPath/);
-  assert.match(source, /nextPath/);
   assert.match(source, /URLSearchParams\(window\.location\.search\)/);
   assert.match(source, /replaceState/);
-  assert.match(source, /href=\{nextPath\}/);
-  assert.match(source, /이전 화면으로 이동/);
-  assert.doesNotMatch(source, /window\.location\.assign/);
+  assert.match(source, /window\.location\.replace\(next\)/);
+  assert.match(source, /로그인 처리 중/);
+  assert.doesNotMatch(source, /로그인 완료/);
+  assert.doesNotMatch(source, /href=\{nextPath\}/);
 });
 
 test("login page is a centered auth-only screen and headers are shared", () => {

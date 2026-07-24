@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-type CallbackStatus = "loading" | "success" | "error";
+type CallbackStatus = "loading" | "error";
 
 function cleanCallbackUrl() {
   window.history.replaceState({}, document.title, "/auth/callback");
@@ -20,14 +20,12 @@ function safeNextPath(value: string | null): string {
 export default function AuthCallbackPage() {
   const [status, setStatus] = useState<CallbackStatus>("loading");
   const [message, setMessage] = useState("로그인 정보를 확인하고 있습니다.");
-  const [nextPath, setNextPath] = useState("/");
 
   useEffect(() => {
     async function completeSignIn() {
       const supabase = getSupabaseBrowserClient();
       const url = new URL(window.location.href);
       const next = safeNextPath(new URLSearchParams(window.location.search).get("next"));
-      setNextPath(next);
       const code = url.searchParams.get("code");
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const accessToken = hashParams.get("access_token");
@@ -52,8 +50,7 @@ export default function AuthCallbackPage() {
         }
 
         cleanCallbackUrl();
-        setStatus("success");
-        setMessage(next === "/" ? "로그인이 완료되었습니다. 홈으로 이동해도 됩니다." : "로그인이 완료되었습니다. 이전 화면으로 이동해도 됩니다.");
+        window.location.replace(next);
       } catch (error) {
         cleanCallbackUrl();
         setStatus("error");
@@ -68,9 +65,9 @@ export default function AuthCallbackPage() {
     <main className="auth-callback-page">
       <section className={`auth-callback-card auth-callback-card--${status}`}>
         <p className="section-eyebrow">Auth callback</p>
-        <h1>{status === "success" ? "로그인 완료" : "로그인 처리 중"}</h1>
+        <h1>{status === "error" ? "로그인 처리 실패" : "로그인 처리 중"}</h1>
         <p>{message}</p>
-        <Link href={nextPath}>{nextPath === "/" ? "홈으로 이동" : "이전 화면으로 이동"}</Link>
+        {status === "error" ? <Link href="/login">다시 로그인하기</Link> : null}
       </section>
     </main>
   );
