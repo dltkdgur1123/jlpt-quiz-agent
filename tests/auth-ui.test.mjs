@@ -70,8 +70,8 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   const source = guidePage();
   assert.match(source, /<SiteHeader active="guide"/);
   assert.match(source, /JLPT 수험안내/);
-  assert.match(source, /JLPT서울실시위원회|JLPT 서울실시위원회/);
-  assert.match(source, /수험자 주의사항/);
+  assert.match(source, /출처 : JLPT 서울실시위원회 참고/);
+  assert.match(source, /실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요/);
   assert.match(source, /시험 당일 준비물/);
   assert.match(source, /규정 신분증 요약/);
   assert.match(source, /부정행위로 처리될 수 있는 경우/);

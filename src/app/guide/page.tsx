@@ -50,8 +50,7 @@ export default function GuidePage() {
           <p className="section-eyebrow">EXAM GUIDE</p>
           <h1 id="guide-title">JLPT 수험안내</h1>
           <p>
-            JLPT 서울실시위원회 `수험자 주의사항` 페이지를 참고했습니다.
-            실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요.
+            출처 : JLPT 서울실시위원회 참고. 실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요.
           </p>
           <div className="guide-hero-actions">
             <a className="guide-secondary-link" href={sourceUrl} rel="noreferrer" target="_blank">공식 안내 원문 보기</a>
