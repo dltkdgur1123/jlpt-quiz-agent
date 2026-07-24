@@ -230,11 +230,56 @@ function problemForQuestion(question: MockExamQuestion) {
   return PROBLEM_DEFINITIONS.find((problem) => problem.questionTypes.includes(question.question_type));
 }
 
-function formatReviewLabel(question: MockExamQuestion) {
+function formatSectionTitleKo(sectionKey: MockExamSectionKey) {
+  switch (sectionKey) {
+    case "vocab":
+      return "문자·어휘";
+    case "grammar":
+      return "문법";
+    case "reading":
+      return "읽기";
+    default:
+      return sectionKey;
+  }
+}
+
+function formatProblemTitleKo(problem: ProblemDefinition) {
+  switch (problem.problemNo) {
+    case 1:
+      return "한자 읽기";
+    case 2:
+      return "표기";
+    case 3:
+      return "문맥 규정";
+    case 4:
+      return "바꿔 말하기/유의어";
+    case 5:
+      return "문법 형식 판단";
+    case 6:
+      return "문장 조립";
+    case 7:
+      return "문장 문법";
+    case 8:
+      return "내용 이해";
+    case 9:
+      return "정보 검색";
+    default:
+      return problem.title;
+  }
+}
+
+function formatReviewMeta(question: MockExamQuestion) {
   const problem = problemForQuestion(question);
-  if (!problem) return `문항 ${question.sort_order}`;
-  const problemQuestionsInSection = question.sort_order;
-  return `問題${problem.problemNo} · ${problem.title} · ${problemQuestionsInSection}번`;
+  if (!problem) {
+    return {
+      questionNo: `${question.sort_order}번`,
+      typeLabel: "문항 정보",
+    };
+  }
+  return {
+    questionNo: `${question.sort_order}번`,
+    typeLabel: `문제${problem.problemNo} · ${formatProblemTitleKo(problem)}`,
+  };
 }
 
 function formatMockExamDate() {
@@ -448,7 +493,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
   const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
   const passAdvice = mockPassed
-    ? "현재 세트 기준으로는 합격권입니다. 오답 노트로 약한 영역만 정리하세요."
+    ? "현재 세트 기준으로는 합격권입니다. 다시 볼 문제로 약한 영역만 정리하세요."
     : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
   const examDate = formatMockExamDate();
 
@@ -862,7 +907,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             <div className="mock-exam-status-grid">
               {sectionResults.map((result) => (
                 <strong key={result.section_key}>
-                  {result.section_title}: {result.correct}/{result.question_count} ({result.rate}%)
+                  {formatSectionTitleKo(result.section_key)}: {result.correct}/{result.question_count} ({result.rate}%)
                 </strong>
               ))}
             </div>
@@ -870,25 +915,35 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               <h3>복습 우선순위</h3>
               {weakestSections.length > 0 ? (
                 <p>
-                  먼저 볼 영역: {weakestSections.map((section) => `${section.section_title} ${section.wrongOrBlank}문항`).join(" · ")}
+                  먼저 볼 영역: {weakestSections.map((section) => `${formatSectionTitleKo(section.section_key)} ${section.wrongOrBlank}문항`).join(" · ")}
                 </p>
               ) : (
                 <p>전 문항 정답입니다. 다음 세트로 넘어가도 좋습니다.</p>
               )}
-              <p>오답·미응답 {reviewTargets.length}문항을 아래에서 바로 확인하세요.</p>
+              <p>다시 볼 문제 {reviewTargets.length}문항을 아래에서 바로 확인하세요.</p>
             </div>
             {reviewTargets.length > 0 ? (
-              <div className="mock-exam-feedback-summary">
-                <h3>오답·미응답 노트</h3>
+              <div className="mock-exam-feedback-summary mock-review-targets-card">
+                <h3>다시 볼 문제</h3>
+                <p>틀렸거나 풀지 않은 문제를 먼저 모았습니다. 번호를 누르면 해당 해설로 이동합니다.</p>
                 <ol className="mock-exam-review-list">
-                  {reviewTargets.slice(0, 12).map(({ question, selectedChoice, correctChoice }) => (
-                    <li key={question.id}>
-                      <a href={`#question-${question.id}`}>{formatReviewLabel(question)}</a>
-                      <span>
-                        내 답 {selectedChoice ? CHOICE_NUMBERS[selectedChoice] : "미응답"} · 정답 {CHOICE_NUMBERS[correctChoice]}
-                      </span>
-                    </li>
-                  ))}
+                  {reviewTargets.slice(0, 12).map(({ question, selectedChoice, correctChoice }) => {
+                    const reviewMeta = formatReviewMeta(question);
+                    const reviewStatus = selectedChoice ? "오답" : "미응답";
+                    return (
+                      <li key={question.id}>
+                        <a className="mock-review-main-link" href={`#question-${question.id}`}>
+                          <strong>{reviewMeta.questionNo}</strong>
+                          <span>{reviewMeta.typeLabel}</span>
+                        </a>
+                        <p>
+                          <em data-status={reviewStatus}>{reviewStatus}</em>
+                          <span>내 답: {selectedChoice ? CHOICE_NUMBERS[selectedChoice] : "미응답"}</span>
+                          <span>정답: {CHOICE_NUMBERS[correctChoice]}</span>
+                        </p>
+                      </li>
+                    );
+                  })}
                 </ol>
                 {reviewTargets.length > 12 ? <p>상위 12문항만 먼저 표시합니다.</p> : null}
               </div>
