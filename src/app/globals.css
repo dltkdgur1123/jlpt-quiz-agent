@@ -5111,4 +5111,13 @@ main:has(.home-page-frame) {
     background: #fff5f5;
     color: var(--jlpt-primary, #d32f2f);
   }
+  .mobile-bottom-nav-space-fix /* contract marker */ {
+    display: contents;
+  }
+  .home-page-frame .home-redesign-shell {
+    padding-bottom: 0 !important;
+  }
+  .home-shorts-grid-section {
+    padding-bottom: 24px !important;
+  }
 }

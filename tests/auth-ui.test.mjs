@@ -87,6 +87,9 @@ test("mobile layout uses four bottom tabs and keeps original shorts thumbnail si
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid-link \{[\s\S]*?aspect-ratio: 16 \/ 9/);
   assert.doesNotMatch(css, /max-height: 220px/);
   assert.match(css, /padding-bottom: calc\(88px \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(css, /\.mobile-bottom-nav-space-fix \/\* contract marker \*\//);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid-section \{[\s\S]*?padding-bottom: 24px !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-page-frame \.home-redesign-shell \{[\s\S]*?padding-bottom: 0 !important/);
   assert.match(headerSource, /모바일 하단 메뉴/);
   assert.doesNotMatch(headerSource, /mobileAccountHref/);
   assert.doesNotMatch(headerSource, />\{headerUser \? "계정" : "로그인"\}<\/Link>/);
