@@ -183,6 +183,9 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.match(source, /JLPT 수험안내/);
   assert.match(source, /출처 : JLPT 서울실시위원회 참고/);
   assert.match(source, /실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요/);
+  assert.match(source, /시험 전 3분 체크/);
+  assert.match(source, /guide-priority-strip/);
+  assert.match(source, /신분증·필기구·전자기기/);
   assert.match(source, /시험 당일 준비물/);
   assert.match(source, /"신분증, HB연필 또는 샤프,"/);
   assert.match(source, /"지우개를 준비하세요\."/);
@@ -246,6 +249,12 @@ test("settings and guide avoid bordered containers nested inside cards", () => {
   assert.match(settingsToggleRule, /padding:\s*0/);
   assert.match(css, /\.settings-wrongnote-embedded \.settings-toggle-row \{[\s\S]*?padding-left:\s*30px/);
   assert.doesNotMatch(guideListRule, /border:\s*1px/);
+  assert.match(css, /Guide mobile optimization: readable exam-day checklist with full-width calm sections/);
+  assert.match(css, /\.guide-priority-strip \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.guide-page \{[\s\S]*?gap:\s*12px !important;[\s\S]*?background:\s*#fafafa !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.guide-hero,[\s\S]*?\.guide-panel,[\s\S]*?\.guide-level-panel,[\s\S]*?\.guide-check-panel \{[\s\S]*?border-left:\s*0 !important;[\s\S]*?border-right:\s*0 !important;[\s\S]*?border-radius:\s*0 !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.guide-priority-strip \{[\s\S]*?grid-template-columns:\s*1fr !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.guide-grid,[\s\S]*?\.guide-two-column \{[\s\S]*?gap:\s*12px !important/);
   assert.match(guideListRule, /border:\s*0/);
   assert.match(guideListRule, /border-radius:\s*0/);
 });

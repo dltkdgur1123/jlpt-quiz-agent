@@ -2262,6 +2262,50 @@ main:has(.mock-page-shell) {
   font-weight: 850;
   text-decoration: none;
 }
+.guide-priority-strip {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: none;
+}
+.guide-priority-strip h2 {
+  margin: 0;
+  color: var(--jlpt-title, #212121);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+}
+.guide-priority-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.guide-priority-list article {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 16px;
+  background: #fafafa;
+}
+.guide-priority-list strong {
+  color: var(--jlpt-title, #212121);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  word-break: keep-all;
+}
+.guide-priority-list span {
+  color: var(--jlpt-text, #616161);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.55;
+  word-break: keep-all;
+}
 .guide-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2373,22 +2417,92 @@ main:has(.mock-page-shell) {
   border-radius: 999px;
   background: var(--jlpt-primary, #d32f2f);
 }
+/* Guide mobile optimization: readable exam-day checklist with full-width calm sections */
 @media (max-width: 760px) {
+  main:has(.guide-page) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: #ffffff !important;
+  }
+  .guide-page {
+    width: 100% !important;
+    max-width: none !important;
+    gap: 12px !important;
+    background: #fafafa !important;
+    padding-bottom: 24px !important;
+  }
+  .guide-hero,
+  .guide-priority-strip,
+  .guide-panel,
+  .guide-level-panel,
+  .guide-check-panel {
+    width: 100% !important;
+    margin: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .guide-hero {
+    padding: 28px 18px 24px !important;
+    gap: 14px !important;
+  }
+  .guide-hero h1 {
+    font-size: clamp(2rem, 11vw, 2.8rem) !important;
+    line-height: 1.04 !important;
+  }
+  .guide-hero > p:not(.section-eyebrow) {
+    font-size: 14px !important;
+    line-height: 1.62 !important;
+  }
+  .guide-secondary-link {
+    width: 100% !important;
+    min-height: 46px !important;
+  }
+  .guide-priority-strip {
+    padding: 26px 18px !important;
+    gap: 16px !important;
+  }
+  .guide-priority-list {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .guide-priority-list article {
+    min-height: 0 !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
   .guide-grid,
   .guide-two-column {
     grid-template-columns: 1fr;
+    gap: 12px !important;
+  }
+  .guide-panel,
+  .guide-level-panel,
+  .guide-check-panel {
+    padding: 26px 18px !important;
+  }
+  .guide-panel {
+    min-height: 0 !important;
   }
   .guide-level-row {
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
     align-items: start;
-    padding: 16px;
+    padding: 16px 0 !important;
   }
   .guide-id-row {
     grid-template-columns: 1fr !important;
   }
   .guide-level-row em {
-    grid-column: 2;
+    grid-column: auto;
     text-align: left;
+  }
+  .guide-id-row span,
+  .guide-check-panel li {
+    font-size: 14px !important;
+    line-height: 1.62 !important;
+    word-break: keep-all;
   }
 }
 .login-page-main {
