@@ -157,6 +157,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "background-image: none !important",
     "min-height: 92px !important",
     "border-radius: 18px !important",
+    "dashboard-wrong-note-card",
+    "dashboard-weak-full",
+    "dashboard-weak-grid",
   ]) {
     assert.ok(css.includes(style), style);
   }
@@ -164,9 +167,13 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "안녕하세요, 효쿠님",
     "학습 요약",
     "주간 학습 활동",
-    "7월 목표",
+    "이번 달 목표",
     "최근 모의고사",
-    "현재 취약 영역",
+    "DashboardWrongNoteCard",
+    "취약 영역 분석",
+    "오답노트와 최근 모의고사 기준",
+    "dashboard-weak-full",
+    "dashboard-weak-grid",
     "dashboard-stat-grid",
     "dashboard-goal-card",
     "DashboardAttemptData",
@@ -180,6 +187,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(clientSource, /오답노트/);
   assert.match(clientSource, /wrong_note/);
   assert.match(clientSource, /복습할 문제/);
+  assert.match(clientSource, /dashboard-wrong-note-card/);
+  assert.match(clientSource, /다시 풀기/);
 });
 
 test("mock exam attempt API validates login and writes attempt answer result rows", () => {

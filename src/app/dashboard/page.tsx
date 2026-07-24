@@ -1,25 +1,25 @@
 import Link from "next/link";
-import { DashboardAttemptData } from "@/components/dashboard/DashboardAttemptData";
+import { DashboardAttemptData, DashboardWrongNoteCard } from "@/components/dashboard/DashboardAttemptData";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const stats = [
-  { label: "연속 학습", value: "12일", note: "지난주보다 +3일", tone: "blue" },
-  { label: "이번 주 문제", value: "286개", note: "목표 350개 중 82%", tone: "mint" },
-  { label: "평균 정답률", value: "74%", note: "최근 5회 기준", tone: "orange" },
-  { label: "예상 레벨", value: "N3 합격", note: "합격 가능성 84%", tone: "blue" },
+  { label: "최근 기록", value: "3회", note: "모의고사 제출 기준", tone: "blue" },
+  { label: "누적 풀이", value: "150문항", note: "저장된 기록 기준", tone: "mint" },
+  { label: "평균 정답률", value: "41%", note: "학습 참고 지표", tone: "orange" },
+  { label: "최근 선택 레벨", value: "N5", note: "비청해 실전 세트", tone: "blue" },
 ];
 
 const bars = [42, 56, 35, 68, 74, 31, 63];
 const days = ["월", "화", "수", "목", "금", "토", "일"];
 const recentExams = [
-  { title: "N3 실전 3회", date: "7월 21일", score: "137 / 180", status: "합격 예상", good: true },
-  { title: "N3 실전 2회", date: "7월 17일", score: "128 / 180", status: "합격 예상", good: true },
-  { title: "N3 실전 1회", date: "7월 12일", score: "112 / 180", status: "보완 필요", good: false },
+  { title: "N5 실전 모의고사", date: "7월 24일", score: "82 / 180", status: "학습 참고", good: true },
+  { title: "N5 실전 모의고사", date: "7월 21일", score: "73 / 180", status: "학습 참고", good: true },
+  { title: "N5 실전 모의고사", date: "7월 19일", score: "68 / 180", status: "보완 필요", good: false },
 ];
 const weakAreas = [
-  { label: "접속 표현", rate: 48, color: "orange" },
-  { label: "유의어 구분", rate: 57, color: "purple" },
-  { label: "장문 독해", rate: 63, color: "blue" },
+  { label: "문자·어휘", rate: 42, color: "orange", note: "한자읽기·표기 복습 우선" },
+  { label: "문법", rate: 55, color: "purple", note: "문법형식 판단 보완" },
+  { label: "읽기", rate: 61, color: "blue", note: "단문 독해부터 재점검" },
 ];
 
 export default function DashboardPage() {
@@ -31,7 +31,7 @@ export default function DashboardPage() {
         <section className="dashboard-hero">
           <div>
             <h1>안녕하세요, 효쿠님</h1>
-            <p>이번 주도 합격 목표에 한 걸음 더 가까워졌습니다.</p>
+            <p>모의고사 기록과 복습할 문제를 한 곳에서 확인합니다.</p>
           </div>
           <Link className="figma-primary" href="/mock-exams/n5-realistic-001">새 모의고사 시작 →</Link>
         </section>
@@ -64,11 +64,11 @@ export default function DashboardPage() {
             </div>
           </article>
           <article className="dashboard-goal-card">
-            <span>7월 목표</span>
-            <h2>N3 모의고사<br />5회 완료하기</h2>
-            <strong>3 / 5회</strong>
-            <div className="figma-progress"><i style={{ width: "64%" }} /></div>
-            <p>이번 달 남은 기간 10일</p>
+            <span>이번 달 목표</span>
+            <h2>N5 모의고사<br />3회 제출하기</h2>
+            <strong>1 / 3회</strong>
+            <div className="figma-progress"><i style={{ width: "34%" }} /></div>
+            <p>다음 목표까지 2회 남음</p>
             <Link className="figma-primary" href="/mock-exams/n5-realistic-001">계속 학습하기</Link>
           </article>
         </section>
@@ -78,23 +78,33 @@ export default function DashboardPage() {
             <div className="panel-title-row"><h2>최근 모의고사</h2><a href="#history">전체 보기 →</a></div>
             {recentExams.map((exam) => (
               <div className="recent-exam-row" key={exam.title}>
-                <span>N3</span>
+                <span>N5</span>
                 <div><strong>{exam.title}</strong><small>{exam.date}</small></div>
                 <b>{exam.score}</b>
                 <em data-good={exam.good}>{exam.status}</em>
               </div>
             ))}
           </article>
-          <article className="dashboard-panel dashboard-weak">
-            <h2>현재 취약 영역</h2>
-            <p>최근 시험 데이터를 기준으로 분석했습니다.</p>
+          <DashboardWrongNoteCard />
+        </section>
+
+        <section className="dashboard-panel dashboard-weak dashboard-weak-full" aria-label="취약 영역 분석">
+          <div className="dashboard-weak-head">
+            <div>
+              <h2>취약 영역 분석</h2>
+              <p>오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다.</p>
+            </div>
+            <Link href="/mock-exams/n5-realistic-001">약한 영역 다시 풀기 →</Link>
+          </div>
+          <div className="dashboard-weak-grid">
             {weakAreas.map((area) => (
               <div className={`weak-row weak-${area.color}`} key={area.label}>
                 <p><strong>{area.label}</strong><b>{area.rate}%</b></p>
                 <div><i style={{ width: `${area.rate}%` }} /></div>
+                <span>{area.note}</span>
               </div>
             ))}
-          </article>
+          </div>
         </section>
       </div>
     </main>
