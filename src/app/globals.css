@@ -1591,6 +1591,37 @@ main:has(.home-shell) { padding: 0 0 80px; }
   font-weight: 800;
 }
 .auth-message { background: #eff6ff; color: #1d4ed8; }
+.admin-page-shell {
+  width: min(760px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 140px 0 96px;
+}
+.admin-status,
+.admin-status-card,
+.admin-panel-card {
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--figma-border);
+  border-radius: 20px;
+  background: #fff;
+}
+.admin-status-card strong,
+.admin-panel-card h1 {
+  margin: 0;
+  color: var(--figma-ink);
+}
+.admin-status-card p,
+.admin-panel-card p {
+  margin: 0;
+  color: var(--figma-muted);
+  font-weight: 750;
+}
+.admin-status-card a {
+  color: var(--jlpt-primary);
+  font-weight: 900;
+  text-decoration: none;
+}
 @media (max-width: 1180px) {
   .login-page-main { padding: 0 24px 64px; }
   .login-topbar { margin: 0; padding-left: 0; padding-right: 0; }

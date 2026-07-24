@@ -9,6 +9,7 @@ type AuthHeaderButtonVariant = "home" | "figma";
 type HeaderUser = {
   email: string | null;
   nickname: string;
+  isAdmin: boolean;
 };
 
 function nicknameFromSession(session: { user?: { email?: string | null; user_metadata?: Record<string, unknown> } } | null): HeaderUser | null {
@@ -22,7 +23,7 @@ function nicknameFromSession(session: { user?: { email?: string | null; user_met
     ? rawName.trim()
     : email?.split("@")[0] || "내 계정";
 
-  return { email, nickname };
+  return { email, nickname, isAdmin: false };
 }
 
 export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderButtonVariant }) {
@@ -61,6 +62,34 @@ export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderBut
     return () => window.removeEventListener("pointerdown", handlePointerDown);
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (!headerUser?.email) return;
+
+    let isCancelled = false;
+
+    async function refreshAdminStatus() {
+      const supabase = getSupabaseBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) return;
+
+      const response = await fetch("/api/auth/admin-status", {
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!response.ok || isCancelled) return;
+
+      const payload = await response.json() as { isAdmin?: boolean };
+      setHeaderUser((current) => current ? { ...current, isAdmin: Boolean(payload.isAdmin) } : current);
+    }
+
+    refreshAdminStatus();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [headerUser?.email]);
+
   const className = variant === "figma" ? "figma-auth-button" : "home-login-button";
   const initial = useMemo(() => headerUser?.nickname.trim().charAt(0).toUpperCase() || "U", [headerUser]);
 
@@ -96,6 +125,7 @@ export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderBut
         {isMenuOpen ? (
           <div className="auth-profile-dropdown" role="menu">
             {headerUser.email ? <p>{headerUser.email}</p> : null}
+            {headerUser.isAdmin ? <Link href="/admin" role="menuitem" onClick={() => setIsMenuOpen(false)}>관리자</Link> : null}
             <Link href="/settings" role="menuitem" onClick={() => setIsMenuOpen(false)}>설정</Link>
             <button type="button" role="menuitem" onClick={signOut}>로그아웃</button>
           </div>
