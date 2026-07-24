@@ -514,8 +514,10 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(styles, /data-result="wrong"/);
   assert.match(styles, /prevent controls\/results from bleeding into right rail/);
   assert.match(styles, /\.mock-mobile-nav-trigger \{[\s\S]*?display: none/);
-  assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-mobile-nav-trigger \{[\s\S]*?display: grid/);
+  assert.match(styles, /@media \(max-width: 1180px\) \{[\s\S]*?\.mock-mobile-nav-trigger \{[\s\S]*?display: grid/);
   assert.match(styles, /\.mock-mobile-question-sheet__panel \{[\s\S]*?max-height: min\(70dvh, 620px\)/);
   assert.match(styles, /\.mock-mobile-question-sheet__number-grid \{[\s\S]*?overflow-y: auto/);
   assert.match(styles, /bottom: calc\(72px \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(styles, /mobile active exam must never show desktop question nav over the paper/);
+  assert.match(styles, /@media \(max-width: 1180px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-question-nav \{[\s\S]*?display: none !important/);
 });

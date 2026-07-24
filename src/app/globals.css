@@ -5129,7 +5129,7 @@ main:has(.home-page-frame) {
 .mock-mobile-question-sheet {
   display: none;
 }
-@media (max-width: 760px) {
+@media (max-width: 1180px) {
   .mock-exam-shell--active {
     padding-bottom: 96px;
   }
@@ -5273,5 +5273,17 @@ main:has(.home-page-frame) {
   .mock-mobile-question-sheet__actions .mock-question-nav-submit,
   .mock-mobile-question-sheet__actions .mock-question-nav-restart-button {
     margin-top: 0 !important;
+  }
+}
+
+/* mobile active exam must never show desktop question nav over the paper */
+@media (max-width: 1180px) {
+  .mock-exam-shell--active .mock-question-nav {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  .mock-exam-shell--active .mock-exam-workspace {
+    grid-template-columns: 1fr !important;
   }
 }
