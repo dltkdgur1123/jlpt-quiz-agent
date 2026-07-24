@@ -327,6 +327,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [authStatus, setAuthStatus] = useState<"loading" | "signed_in" | "signed_out">("loading");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [mobileQuestionSheetOpen, setMobileQuestionSheetOpen] = useState(false);
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -508,21 +509,25 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     if (submitted || saveStatus === "saving") return;
     if (unansweredCount > 0 && !submitWarning) {
       setSubmitWarning(`미응답 ${unansweredCount}문항이 있습니다. 그래도 제출하시겠습니까?`);
+      setMobileQuestionSheetOpen(true);
       return;
     }
     setSubmitWarning(null);
+    setMobileQuestionSheetOpen(false);
     void submitMockExam();
   }
 
   function forceSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
     setSubmitWarning(null);
+    setMobileQuestionSheetOpen(false);
     void submitMockExam();
   }
 
   function requestRestartMockExam() {
     if (saveStatus === "saving") return;
     setSubmitWarning(null);
+    setMobileQuestionSheetOpen(true);
     setRestartWarning("현재 답안과 결과를 지우고 1번 문제부터 다시 시작할까요?");
   }
 
@@ -543,6 +548,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     setSubmitted(false);
     setSaveStatus("idle");
     setSaveMessage(null);
+    setMobileQuestionSheetOpen(false);
     setExamStarted(true);
     writeInProgressDraft({
       set_code: artifact.set.set_code,
@@ -584,6 +590,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     const boundedIndex = Math.min(Math.max(0, nextQuestionIndex), flattenedQuestions.length - 1);
     const draftAnswers = readInProgressDraft(artifact.set.set_code)?.selected_answers;
     setCurrentQuestionIndex(boundedIndex);
+    setMobileQuestionSheetOpen(false);
     saveDraft(draftAnswers ?? selectedAnswers, boundedIndex);
   }
 
@@ -800,6 +807,16 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                   다음 문제 →
                 </button>
               </div>
+              <button
+                aria-controls="mock-mobile-question-sheet"
+                aria-expanded={mobileQuestionSheetOpen}
+                className="mock-mobile-nav-trigger"
+                onClick={() => setMobileQuestionSheetOpen(true)}
+                type="button"
+              >
+                <strong>문제 {currentQuestionNumber} / {artifact.set.question_count}</strong>
+                <span>{answeredCount}/{artifact.set.question_count} · 문제 목록 보기</span>
+              </button>
             </section>
           ) : null}
 
@@ -1045,6 +1062,107 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             </button>
           )}
         </aside>
+        <div
+          aria-hidden={!mobileQuestionSheetOpen}
+          className="mock-mobile-question-sheet"
+          data-open={mobileQuestionSheetOpen}
+          id="mock-mobile-question-sheet"
+        >
+          <button
+            aria-label="문제 목록 닫기"
+            className="mock-mobile-question-sheet__backdrop"
+            onClick={() => setMobileQuestionSheetOpen(false)}
+            type="button"
+          />
+          <section
+            aria-label="모바일 문제 목록"
+            aria-modal="true"
+            className="mock-mobile-question-sheet__panel"
+            role="dialog"
+          >
+            <div className="mock-mobile-question-sheet__handle" aria-hidden="true" />
+            <div className="mock-mobile-question-sheet__head">
+              <div>
+                <strong>문제 목록</strong>
+                <p>{answeredCount}/{artifact.set.question_count} · {artifact.set.time_limit_minutes}:00</p>
+              </div>
+              <button
+                className="mock-mobile-question-sheet__close"
+                onClick={() => setMobileQuestionSheetOpen(false)}
+                type="button"
+              >
+                닫기
+              </button>
+            </div>
+            <div className="mock-question-nav-progress-bar" aria-hidden="true">
+              <span style={{ width: `${progressPercent}%` }} />
+            </div>
+            <div className="mock-mobile-question-sheet__number-grid">
+              <nav>
+                {flattenedQuestions.map(({ question }, index) => {
+                  const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+                  const correctChoice = renderedCorrectChoice(question, renderedChoices);
+                  const selectedChoice = selectedAnswers[question.id];
+                  const resultState = !submitted
+                    ? undefined
+                    : selectedChoice
+                      ? selectedChoice === correctChoice
+                        ? "correct"
+                        : "wrong"
+                      : "blank";
+                  const resultLabel = resultState === "correct" ? "정답" : resultState === "wrong" ? "오답" : resultState === "blank" ? "미응답" : "미풀이";
+
+                  return (
+                    <button
+                      aria-label={`${index + 1}번 ${resultLabel}`}
+                      className="mock-question-nav-item"
+                      data-answered={Boolean(selectedChoice)}
+                      data-current={index === currentQuestionIndex}
+                      data-result={resultState}
+                      key={question.id}
+                      onClick={() => moveQuestion(index)}
+                      type="button"
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+            <div className="mock-mobile-question-sheet__actions">
+              <div className="mock-restart-slot mock-restart-slot--mobile">
+                {restartWarning ? (
+                  <div className="mock-restart-expanded" role="alert">
+                    <strong>처음부터 다시 시작할까요?</strong>
+                    <p>현재 답안이 모두 지워집니다.</p>
+                    <div>
+                      <button onClick={cancelRestartMockExam} type="button">취소</button>
+                      <button onClick={confirmRestartMockExam} type="button">다시 시작</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button className="mock-question-nav-restart-button" onClick={requestRestartMockExam} type="button" disabled={saveStatus === "saving"}>
+                    ↺ 처음부터 다시
+                  </button>
+                )}
+              </div>
+              {submitWarning ? (
+                <div className="mock-submit-confirm-panel" role="alert">
+                  <strong>미응답 {unansweredCount}문항</strong>
+                  <p>아직 답하지 않은 문제가 있습니다.</p>
+                  <div>
+                    <button onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
+                    <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
+                  </div>
+                </div>
+              ) : (
+                <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
+                  제출하기
+                </button>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
         </>
       )}

@@ -5121,3 +5121,157 @@ main:has(.home-page-frame) {
     padding-bottom: 24px !important;
   }
 }
+
+/* Mock exam mobile question list: compact trigger + bottom sheet */
+.mock-mobile-nav-trigger {
+  display: none;
+}
+.mock-mobile-question-sheet {
+  display: none;
+}
+@media (max-width: 760px) {
+  .mock-exam-shell--active {
+    padding-bottom: 96px;
+  }
+  .mock-mobile-nav-trigger {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 54px;
+    margin-top: 14px;
+    padding: 0 16px;
+    border: 1px solid var(--jlpt-border, #e5e5e5);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--jlpt-title, #212121);
+    box-shadow: none;
+    text-align: left;
+  }
+  .mock-mobile-nav-trigger strong {
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 850;
+    letter-spacing: -0.04em;
+  }
+  .mock-mobile-nav-trigger span {
+    color: var(--jlpt-primary, #d32f2f);
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+  }
+  .mock-mobile-question-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: block;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .mock-mobile-question-sheet[data-open="true"] {
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .mock-mobile-question-sheet__backdrop {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(33, 33, 33, .16);
+    opacity: 0;
+    transition: opacity .16s ease;
+  }
+  .mock-mobile-question-sheet[data-open="true"] .mock-mobile-question-sheet__backdrop {
+    opacity: 1;
+  }
+  .mock-mobile-question-sheet__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 14px;
+    max-height: min(70dvh, 620px);
+    padding: 10px 14px 16px;
+    border: 1px solid var(--jlpt-border, #e5e5e5);
+    border-bottom: 0;
+    border-radius: 22px 22px 0 0;
+    background: #ffffff;
+    box-shadow: none;
+    transform: translateY(105%);
+    transition: transform .2s cubic-bezier(.22, 1, .36, 1);
+  }
+  .mock-mobile-question-sheet[data-open="true"] .mock-mobile-question-sheet__panel {
+    transform: translateY(0);
+  }
+  .mock-mobile-question-sheet__handle {
+    justify-self: center;
+    width: 42px;
+    height: 4px;
+    border-radius: 999px;
+    background: #e5e5e5;
+  }
+  .mock-mobile-question-sheet__head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .mock-mobile-question-sheet__head strong {
+    display: block;
+    color: var(--jlpt-title, #212121);
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.055em;
+  }
+  .mock-mobile-question-sheet__head p {
+    margin: 4px 0 0;
+    color: var(--jlpt-text, #616161);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .mock-mobile-question-sheet__close {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--jlpt-border, #e5e5e5);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--jlpt-text, #616161);
+    font-size: 12px;
+    font-weight: 850;
+  }
+  .mock-mobile-question-sheet__number-grid {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 4px 1px 10px;
+  }
+  .mock-mobile-question-sheet__number-grid nav {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .mock-mobile-question-sheet__number-grid .mock-question-nav-item {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    border-radius: 12px !important;
+  }
+  .mock-mobile-question-sheet__actions {
+    display: grid;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--jlpt-border, #e5e5e5);
+    background: #ffffff;
+  }
+  .mock-mobile-question-sheet__actions .mock-question-nav-submit,
+  .mock-mobile-question-sheet__actions .mock-question-nav-restart-button {
+    margin-top: 0 !important;
+  }
+}

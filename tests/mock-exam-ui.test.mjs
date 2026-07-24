@@ -458,6 +458,15 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "오답",
     "미응답",
     "mock-question-nav-scroll",
+    "mock-mobile-nav-trigger",
+    "mock-mobile-question-sheet",
+    "mock-mobile-question-sheet__backdrop",
+    "mock-mobile-question-sheet__panel",
+    "mock-mobile-question-sheet__close",
+    "문제 목록 보기",
+    "닫기",
+    "aria-expanded",
+    "setMobileQuestionSheetOpen",
     "mock-exam-submit-card",
     "mock-exam-bottom-nav",
     "grammar_sentence_build",
@@ -504,4 +513,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(styles, /data-result="correct"/);
   assert.match(styles, /data-result="wrong"/);
   assert.match(styles, /prevent controls\/results from bleeding into right rail/);
+  assert.match(styles, /\.mock-mobile-nav-trigger \{[\s\S]*?display: none/);
+  assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-mobile-nav-trigger \{[\s\S]*?display: grid/);
+  assert.match(styles, /\.mock-mobile-question-sheet__panel \{[\s\S]*?max-height: min\(70dvh, 620px\)/);
+  assert.match(styles, /\.mock-mobile-question-sheet__number-grid \{[\s\S]*?overflow-y: auto/);
+  assert.match(styles, /bottom: calc\(72px \+ env\(safe-area-inset-bottom\)\)/);
 });
