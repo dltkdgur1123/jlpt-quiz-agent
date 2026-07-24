@@ -594,8 +594,15 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     saveDraft(draftAnswers ?? selectedAnswers, boundedIndex);
   }
 
+  function scrollMockExamToTop() {
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
   async function submitMockExam() {
     setSubmitted(true);
+    scrollMockExamToTop();
     clearInProgressDraft(artifact.set.set_code);
     setSaveStatus("saving");
     setSaveMessage("로그인 상태를 확인하고 모의고사 기록을 저장하는 중입니다.");
