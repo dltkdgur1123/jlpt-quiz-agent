@@ -11,6 +11,11 @@ const stats = [
 
 const bars = [42, 56, 35, 68, 74, 31, 63];
 const days = ["월", "화", "수", "목", "금", "토", "일"];
+const weeklyGoal = 70;
+const weeklyMax = Math.max(...bars, weeklyGoal);
+const weeklyTotal = bars.reduce((sum, value) => sum + value, 0);
+const weeklyAverage = Math.round(weeklyTotal / bars.length);
+const weeklyPeakIndex = bars.indexOf(Math.max(...bars));
 const recentExams = [
   { title: "N5 실전 모의고사", date: "7월 24일", score: "82 / 180", status: "학습 참고", good: true },
   { title: "N5 실전 모의고사", date: "7월 21일", score: "73 / 180", status: "학습 참고", good: true },
@@ -51,13 +56,24 @@ export default function DashboardPage() {
 
         <section className="dashboard-grid-top">
           <article className="dashboard-panel dashboard-activity">
-            <h2>주간 학습 활동</h2>
-            <p>최근 7일 문제 풀이 수</p>
-            <div className="dashboard-bars">
+            <div className="dashboard-activity-head">
+              <div>
+                <h2>주간 학습 활동</h2>
+                <p>최근 7일 문제 풀이 수</p>
+              </div>
+              <strong>{weeklyTotal}문항</strong>
+            </div>
+            <div className="dashboard-activity-summary" aria-label="주간 학습 활동 요약">
+              <span><b>{weeklyAverage}문항</b><em>일평균</em></span>
+              <span><b>{days[weeklyPeakIndex]}요일</b><em>최고 활동일</em></span>
+              <span><b>{weeklyGoal}문항</b><em>일 목표</em></span>
+            </div>
+            <div className="dashboard-bars" aria-label="최근 7일 요일별 문제 풀이 수">
+              <div className="dashboard-bars-goal" aria-hidden="true"><span>목표 {weeklyGoal}</span></div>
               {bars.map((bar, index) => (
-                <div className={index === 6 ? "hot" : ""} key={days[index]}>
-                  <b>{bar}</b>
-                  <i style={{ height: `${bar * 2}px` }} />
+                <div className={index === weeklyPeakIndex ? "hot" : ""} key={days[index]}>
+                  <b>{bar}<small>문항</small></b>
+                  <i style={{ height: `${Math.max(18, Math.round((bar / weeklyMax) * 168))}px` }} />
                   <span>{days[index]}</span>
                 </div>
               ))}

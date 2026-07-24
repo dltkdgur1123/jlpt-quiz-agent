@@ -4488,6 +4488,155 @@ button:hover:not(:disabled),
   border-color: var(--jlpt-title) !important;
   color: #ffffff !important;
 }
+
+/* Dashboard weekly activity graph v2: visible values, goal line, and flat JLPT red emphasis */
+.dashboard-activity {
+  display: grid !important;
+  gap: 18px !important;
+}
+.dashboard-activity-head {
+  display: flex !important;
+  align-items: start !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+.dashboard-activity-head h2 {
+  margin-bottom: 8px !important;
+}
+.dashboard-activity-head > strong {
+  flex: 0 0 auto !important;
+  color: var(--jlpt-primary) !important;
+  font-size: clamp(1.55rem, 2.7vw, 2.25rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.06em !important;
+  line-height: 1 !important;
+}
+.dashboard-activity-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+.dashboard-activity-summary span {
+  display: grid !important;
+  gap: 4px !important;
+  min-height: 72px !important;
+  padding: 14px !important;
+  border: 1px solid var(--jlpt-border) !important;
+  border-radius: 14px !important;
+  background: #fafafa !important;
+  color: var(--jlpt-text) !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+.dashboard-activity-summary b {
+  color: var(--jlpt-title) !important;
+  font-size: 1.18rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+.dashboard-activity-summary em {
+  color: var(--jlpt-text) !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: 750 !important;
+}
+.dashboard-bars {
+  position: relative !important;
+  height: 250px !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: end !important;
+  margin-top: 0 !important;
+  padding: 28px 10px 0 !important;
+  border-top: 1px solid var(--jlpt-border) !important;
+  border-bottom: 1px solid var(--jlpt-border) !important;
+  background: repeating-linear-gradient(to top, transparent 0, transparent 47px, #f1f1f1 48px) !important;
+}
+.dashboard-bars-goal {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 42px !important;
+  height: 0 !important;
+  border-top: 1px dashed var(--jlpt-primary) !important;
+  pointer-events: none !important;
+}
+.dashboard-bars-goal span {
+  position: absolute !important;
+  right: 0 !important;
+  top: -22px !important;
+  color: var(--jlpt-primary) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: -.02em !important;
+}
+.dashboard-bars div:not(.dashboard-bars-goal) {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr auto !important;
+  align-items: end !important;
+  justify-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  color: var(--jlpt-text) !important;
+  font-weight: 850 !important;
+}
+.dashboard-bars b {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 2px !important;
+  min-height: 18px !important;
+  color: var(--jlpt-title) !important;
+  font-size: .86rem !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+}
+.dashboard-bars b small {
+  color: var(--jlpt-text) !important;
+  font-size: .62rem !important;
+  font-weight: 750 !important;
+}
+.dashboard-bars i {
+  display: block !important;
+  width: min(100%, 36px) !important;
+  max-width: none !important;
+  min-height: 18px !important;
+  border-radius: 10px 10px 4px 4px !important;
+  background: #eeeeee !important;
+  box-shadow: inset 0 -2px 0 rgba(33,33,33,.06) !important;
+}
+.dashboard-bars .hot i {
+  background: var(--jlpt-primary) !important;
+  box-shadow: none !important;
+}
+.dashboard-bars span {
+  color: var(--jlpt-text) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+@media (max-width: 720px) {
+  .dashboard-activity-head {
+    display: grid !important;
+  }
+  .dashboard-activity-summary {
+    grid-template-columns: 1fr !important;
+  }
+  .dashboard-bars {
+    gap: 6px !important;
+    padding-inline: 2px !important;
+  }
+  .dashboard-bars i {
+    width: min(100%, 28px) !important;
+  }
+  .dashboard-bars b {
+    font-size: .74rem !important;
+  }
+  .dashboard-bars b small {
+    display: none !important;
+  }
+}
 .mock-submit-confirm-panel {
   display: grid !important;
   gap: 9px !important;
