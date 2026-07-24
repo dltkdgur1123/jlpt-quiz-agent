@@ -5,6 +5,7 @@ import test from "node:test";
 const authPanel = () => readFileSync(new URL("../src/components/auth/AuthPanel.tsx", import.meta.url), "utf8");
 const loginPage = () => readFileSync(new URL("../src/app/login/page.tsx", import.meta.url), "utf8");
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+const guidePage = () => readFileSync(new URL("../src/app/guide/page.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 const authHeaderButton = () => readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8");
 const callbackPage = () => readFileSync(new URL("../src/app/auth/callback/page.tsx", import.meta.url), "utf8");
@@ -55,12 +56,25 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(headerButtonSource, /auth-profile-name/);
   assert.match(headerButtonSource, /auth-profile-dropdown/);
   assert.match(headerSource, /학습 기록/);
+  assert.match(headerSource, /수험안내/);
+  assert.match(headerSource, /active === "guide"/);
   assert.doesNotMatch(headerButtonSource, /학습 기록/);
   assert.match(headerButtonSource, /설정/);
   assert.match(headerButtonSource, /로그아웃/);
   assert.doesNotMatch(headerSource, />대시보드</);
   assert.match(panelSource, /auth-provider-button/);
   assert.match(panelSource, /auth-divider/);
+});
+
+test("guide page is available from header and keeps safe exam-guide wording", () => {
+  const source = guidePage();
+  assert.match(source, /<SiteHeader active="guide"/);
+  assert.match(source, /JLPT 수험안내/);
+  assert.match(source, /공식 접수처 공지/);
+  assert.match(source, /시험 구성 이해/);
+  assert.match(source, /오답 복습 루프/);
+  assert.match(source, /guide-level-row/);
+  assert.doesNotMatch(source, /합격 보장|출제 예상|공식 문제/);
 });
 
 test("auth callback page handles OAuth code and magic link hash sessions", () => {

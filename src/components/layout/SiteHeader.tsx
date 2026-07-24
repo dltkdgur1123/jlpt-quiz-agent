@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { AuthHeaderButton } from "@/components/auth/AuthHeaderButton";
 
 type SiteHeaderProps = {
-  active?: "home" | "mock" | "history";
+  active?: "home" | "mock" | "history" | "guide";
 };
 
 export function SiteHeader({ active = "home" }: SiteHeaderProps) {
@@ -29,6 +29,7 @@ export function SiteHeader({ active = "home" }: SiteHeaderProps) {
         <Link className={active === "home" ? "active" : undefined} href="/">홈</Link>
         <Link className={active === "mock" ? "active" : undefined} href="/mock-exams/n5-realistic-001">모의고사</Link>
         <Link className={active === "history" ? "active" : undefined} href="/dashboard">학습 기록</Link>
+        <Link className={active === "guide" ? "active" : undefined} href="/guide">수험안내</Link>
       </nav>
       <AuthHeaderButton />
     </header>

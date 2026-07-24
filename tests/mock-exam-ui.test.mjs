@@ -165,6 +165,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "font-size: 14px !important",
     "font-weight: 850 !important",
     "padding: 26px !important",
+    ".guide-hero",
+    ".guide-grid",
+    ".guide-level-row",
   ]) {
     assert.ok(css.includes(style), style);
   }
