@@ -397,6 +397,60 @@ dd { margin: 0; color: var(--muted); }
 .mock-wrong-note-card .primary-link {
   justify-self: start !important;
 }
+.mock-balance-result { display: grid; gap: 18px; }
+.mock-balance-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mock-balance-head h3 { margin: 0 0 6px; }
+.mock-balance-head p { margin: 0; color: var(--muted); font-weight: 650; line-height: 1.6; }
+.mock-balance-head .mock-detail-legend { margin: 0; justify-content: flex-end; flex-shrink: 0; }
+.mock-balance-head .mock-detail-legend span:first-child i { background: var(--jlpt-red) !important; }
+.mock-balance-head .mock-detail-legend span:nth-child(2) i { background: #616161 !important; }
+.mock-radar-panel.mock-radar-panel--tri {
+  grid-template-areas:
+    ". top ."
+    "left chart right" !important;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(210px, 1fr) minmax(120px, 0.8fr) !important;
+  gap: 14px;
+}
+.mock-radar-chart.mock-radar-chart--tri {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  width: min(280px, 100%);
+  margin: 0 auto;
+  border-radius: 22px;
+  background: #fafafa !important;
+  border: 1px solid var(--jlpt-border);
+  overflow: hidden;
+}
+.mock-radar-chart.mock-radar-chart--tri svg { width: 100%; height: 100%; }
+.mock-radar-chart.mock-radar-chart--tri line { stroke: #e5e5e5; stroke-width: 0.8; }
+.mock-radar-chart.mock-radar-chart--tri .mock-radar-grid {
+  fill: transparent;
+  stroke: #e5e5e5;
+  stroke-width: 0.9;
+}
+.mock-radar-chart.mock-radar-chart--tri .mock-radar-grid--mid { stroke-dasharray: 2 2; }
+.mock-radar-goal-shape {
+  fill: rgba(97, 97, 97, 0.1);
+  stroke: #616161;
+  stroke-width: 1.4;
+}
+.mock-radar-score-shape {
+  fill: rgba(211, 47, 47, 0.22);
+  stroke: var(--jlpt-red);
+  stroke-width: 1.8;
+}
+.mock-balance-result .mock-detail-hint {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 650;
+  text-align: left;
+}
 .mock-result-certificate {
   margin: 18px 0;
   padding: 20px;
@@ -3277,6 +3331,22 @@ button:hover:not(:disabled),
 .mock-radar-score {
   background: var(--jlpt-warning) !important;
   border-color: var(--jlpt-warning) !important;
+}
+.mock-radar-score-shape {
+  fill: rgba(211, 47, 47, 0.22) !important;
+  stroke: var(--jlpt-red) !important;
+}
+.mock-radar-goal-shape {
+  fill: rgba(97, 97, 97, 0.1) !important;
+  stroke: #616161 !important;
+}
+@media (max-width: 760px) {
+  .mock-balance-head { display: grid !important; }
+  .mock-balance-head .mock-detail-legend { justify-content: flex-start !important; }
+  .mock-radar-panel.mock-radar-panel--tri {
+    grid-template-areas: "top" "chart" "left" "right" !important;
+    grid-template-columns: 1fr !important;
+  }
 }
 .weak-blue i,
 .weak-purple i {

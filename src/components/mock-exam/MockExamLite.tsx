@@ -253,6 +253,18 @@ function scaledScore(correct: number, total: number, maxScore: number) {
   return Math.round((correct / total) * maxScore);
 }
 
+function radarPolygonPoints(rates: number[], maxRadius = 38, center = 50) {
+  return rates
+    .map((rate, index) => {
+      const angle = -Math.PI / 2 + (index * 2 * Math.PI) / rates.length;
+      const radius = Math.max(0, Math.min(100, rate)) / 100 * maxRadius;
+      const x = center + Math.cos(angle) * radius;
+      const y = center + Math.sin(angle) * radius;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+}
+
 function readRecentQuestionHistory() {
   if (typeof window === "undefined") return [];
 
@@ -450,19 +462,21 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const languageReadingScore = scaledScore(score, artifact.set.question_count, MOCK_LANGUAGE_READING_SCORE);
   const listeningScore = artifact.set.listening_included ? scaledScore(score, artifact.set.question_count, MOCK_LISTENING_SCORE) : 0;
   const totalMockScore = languageReadingScore + listeningScore;
-  const answerRate = Math.round((score / artifact.set.question_count) * 100);
   const sectionResultMap = Object.fromEntries(sectionResults.map((section) => [section.section_key, section]));
-  const vocabScore = scaledScore(sectionResultMap.vocab?.correct ?? 0, sectionResultMap.vocab?.question_count ?? 0, 60);
-  const grammarScore = scaledScore(sectionResultMap.grammar?.correct ?? 0, sectionResultMap.grammar?.question_count ?? 0, 60);
-  const readingScore = scaledScore(sectionResultMap.reading?.correct ?? 0, sectionResultMap.reading?.question_count ?? 0, 60);
-  const listeningGoal = 30;
-  const categoryScores = [
-    { label: "문자·어휘", score: vocabScore, goal: 35, detail: `${sectionResultMap.vocab?.correct ?? 0}/${sectionResultMap.vocab?.question_count ?? 0}` },
-    { label: "읽기", score: readingScore, goal: 35, detail: `${sectionResultMap.reading?.correct ?? 0}/${sectionResultMap.reading?.question_count ?? 0}` },
-    { label: "문법", score: grammarScore, goal: 35, detail: `${sectionResultMap.grammar?.correct ?? 0}/${sectionResultMap.grammar?.question_count ?? 0}` },
-    { label: "듣기", score: listeningScore, goal: listeningGoal, detail: "0/60" },
+  const balanceSections = [
+    sectionResultMap.vocab
+      ? { ...sectionResultMap.vocab, label: "문자·어휘" }
+      : { section_key: "vocab" as const, label: "문자·어휘", correct: 0, wrongOrBlank: 0, rate: 0, question_count: 0 },
+    sectionResultMap.grammar
+      ? { ...sectionResultMap.grammar, label: "문법" }
+      : { section_key: "grammar" as const, label: "문법", correct: 0, wrongOrBlank: 0, rate: 0, question_count: 0 },
+    sectionResultMap.reading
+      ? { ...sectionResultMap.reading, label: "읽기" }
+      : { section_key: "reading" as const, label: "읽기", correct: 0, wrongOrBlank: 0, rate: 0, question_count: 0 },
   ];
-  const historyBarHeight = Math.max(8, Math.round((totalMockScore / MOCK_TOTAL_SCORE) * 100));
+  const goalRate = 70;
+  const radarGoalPoints = radarPolygonPoints(balanceSections.map(() => goalRate));
+  const radarScorePoints = radarPolygonPoints(balanceSections.map((section) => section.rate));
   const lowestSectionRate = Math.min(...sectionResults.map((section) => section.rate));
   const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
   const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
@@ -835,49 +849,43 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                 공식 JLPT 성적표·합격 판정이 아니라, 현재 비청해 모의고사 세트의 학습 참고용 모의 합격 여부입니다.
               </small>
             </div>
-            <section className="mock-detail-result" aria-label="상세 결과">
-              <h3>상세 결과</h3>
-              <div className="mock-detail-summary">
-                <div className="mock-detail-scorebox">
-                  <span>Test 1 · {examDate}</span>
-                  <strong>{totalMockScore}/{MOCK_TOTAL_SCORE}</strong>
+            <section className="mock-detail-result mock-balance-result" aria-label="영역별 균형">
+              <div className="mock-balance-head">
+                <div>
+                  <h3>영역별 균형</h3>
+                  <p>목표 기준 {goalRate}%와 비교해 이번 시험의 약한 영역을 확인하세요.</p>
                 </div>
-                <dl>
-                  <dt>시간</dt>
-                  <dd>{artifact.set.time_limit_minutes}:00</dd>
-                  <dt>정답률</dt>
-                  <dd>{answerRate}%</dd>
-                  <dt>결과</dt>
-                  <dd>{mockPassed ? "합격" : "불합격"}</dd>
-                </dl>
+                <div className="mock-detail-legend" aria-label="그래프 범례">
+                  <span><i />내 점수</span>
+                  <span><i />목표</span>
+                </div>
               </div>
-              <div className="mock-detail-legend">
-                <span><i />내 점수</span>
-                <span><i />목표</span>
-              </div>
-              <p className="mock-detail-hint">각 영역을 클릭하면 상세 분석을 확인할 수 있도록 확장 예정입니다.</p>
-              <div className="mock-radar-panel">
+              <div className="mock-radar-panel mock-radar-panel--tri">
                 <div className="mock-radar-card mock-radar-card--top">
-                  <strong>{categoryScores[0].label}</strong>
-                  <span>{categoryScores[0].detail} · {categoryScores[0].score}</span>
+                  <strong>{balanceSections[0].label}</strong>
+                  <span>{balanceSections[0].correct}/{balanceSections[0].question_count} · {balanceSections[0].rate}%</span>
                 </div>
                 <div className="mock-radar-card mock-radar-card--left">
-                  <strong>{categoryScores[1].label}</strong>
-                  <span>{categoryScores[1].detail} · {categoryScores[1].score}</span>
+                  <strong>{balanceSections[1].label}</strong>
+                  <span>{balanceSections[1].correct}/{balanceSections[1].question_count} · {balanceSections[1].rate}%</span>
                 </div>
-                <div className="mock-radar-chart" aria-hidden="true">
-                  <span className="mock-radar-goal" />
-                  <span className="mock-radar-score" />
+                <div className="mock-radar-chart mock-radar-chart--tri" aria-label="문자·어휘, 문법, 읽기 영역별 균형 그래프" role="img">
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <polygon className="mock-radar-grid" points="50,12 82.9,69 17.1,69" />
+                    <polygon className="mock-radar-grid mock-radar-grid--mid" points="50,31 66.5,59.5 33.5,59.5" />
+                    <line x1="50" y1="50" x2="50" y2="12" />
+                    <line x1="50" y1="50" x2="82.9" y2="69" />
+                    <line x1="50" y1="50" x2="17.1" y2="69" />
+                    <polygon className="mock-radar-goal-shape" points={radarGoalPoints} />
+                    <polygon className="mock-radar-score-shape" points={radarScorePoints} />
+                  </svg>
                 </div>
                 <div className="mock-radar-card mock-radar-card--right">
-                  <strong>{categoryScores[3].label}</strong>
-                  <span>{categoryScores[3].detail} · {categoryScores[3].score}</span>
-                </div>
-                <div className="mock-radar-card mock-radar-card--bottom">
-                  <strong>{categoryScores[2].label}</strong>
-                  <span>{categoryScores[2].detail} · {categoryScores[2].score}</span>
+                  <strong>{balanceSections[2].label}</strong>
+                  <span>{balanceSections[2].correct}/{balanceSections[2].question_count} · {balanceSections[2].rate}%</span>
                 </div>
               </div>
+              <p className="mock-detail-hint">청해 제외 세트이므로 문자·어휘, 문법, 읽기 3개 영역만 표시합니다.</p>
             </section>
             <section className="mock-teacher-card" aria-label="선생님의 평가">
               <h3>선생님의 평가</h3>
@@ -887,19 +895,10 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               </div>
               <p>{passAdvice}</p>
             </section>
-            <section className="mock-history-card" aria-label="기록">
-              <h3>기록</h3>
-              <div className="mock-history-tabs" aria-label="기록 필터">
-                <button type="button">총</button><button type="button">읽기</button><button type="button">듣기</button><button type="button">어휘</button>
-              </div>
-              <div className="mock-history-chart" aria-hidden="true">
-                <span style={{ height: `${historyBarHeight}%` }}>{totalMockScore}</span>
-              </div>
-              <div className="mock-result-actions">
-                <a className="secondary-link" href="/mock-exams/n5-realistic-001">다른 시험 보기</a>
-                <a className="primary-link" href="#question-${reviewTargets[0]?.question.id ?? artifact.questions[0]?.id}">정답 보기</a>
-              </div>
-            </section>
+            <div className="mock-result-actions">
+              <a className="secondary-link" href="/mock-exams/n5-realistic-001">다른 시험 보기</a>
+              <a className="primary-link" href="#question-${reviewTargets[0]?.question.id ?? artifact.questions[0]?.id}">정답 보기</a>
+            </div>
             <div className="mock-exam-status-grid">
               {sectionResults.map((result) => (
                 <strong key={result.section_key}>
