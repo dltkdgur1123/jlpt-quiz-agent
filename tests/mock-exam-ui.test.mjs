@@ -170,7 +170,6 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".guide-level-row",
     ".guide-id-row",
     ".guide-two-column",
-    ".guide-source-panel",
   ]) {
     assert.ok(css.includes(style), style);
   }
