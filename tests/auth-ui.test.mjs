@@ -202,6 +202,7 @@ test("settings and guide avoid bordered containers nested inside cards", () => {
   assert.match(settingsToggleRule, /border:\s*0/);
   assert.match(settingsToggleRule, /border-radius:\s*0/);
   assert.match(settingsToggleRule, /padding:\s*0/);
+  assert.match(css, /\.settings-wrongnote-embedded \.settings-toggle-row \{[\s\S]*?padding-left:\s*30px/);
   assert.doesNotMatch(guideListRule, /border:\s*1px/);
   assert.match(guideListRule, /border:\s*0/);
   assert.match(guideListRule, /border-radius:\s*0/);

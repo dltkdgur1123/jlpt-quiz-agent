@@ -2076,6 +2076,9 @@ main:has(.mock-page-shell) {
 .settings-toggle-row:hover em {
   color: var(--jlpt-text, #616161);
 }
+.settings-wrongnote-embedded .settings-toggle-row {
+  padding-left: 30px;
+}
 .settings-toggle-row span {
   display: grid;
   gap: 6px;
