@@ -13,6 +13,7 @@ const authHeaderButton = () => readFileSync(new URL("../src/components/auth/Auth
 const callbackPage = () => readFileSync(new URL("../src/app/auth/callback/page.tsx", import.meta.url), "utf8");
 const setupDoc = () => readFileSync(new URL("../docs/architecture/auth-provider-dashboard-setup.md", import.meta.url), "utf8");
 const globalCss = () => readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+const kakaoLoginPng = () => readFileSync(new URL("../public/auth/kakao_login_large_wide.png", import.meta.url));
 
 test("auth panel exposes Google Kakao Naver and email login", () => {
   const source = authPanel();
@@ -32,9 +33,12 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "auth-provider-title",
     "auth-provider-subtitle",
     "Google 계정으로 계속",
-    "Kakao 계정으로 계속",
+    "카카오 로그인",
     "Naver 계정으로 계속",
     "공식 OAuth 로그인",
+    "officialImageSrc",
+    "/auth/kakao_login_large_wide.png",
+    "auth-provider-official-image",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
@@ -44,15 +48,18 @@ test("login provider buttons use platform-branded official-style button anatomy"
     ".auth-provider-google .auth-provider-mark",
     ".auth-provider-kakao .auth-provider-mark",
     ".auth-provider-naver .auth-provider-mark",
-    "#fee500",
+    "auth-provider-official-image",
     "#03c75a",
     "grid-template-columns: 52px minmax(0, 1fr)",
     "place-items: start",
     "width: auto",
     "background: transparent",
+    "width: min(600px, 100%)",
+    "max-height: 90px",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
+  assert.equal(kakaoLoginPng().subarray(1, 4).toString("ascii"), "PNG");
 });
 
 test("auth panel uses safe email magic link instead of password signup", () => {

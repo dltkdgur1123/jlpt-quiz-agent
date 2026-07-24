@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,9 +17,17 @@ function safeNextPath(value: string | null): string {
   return value;
 }
 
-const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string; title: string; subtitle: string }> = [
+const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string; title: string; subtitle: string; officialImageSrc?: string }> = [
   { provider: "google", label: "Google", tone: "google", mark: "G", title: "Google 계정으로 계속", subtitle: "공식 OAuth 로그인" },
-  { provider: "kakao", label: "Kakao", tone: "kakao", mark: "K", title: "Kakao 계정으로 계속", subtitle: "공식 OAuth 로그인" },
+  {
+    provider: "kakao",
+    label: "Kakao",
+    tone: "kakao",
+    mark: "K",
+    title: "카카오 로그인",
+    subtitle: "공식 OAuth 로그인",
+    officialImageSrc: "/auth/kakao_login_large_wide.png",
+  },
   { provider: "custom:naver", label: "Naver", tone: "naver", mark: "N", title: "Naver 계정으로 계속", subtitle: "공식 OAuth 로그인" },
 ];
 
@@ -136,7 +145,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
       {isAuthLoading ? <p className="auth-helper">확인 중</p> : null}
 
       <div className="auth-provider-grid">
-        {providers.map(({ provider, label, tone, mark, title, subtitle }) => (
+        {providers.map(({ provider, label, tone, mark, title, subtitle, officialImageSrc }) => (
           <button
             className={`auth-provider-button auth-provider-${tone}`}
             key={provider}
@@ -145,11 +154,24 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
             disabled={isLoginBusy}
             onClick={() => signInWithProvider(provider)}
           >
-            <span className="auth-provider-mark" aria-hidden="true">{mark}</span>
-            <span className="auth-provider-copy">
-              <strong className="auth-provider-title">{title}</strong>
-              <small className="auth-provider-subtitle">{subtitle}</small>
-            </span>
+            {officialImageSrc ? (
+              <Image
+                className="auth-provider-official-image"
+                src={officialImageSrc}
+                alt=""
+                width={600}
+                height={90}
+                aria-hidden="true"
+              />
+            ) : (
+              <>
+                <span className="auth-provider-mark" aria-hidden="true">{mark}</span>
+                <span className="auth-provider-copy">
+                  <strong className="auth-provider-title">{title}</strong>
+                  <small className="auth-provider-subtitle">{subtitle}</small>
+                </span>
+              </>
+            )}
           </button>
         ))}
       </div>

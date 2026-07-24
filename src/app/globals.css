@@ -2373,13 +2373,25 @@ main:has(.mock-page-shell) {
   color: #4285f4;
 }
 .login-simple-stage .auth-provider-kakao {
-  border-color: #fee500;
-  background: #fee500;
+  display: flex;
+  justify-content: center;
+  height: 90px;
+  min-height: 90px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #000000;
 }
 .login-simple-stage .auth-provider-kakao .auth-provider-mark {
   background: #000000;
   color: #fee500;
+}
+.login-simple-stage .auth-provider-official-image {
+  display: block;
+  width: min(600px, 100%);
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
 }
 .login-simple-stage .auth-provider-naver {
   border-color: #03c75a;
@@ -2469,6 +2481,14 @@ main:has(.mock-page-shell) {
   }
   .login-simple-stage .auth-provider-subtitle {
     font-size: 10px;
+  }
+  .login-simple-stage .auth-provider-kakao {
+    height: auto;
+    min-height: 0;
+    border-radius: 12px;
+  }
+  .login-simple-stage .auth-provider-official-image {
+    max-height: none;
   }
   .login-simple-stage .auth-divider,
   .login-simple-stage .auth-email-field {
