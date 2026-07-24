@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { AuthHeaderButton } from "@/components/auth/AuthHeaderButton";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type SiteHeaderProps = {
   active?: "home" | "mock" | "history" | "guide";
@@ -11,6 +12,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ active = "home" }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [headerUser, setHeaderUser] = useState(false);
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 8);
@@ -19,19 +21,44 @@ export function SiteHeader({ active = "home" }: SiteHeaderProps) {
     return () => window.removeEventListener("scroll", updateScrollState);
   }, []);
 
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    supabase.auth.getSession().then(({ data }) => {
+      setHeaderUser(Boolean(data.session?.user));
+    });
+
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setHeaderUser(Boolean(session?.user));
+    });
+
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const mobileAccountHref = headerUser ? "/settings" : "/login";
+
   return (
-    <header className={`home-topbar site-header${isScrolled ? " is-scrolled" : ""}`}>
-      <Link className="home-brand" href="/">
-        <span aria-hidden="true" />
-        <strong>HYOKU JLPT</strong>
-      </Link>
-      <nav aria-label="메인 메뉴" className="home-nav">
-        <Link className={active === "home" ? "active" : undefined} href="/">홈</Link>
-        <Link className={active === "mock" ? "active" : undefined} href="/mock-exams/n5-realistic-001">모의고사</Link>
-        <Link className={active === "history" ? "active" : undefined} href="/dashboard">학습 기록</Link>
-        <Link className={active === "guide" ? "active" : undefined} href="/guide">수험안내</Link>
+    <>
+      <header className={`home-topbar site-header${isScrolled ? " is-scrolled" : ""}`}>
+        <Link className="home-brand" href="/">
+          <span aria-hidden="true" />
+          <strong>HYOKU JLPT</strong>
+        </Link>
+        <nav aria-label="메인 메뉴" className="home-nav">
+          <Link className={active === "home" ? "active" : undefined} href="/">홈</Link>
+          <Link className={active === "mock" ? "active" : undefined} href="/mock-exams/n5-realistic-001">모의고사</Link>
+          <Link className={active === "history" ? "active" : undefined} href="/dashboard">학습 기록</Link>
+          <Link className={active === "guide" ? "active" : undefined} href="/guide">수험안내</Link>
+        </nav>
+        <AuthHeaderButton />
+      </header>
+      <nav aria-label="모바일 하단 메뉴" className="mobile-bottom-nav">
+        <Link className="mobile-bottom-nav-item" data-active={active === "home"} href="/">홈</Link>
+        <Link className="mobile-bottom-nav-item" data-active={active === "mock"} href="/mock-exams/n5-realistic-001">모의고사</Link>
+        <Link className="mobile-bottom-nav-item" data-active={active === "history"} href="/dashboard">기록</Link>
+        <Link className="mobile-bottom-nav-item" data-active={active === "guide"} href="/guide">수험안내</Link>
+        <Link className="mobile-bottom-nav-item" data-active={false} href={mobileAccountHref}>{headerUser ? "계정" : "로그인"}</Link>
       </nav>
-      <AuthHeaderButton />
-    </header>
+    </>
   );
 }

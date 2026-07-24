@@ -76,6 +76,17 @@ test("login page uses a compact auth form instead of oversized controls", () => 
   assert.match(css, /\.login-simple-stage \{[\s\S]*?place-items: start center/);
 });
 
+test("mobile layout uses bottom tabs and compact shorts thumbnails", () => {
+  const css = globalCss();
+  assert.match(css, /\.mobile-bottom-nav \{/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mobile-bottom-nav \{[\s\S]*?display: grid/);
+  assert.match(css, /\.mobile-bottom-nav-item\[data-active="true"\] \{[\s\S]*?color: var\(--jlpt-primary/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid-link \{[\s\S]*?aspect-ratio: 9 \/ 16/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid-link \{[\s\S]*?max-height: 220px/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?padding-bottom: calc\(88px \+ env\(safe-area-inset-bottom\)\)/);
+});
+
 test("auth panel uses safe email magic link instead of password signup", () => {
   const source = authPanel();
   assert.match(source, /이메일 링크/);
@@ -145,7 +156,11 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(panelSource, /소셜 계정으로 바로 시작할 수 있습니다/);
   assert.match(headerSource, /학습 기록/);
   assert.match(headerSource, /수험안내/);
+  assert.match(headerSource, /mobile-bottom-nav/);
+  assert.match(headerSource, /모바일 하단 메뉴/);
   assert.match(headerSource, /active === "guide"/);
+  assert.match(headerSource, /mobileAccountHref/);
+  assert.match(headerSource, /headerUser \? "계정" : "로그인"/);
   assert.doesNotMatch(headerButtonSource, /학습 기록/);
   assert.match(headerButtonSource, /설정/);
   assert.match(headerButtonSource, /로그아웃/);
