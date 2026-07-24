@@ -977,13 +977,6 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               })}
             </nav>
           </div>
-          {submitWarning ? (
-            <div className="mock-question-nav-confirm" role="alert">
-              <strong>미응답 {unansweredCount}문항</strong>
-              <button onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
-              <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
-            </div>
-          ) : null}
           <div className="mock-restart-slot mock-restart-slot--rail">
             {restartWarning ? (
               <div className="mock-restart-expanded" role="alert">
@@ -1000,10 +993,20 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               </button>
             )}
           </div>
-          <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
-            제출하기
-          </button>
-          {submitWarning ? <p className="mock-question-nav-warning">미응답 {unansweredCount}문항 확인 필요</p> : null}
+          {submitWarning ? (
+            <div className="mock-submit-confirm-panel" role="alert">
+              <strong>미응답 {unansweredCount}문항</strong>
+              <p>아직 답하지 않은 문제가 있습니다.</p>
+              <div>
+                <button onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
+                <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
+              </div>
+            </div>
+          ) : (
+            <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
+              제출하기
+            </button>
+          )}
         </aside>
       </div>
         </>
