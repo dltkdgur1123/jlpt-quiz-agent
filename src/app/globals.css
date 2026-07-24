@@ -4615,13 +4615,13 @@ button:hover:not(:disabled),
 .dashboard-bars i {
   position: relative !important;
   display: flex !important;
-  align-items: flex-start !important;
+  align-items: flex-end !important;
   justify-content: center !important;
   align-self: end !important;
-  width: min(100%, 36px) !important;
+  width: min(100%, 44px) !important;
   max-width: none !important;
   min-height: 56px !important;
-  padding-top: 9px !important;
+  padding: 0 4px 10px !important;
   box-sizing: border-box !important;
   border-radius: 10px 10px 0 0 !important;
   background: #eeeeee !important;
@@ -4656,7 +4656,9 @@ button:hover:not(:disabled),
     padding-inline: 2px !important;
   }
   .dashboard-bars i {
-    width: min(100%, 28px) !important;
+    width: min(100%, 32px) !important;
+    padding-inline: 2px !important;
+    padding-bottom: 8px !important;
   }
   .dashboard-bars b {
     font-size: .74rem !important;
