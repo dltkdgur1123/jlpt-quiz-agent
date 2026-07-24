@@ -280,6 +280,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /Mobile dashboard connected document flow: remove gray breaks between content sections/);
   assert.match(css, /Mobile dashboard soft dividers: keep section lines quiet and non-boxy/);
   assert.match(css, /Mobile dashboard breathing room: connected sections keep comfortable vertical padding/);
+  assert.match(css, /Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing/);
+  assert.match(css, /--dashboard-mobile-section-bottom-room: 18px/);
   assert.match(css, /--dashboard-mobile-section-y: 30px/);
   assert.match(css, /--dashboard-mobile-summary-y: 22px/);
   assert.match(css, /--dashboard-mobile-divider: #f1f1f1/);
@@ -288,6 +290,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(n \+ 3\) \{[\s\S]*?border-top: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-section-y\) 18px !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-summary-y\) 14px !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-panel > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-wrong-note-card > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-weak-full > :last-child \{[\s\S]*?margin-bottom: var\(--dashboard-mobile-section-bottom-room\) !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-bars \{[\s\S]*?margin-bottom: var\(--dashboard-mobile-section-bottom-room\) !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?gap: 0 !important;[\s\S]*?background: #ffffff !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-top,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-grid-bottom,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-weak-full \{[\s\S]*?gap: 0 !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);

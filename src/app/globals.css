@@ -5352,10 +5352,12 @@ main:has(.home-page-frame) {
   /* Mobile dashboard connected document flow: remove gray breaks between content sections */
   /* Mobile dashboard soft dividers: keep section lines quiet and non-boxy */
   /* Mobile dashboard breathing room: connected sections keep comfortable vertical padding */
+  /* Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing */
   .figma-shell.dashboard-page {
     --dashboard-mobile-divider: #f1f1f1;
     --dashboard-mobile-section-y: 30px;
     --dashboard-mobile-summary-y: 22px;
+    --dashboard-mobile-section-bottom-room: 18px;
     width: 100% !important;
     max-width: none !important;
     gap: 0 !important;
@@ -5405,6 +5407,20 @@ main:has(.home-page-frame) {
   .figma-shell.dashboard-page .dashboard-grid-bottom > *,
   .figma-shell.dashboard-page .dashboard-weak-full {
     border-top: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-panel > :last-child,
+  .figma-shell.dashboard-page .dashboard-goal-card > :last-child,
+  .figma-shell.dashboard-page .dashboard-wrong-note-card > :last-child,
+  .figma-shell.dashboard-page .dashboard-weak-full > :last-child {
+    margin-bottom: var(--dashboard-mobile-section-bottom-room) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-bars {
+    margin-bottom: var(--dashboard-mobile-section-bottom-room) !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row:last-child,
+  .figma-shell.dashboard-page .dashboard-wrong-note-recent > :last-child,
+  .figma-shell.dashboard-page .dashboard-weak-grid > :last-child {
+    margin-bottom: 0 !important;
   }
   .figma-shell.dashboard-page .dashboard-live-note,
   .figma-shell.dashboard-page .dashboard-live-data,
