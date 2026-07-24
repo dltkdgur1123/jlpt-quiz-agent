@@ -2392,20 +2392,21 @@ main:has(.mock-page-shell) {
   }
 }
 .login-page-main {
-  padding: 0 0 80px;
+  min-height: auto !important;
+  padding: 0 0 24px !important;
   background: var(--figma-bg);
 }
 .login-page-shell {
   width: 100%;
-  min-height: 100vh;
+  min-height: auto !important;
   gap: 0;
 }
 .login-simple-stage {
   width: 100%;
-  min-height: calc(100vh - 80px);
+  min-height: auto !important;
   display: grid;
-  place-items: center;
-  padding: 40px 24px 80px;
+  place-items: start center;
+  padding: 48px 24px 24px !important;
 }
 .login-simple-stage .auth-card--page {
   width: min(420px, 100%);
@@ -2587,8 +2588,8 @@ main:has(.mock-page-shell) {
 }
 @media (max-width: 760px) {
   .login-simple-stage {
-    min-height: calc(100vh - 64px);
-    padding: 28px 16px 64px;
+    min-height: auto !important;
+    padding: 28px 16px 24px !important;
   }
   .login-simple-stage .auth-card--page {
     gap: 16px;

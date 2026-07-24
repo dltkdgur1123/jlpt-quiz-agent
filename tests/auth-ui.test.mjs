@@ -70,6 +70,10 @@ test("login page uses a compact auth form instead of oversized controls", () => 
   assert.match(css, /\.login-simple-stage \.auth-email-field \{[\s\S]*?font-size: 14px/);
   assert.match(css, /\.login-simple-stage \.auth-email-field input \{[\s\S]*?height: 52px/);
   assert.match(css, /\.login-simple-stage \.auth-email-submit,[\s\S]*?height: 52px/);
+  assert.match(css, /\.login-page-main \{[\s\S]*?min-height: auto/);
+  assert.match(css, /\.login-page-shell \{[\s\S]*?min-height: auto/);
+  assert.match(css, /\.login-simple-stage \{[\s\S]*?min-height: auto/);
+  assert.match(css, /\.login-simple-stage \{[\s\S]*?place-items: start center/);
 });
 
 test("auth panel uses safe email magic link instead of password signup", () => {
