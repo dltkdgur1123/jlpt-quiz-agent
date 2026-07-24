@@ -226,10 +226,6 @@ function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition
   return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
 }
 
-function problemForQuestion(question: MockExamQuestion) {
-  return PROBLEM_DEFINITIONS.find((problem) => problem.questionTypes.includes(question.question_type));
-}
-
 function formatSectionTitleKo(sectionKey: MockExamSectionKey) {
   switch (sectionKey) {
     case "vocab":
@@ -241,45 +237,6 @@ function formatSectionTitleKo(sectionKey: MockExamSectionKey) {
     default:
       return sectionKey;
   }
-}
-
-function formatProblemTitleKo(problem: ProblemDefinition) {
-  switch (problem.problemNo) {
-    case 1:
-      return "한자 읽기";
-    case 2:
-      return "표기";
-    case 3:
-      return "문맥 규정";
-    case 4:
-      return "바꿔 말하기/유의어";
-    case 5:
-      return "문법 형식 판단";
-    case 6:
-      return "문장 조립";
-    case 7:
-      return "문장 문법";
-    case 8:
-      return "내용 이해";
-    case 9:
-      return "정보 검색";
-    default:
-      return problem.title;
-  }
-}
-
-function formatReviewMeta(question: MockExamQuestion) {
-  const problem = problemForQuestion(question);
-  if (!problem) {
-    return {
-      questionNo: `${question.sort_order}번`,
-      typeLabel: "문항 정보",
-    };
-  }
-  return {
-    questionNo: `${question.sort_order}번`,
-    typeLabel: `문제${problem.problemNo} · ${formatProblemTitleKo(problem)}`,
-  };
 }
 
 function formatMockExamDate() {
@@ -467,6 +424,8 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
       };
     })
     .filter((target) => !target.isCorrect);
+  const wrongReviewCount = reviewTargets.filter((target) => target.selectedChoice).length;
+  const unansweredReviewCount = reviewTargets.length - wrongReviewCount;
 
   const weakestSections = [...sectionResults]
     .sort((a, b) => b.wrongOrBlank - a.wrongOrBlank || a.rate - b.rate)
@@ -493,7 +452,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
   const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
   const passAdvice = mockPassed
-    ? "현재 세트 기준으로는 합격권입니다. 다시 볼 문제로 약한 영역만 정리하세요."
+    ? "현재 세트 기준으로는 합격권입니다. 오답노트로 약한 영역만 정리하세요."
     : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
   const examDate = formatMockExamDate();
 
@@ -920,32 +879,23 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
               ) : (
                 <p>전 문항 정답입니다. 다음 세트로 넘어가도 좋습니다.</p>
               )}
-              <p>다시 볼 문제 {reviewTargets.length}문항을 아래에서 바로 확인하세요.</p>
+              <p>복습할 문제 {reviewTargets.length}문항은 오답노트 흐름으로 관리합니다.</p>
             </div>
             {reviewTargets.length > 0 ? (
-              <div className="mock-exam-feedback-summary mock-review-targets-card">
-                <h3>다시 볼 문제</h3>
-                <p>틀렸거나 풀지 않은 문제를 먼저 모았습니다. 번호를 누르면 해당 해설로 이동합니다.</p>
-                <ol className="mock-exam-review-list">
-                  {reviewTargets.slice(0, 12).map(({ question, selectedChoice, correctChoice }) => {
-                    const reviewMeta = formatReviewMeta(question);
-                    const reviewStatus = selectedChoice ? "오답" : "미응답";
-                    return (
-                      <li key={question.id}>
-                        <a className="mock-review-main-link" href={`#question-${question.id}`}>
-                          <strong>{reviewMeta.questionNo}</strong>
-                          <span>{reviewMeta.typeLabel}</span>
-                        </a>
-                        <p>
-                          <em data-status={reviewStatus}>{reviewStatus}</em>
-                          <span>내 답: {selectedChoice ? CHOICE_NUMBERS[selectedChoice] : "미응답"}</span>
-                          <span>정답: {CHOICE_NUMBERS[correctChoice]}</span>
-                        </p>
-                      </li>
-                    );
-                  })}
-                </ol>
-                {reviewTargets.length > 12 ? <p>상위 12문항만 먼저 표시합니다.</p> : null}
+              <div className="mock-exam-feedback-summary mock-wrong-note-card">
+                <h3>{saveStatus === "saved" ? "오답노트에 기록했습니다" : "오답노트에 저장하려면 로그인이 필요합니다"}</h3>
+                <div className="mock-wrong-note-counts" aria-label="오답노트 기록 대상">
+                  <strong>오답 {wrongReviewCount}문항</strong>
+                  <strong>미응답 {unansweredReviewCount}문항</strong>
+                </div>
+                <p>
+                  {saveStatus === "saved"
+                    ? "틀렸거나 풀지 않은 문제는 학습기록에서 다시 확인할 수 있습니다."
+                    : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다."}
+                </p>
+                <a className="primary-link" href={saveStatus === "saved" ? "/dashboard#wrong-note" : "/login"}>
+                  {saveStatus === "saved" ? "학습기록에서 보기" : "로그인하기"}
+                </a>
               </div>
             ) : null}
             <p>점수 환산은 모의 세트 기준이며, 실제 JLPT 공식 성적과는 다를 수 있습니다.</p>

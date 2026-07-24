@@ -13,10 +13,24 @@ type DashboardAttempt = {
   mock_exam_sets?: { set_title?: string | null; jlpt_level?: string | null } | null;
 };
 
+type WrongNoteItem = {
+  id: string;
+  attempt_id: string;
+  question_no: number | null;
+  section_label: string;
+  status: "wrong" | "unanswered";
+};
+
 type DashboardResponse = {
   attempts: DashboardAttempt[];
   total_questions: number;
   average_rate: number;
+  wrong_note?: {
+    total_count: number;
+    wrong_count: number;
+    unanswered_count: number;
+    recent_items: WrongNoteItem[];
+  };
 };
 
 export function DashboardAttemptData() {
@@ -76,11 +90,40 @@ export function DashboardAttemptData() {
     return <p className="dashboard-live-note">아직 저장된 모의고사 기록이 없습니다.</p>;
   }
 
+  const wrongNote = data?.wrong_note;
+  const recentItems = wrongNote?.recent_items ?? [];
+
   return (
-    <div className="dashboard-live-data">
-      <p>저장된 최근 기록</p>
-      <strong>{latest.score_total ?? latest.correct_count} / {latest.score_max ?? latest.question_count}</strong>
-      <span>평균 정답률 {data?.average_rate ?? 0}% · 누적 풀이 {data?.total_questions ?? 0}문항</span>
+    <div className="dashboard-live-stack">
+      <div className="dashboard-live-data">
+        <p>저장된 최근 기록</p>
+        <strong>{latest.score_total ?? latest.correct_count} / {latest.score_max ?? latest.question_count}</strong>
+        <span>평균 정답률 {data?.average_rate ?? 0}% · 누적 풀이 {data?.total_questions ?? 0}문항</span>
+      </div>
+
+      <section className="dashboard-wrong-note" id="wrong-note" aria-label="오답노트">
+        <div>
+          <p>오답노트</p>
+          <h3>{wrongNote?.total_count ? `복습할 문제 ${wrongNote.total_count}문항` : "복습할 문제가 없습니다"}</h3>
+          <span>
+            {wrongNote?.total_count
+              ? `오답 ${wrongNote.wrong_count} · 미응답 ${wrongNote.unanswered_count}`
+              : "최근 모의고사에서 틀렸거나 풀지 않은 문제가 여기에 기록됩니다."}
+          </span>
+        </div>
+
+        {recentItems.length > 0 ? (
+          <ul>
+            {recentItems.map((item) => (
+              <li key={item.id}>
+                <strong>{item.question_no ? `${item.question_no}번` : "문항"}</strong>
+                <span>{item.section_label}</span>
+                <em data-status={item.status}>{item.status === "wrong" ? "오답" : "미응답"}</em>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
     </div>
   );
 }

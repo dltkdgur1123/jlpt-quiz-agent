@@ -172,6 +172,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /저장된 최근 기록/);
+  assert.match(clientSource, /오답노트/);
+  assert.match(clientSource, /wrong_note/);
+  assert.match(clientSource, /복습할 문제/);
 });
 
 test("mock exam attempt API validates login and writes attempt answer result rows", () => {
@@ -182,6 +185,8 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "mock_exam_attempts",
     "mock_exam_answers",
     "mock_exam_section_results",
+    "wrong_note",
+    "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
     "deterministicUuid",
     "auth.getUser",
     "onConflict: \"mock_exam_set_id,sort_order\"",
@@ -365,13 +370,14 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "최근 출제 문항 기록",
     "다음 랜덤 세트부터",
     "복습 우선순위",
-    "다시 볼 문제",
-    "틀렸거나 풀지 않은 문제를 먼저 모았습니다.",
-    "mock-review-targets-card",
-    "mock-review-main-link",
+    "복습할 문제",
+    "오답노트에 기록했습니다",
+    "오답노트에 저장하려면 로그인이 필요합니다",
+    "mock-wrong-note-card",
+    "mock-wrong-note-counts",
+    "학습기록에서 보기",
     "reviewTargets",
     "weakestSections",
-    "mock-exam-review-list",
     "progressPercent",
     "mock-exam-progress-bar",
     "mock-exam-hero",

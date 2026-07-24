@@ -39,6 +39,12 @@ const SECTION_TITLES: Record<ActiveMockExamSectionKey, string> = {
   reading: "読解",
 };
 
+const SECTION_TITLES_KO: Record<ActiveMockExamSectionKey, string> = {
+  vocab: "문자·어휘",
+  grammar: "문법",
+  reading: "읽기",
+};
+
 function deterministicUuid(namespace: string, value: string) {
   const hash = createHash("sha256").update(`${namespace}:${value}`).digest("hex");
   return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
@@ -62,6 +68,13 @@ function errorMessage(error: unknown, fallback: string) {
     }
   }
   return fallback;
+}
+
+function sectionTitleKo(sectionKey: unknown) {
+  if (sectionKey === "vocab" || sectionKey === "grammar" || sectionKey === "reading") {
+    return SECTION_TITLES_KO[sectionKey];
+  }
+  return "모의고사";
 }
 
 export async function POST(request: NextRequest) {
@@ -219,7 +232,54 @@ export async function GET(request: NextRequest) {
         )
       : 0;
 
-    return NextResponse.json({ attempts: attempts ?? [], total_questions: totalQuestions, average_rate: averageRate });
+    const attemptIds = (attempts ?? []).map((attempt) => attempt.id);
+    let wrongNote = {
+      total_count: 0,
+      wrong_count: 0,
+      unanswered_count: 0,
+      recent_items: [] as Array<{
+        id: string;
+        attempt_id: string;
+        question_no: number | null;
+        section_label: string;
+        status: "wrong" | "unanswered";
+      }>,
+    };
+
+    if (attemptIds.length > 0) {
+      const { data: wrongAnswers, error: wrongAnswerError } = await client
+        .from("mock_exam_answers")
+        .select("id, mock_exam_attempt_id, selected_choice, is_correct, mock_exam_questions(sort_order, mock_exam_sections(section_key))")
+        .in("mock_exam_attempt_id", attemptIds)
+        .eq("is_correct", false)
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (wrongAnswerError) throw wrongAnswerError;
+
+      const rows = wrongAnswers ?? [];
+      const wrongCount = rows.filter((row) => Boolean(row.selected_choice)).length;
+      const unansweredCount = rows.length - wrongCount;
+
+      wrongNote = {
+        total_count: rows.length,
+        wrong_count: wrongCount,
+        unanswered_count: unansweredCount,
+        recent_items: rows.slice(0, 6).map((row) => {
+          const question = Array.isArray(row.mock_exam_questions) ? row.mock_exam_questions[0] : row.mock_exam_questions;
+          const section = Array.isArray(question?.mock_exam_sections) ? question?.mock_exam_sections[0] : question?.mock_exam_sections;
+          return {
+            id: row.id,
+            attempt_id: row.mock_exam_attempt_id,
+            question_no: typeof question?.sort_order === "number" ? question.sort_order : null,
+            section_label: sectionTitleKo(section?.section_key),
+            status: row.selected_choice ? "wrong" : "unanswered",
+          };
+        }),
+      };
+    }
+
+    return NextResponse.json({ attempts: attempts ?? [], total_questions: totalQuestions, average_rate: averageRate, wrong_note: wrongNote });
   } catch (error) {
     const message = errorMessage(error, "failed to load mock exam attempts");
     const status = message.includes("login required") ? 401 : 500;
