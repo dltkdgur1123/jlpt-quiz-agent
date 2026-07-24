@@ -11,6 +11,7 @@ const stats = [
 
 const bars = [42, 56, 35, 68, 74, 31, 63];
 const days = ["월", "화", "수", "목", "금", "토", "일"];
+const weekLabels = ["7/13 월", "7/14 화", "7/15 수", "7/16 목", "7/17 금", "7/18 토", "7/19 일"];
 const weeklyGoal = 70;
 const weeklyMax = Math.max(...bars, weeklyGoal);
 const weeklyTotal = bars.reduce((sum, value) => sum + value, 0);
@@ -74,7 +75,7 @@ export default function DashboardPage() {
                 <div className={index === weeklyPeakIndex ? "hot" : ""} key={days[index]}>
                   <b>{bar}<small>문항</small></b>
                   <i style={{ height: `${Math.max(18, Math.round((bar / weeklyMax) * 168))}px` }} />
-                  <span>{days[index]}</span>
+                  <span>{weekLabels[index]}</span>
                 </div>
               ))}
             </div>
