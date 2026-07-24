@@ -312,9 +312,24 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   const [submitWarning, setSubmitWarning] = useState<string | null>(null);
   const [restartWarning, setRestartWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [authStatus, setAuthStatus] = useState<"loading" | "signed_in" | "signed_out">("loading");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    supabase.auth.getSession().then(({ data }) => {
+      setAuthStatus(data.session ? "signed_in" : "signed_out");
+    });
+
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthStatus(session ? "signed_in" : "signed_out");
+    });
+
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const draft = readInProgressDraft(artifact.set.set_code);
@@ -455,6 +470,25 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
     ? "현재 세트 기준으로는 합격권입니다. 오답노트로 약한 영역만 정리하세요."
     : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
   const examDate = formatMockExamDate();
+  const isAuthenticatedForWrongNote = authStatus === "signed_in" || saveStatus === "saved";
+  const wrongNoteTitle =
+    saveStatus === "saved"
+      ? "오답노트에 기록했습니다"
+      : saveStatus === "saving" || authStatus === "loading"
+        ? "오답노트 기록을 확인 중입니다"
+        : isAuthenticatedForWrongNote
+          ? "오답노트 기록을 완료하지 못했습니다"
+          : "오답노트에 저장하려면 로그인이 필요합니다";
+  const wrongNoteHelp =
+    saveStatus === "saved"
+      ? "틀렸거나 풀지 않은 문제는 학습기록에서 다시 확인할 수 있습니다."
+      : saveStatus === "saving" || authStatus === "loading"
+        ? "로그인 상태와 저장 결과를 확인하고 있습니다."
+        : isAuthenticatedForWrongNote
+          ? "로그인은 확인됐지만 저장 응답을 완료하지 못했습니다. 학습기록에서 저장 여부를 확인해 주세요."
+          : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다.";
+  const wrongNoteHref = isAuthenticatedForWrongNote ? "/dashboard#wrong-note" : "/login";
+  const wrongNoteCta = isAuthenticatedForWrongNote ? "학습기록에서 보기" : "로그인하기";
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
@@ -552,10 +586,13 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
       const accessToken = data.session?.access_token;
 
       if (!accessToken) {
+        setAuthStatus("signed_out");
         setSaveStatus("login_required");
         setSaveMessage("로그인하면 이 모의고사 결과가 대시보드에 저장됩니다.");
         return;
       }
+
+      setAuthStatus("signed_in");
 
       const answerRows = artifact.questions.map((question) => {
         const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
@@ -883,18 +920,14 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
             </div>
             {reviewTargets.length > 0 ? (
               <div className="mock-exam-feedback-summary mock-wrong-note-card">
-                <h3>{saveStatus === "saved" ? "오답노트에 기록했습니다" : "오답노트에 저장하려면 로그인이 필요합니다"}</h3>
+                <h3>{wrongNoteTitle}</h3>
                 <div className="mock-wrong-note-counts" aria-label="오답노트 기록 대상">
                   <strong>오답 {wrongReviewCount}문항</strong>
                   <strong>미응답 {unansweredReviewCount}문항</strong>
                 </div>
-                <p>
-                  {saveStatus === "saved"
-                    ? "틀렸거나 풀지 않은 문제는 학습기록에서 다시 확인할 수 있습니다."
-                    : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다."}
-                </p>
-                <a className="primary-link" href={saveStatus === "saved" ? "/dashboard#wrong-note" : "/login"}>
-                  {saveStatus === "saved" ? "학습기록에서 보기" : "로그인하기"}
+                <p>{wrongNoteHelp}</p>
+                <a className="primary-link" href={wrongNoteHref}>
+                  {wrongNoteCta}
                 </a>
               </div>
             ) : null}
