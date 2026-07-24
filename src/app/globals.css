@@ -3778,3 +3778,23 @@ button:hover:not(:disabled),
 .auth-profile-dropdown button {
   color: var(--jlpt-primary-hover) !important;
 }
+
+/* Home footer continuation: keep the bottom below Shorts connected as white */
+main:has(.home-page-frame) {
+  background: #ffffff !important;
+  padding-bottom: 0 !important;
+}
+.home-page-frame {
+  width: 100% !important;
+  min-height: 100vh !important;
+  background: #ffffff !important;
+}
+.home-page-frame .home-redesign-shell {
+  background: #ffffff !important;
+  padding-bottom: clamp(96px, 10vw, 160px) !important;
+}
+.home-shorts-grid-section {
+  background: #ffffff !important;
+  margin-bottom: 0 !important;
+  padding-bottom: clamp(96px, 10vw, 160px) !important;
+}
