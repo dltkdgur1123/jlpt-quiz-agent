@@ -1828,21 +1828,15 @@ main:has(.mock-page-shell) {
 }
 .settings-card-head {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
   align-items: start;
 }
 .settings-card-head > span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  background: #fff5f5;
   color: var(--jlpt-primary, #d32f2f);
   font-size: 13px;
   font-weight: 900;
+  line-height: 1.9;
 }
 .settings-card-head h2 {
   margin: 0 0 6px !important;
@@ -2020,31 +2014,6 @@ main:has(.mock-page-shell) {
   font-weight: 700;
   line-height: 1.55;
   word-break: keep-all;
-}
-.settings-info-card ul {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.settings-info-card li {
-  position: relative;
-  padding-left: 24px;
-  color: var(--jlpt-title, #212121);
-  font-weight: 750;
-  line-height: 1.65;
-  word-break: keep-all;
-}
-.settings-info-card li::before {
-  content: "";
-  position: absolute;
-  top: .75em;
-  left: 4px;
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: var(--jlpt-primary, #d32f2f);
 }
 .settings-save-state {
   margin: 0;

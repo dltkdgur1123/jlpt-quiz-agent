@@ -98,22 +98,25 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.doesNotMatch(source, /합격 보장|출제 예상|공식 문제/);
 });
 
-test("settings page provides account learning defaults and safe service guidance", () => {
+test("settings page provides account learning defaults without extra service notice", () => {
   const pageSource = settingsPage();
   const clientSource = settingsClient();
   assert.match(pageSource, /<SiteHeader \/>/);
   assert.match(pageSource, /<SettingsClient \/>/);
   assert.match(clientSource, /SETTINGS_STORAGE_KEY/);
   assert.match(clientSource, /jlpt-quiz-user-settings/);
+  assert.match(clientSource, /<span>01<\/span>/);
+  assert.match(clientSource, /<span>04<\/span>/);
   assert.match(clientSource, /기본 JLPT 레벨/);
   assert.match(clientSource, /N5/);
   assert.match(clientSource, /오답노트/);
   assert.match(clientSource, /미응답 문제 포함/);
   assert.match(clientSource, /취약 영역 기준/);
-  assert.match(clientSource, /출제 체감 score는 학습자 응답 기반 참고 지표입니다/);
-  assert.match(clientSource, /공식 JLPT 출제 이력이나 합격 가능성을 의미하지 않습니다/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /signOut/);
+  assert.doesNotMatch(clientSource, /서비스 안내/);
+  assert.doesNotMatch(clientSource, /출제 체감 score는 학습자 응답 기반 참고 지표입니다/);
+  assert.doesNotMatch(clientSource, /공식 JLPT 출제 이력이나 합격 가능성을 의미하지 않습니다/);
   assert.doesNotMatch(clientSource, /결제|구독|합격 보장|출제 예상/);
 });
 

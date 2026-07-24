@@ -227,21 +227,6 @@ export function SettingsClient() {
           </div>
           <p className="settings-inline-note">현재 기준: <strong>{selectedWeakness.label}</strong></p>
         </article>
-
-        <article className="dashboard-panel settings-card settings-wide-card settings-info-card">
-          <div className="settings-card-head">
-            <span>05</span>
-            <div>
-              <h2>서비스 안내</h2>
-              <p>점수와 공식성에 대한 기준을 확인합니다.</p>
-            </div>
-          </div>
-          <ul>
-            <li>출제 체감 score는 학습자 응답 기반 참고 지표입니다.</li>
-            <li>공식 JLPT 출제 이력이나 합격 가능성을 의미하지 않습니다.</li>
-            <li>실제 응시 전에는 공식 JLPT 안내와 시험장 공지를 확인해주세요.</li>
-          </ul>
-        </article>
       </section>
 
       <p className="settings-save-state" aria-live="polite">

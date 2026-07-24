@@ -174,10 +174,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "word-break: keep-all",
     ".settings-hero",
     ".settings-grid",
+    ".settings-card-head > span",
+    "grid-template-columns: auto minmax(0, 1fr)",
     ".settings-level-button[data-selected=\"true\"]",
     ".settings-toggle-row",
     ".settings-option-grid",
-    ".settings-info-card li::before",
   ]) {
     assert.ok(css.includes(style), style);
   }
