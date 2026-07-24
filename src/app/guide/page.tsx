@@ -2,12 +2,6 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const sourceUrl = "https://www.jlpt.or.kr/html/information_02.html";
 
-const guidePriorityItems = [
-  { label: "신분증·필기구·전자기기", detail: "실물 신분증, HB연필/샤프, 지우개를 먼저 확인하세요." },
-  { label: "입실 전", detail: "휴대전화·스마트워치는 전원을 끄고 감독 지시에 따르세요." },
-  { label: "응시 후", detail: "성적·주소·합격인정서 안내는 공식 공지를 최종 기준으로 확인하세요." },
-];
-
 const guideCards = [
   {
     no: "01",
@@ -73,21 +67,6 @@ export default function GuidePage() {
           </p>
           <div className="guide-hero-actions">
             <a className="guide-secondary-link" href={sourceUrl} rel="noreferrer" target="_blank">공식 안내 원문 보기</a>
-          </div>
-        </section>
-
-        <section className="guide-priority-strip" aria-labelledby="guide-priority-title">
-          <div>
-            <p className="section-eyebrow">QUICK CHECK</p>
-            <h2 id="guide-priority-title">시험 전 3분 체크</h2>
-          </div>
-          <div className="guide-priority-list">
-            {guidePriorityItems.map((item) => (
-              <article key={item.label}>
-                <strong>{item.label}</strong>
-                <span>{item.detail}</span>
-              </article>
-            ))}
           </div>
         </section>
 
