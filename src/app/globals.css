@@ -3518,6 +3518,51 @@ button:hover:not(:disabled),
   border-color: var(--jlpt-primary-hover) !important;
   color: var(--jlpt-primary-hover) !important;
 }
+.mock-exam-seen-feedback {
+  gap: 12px !important;
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid var(--jlpt-border) !important;
+}
+.mock-exam-seen-feedback h4 {
+  margin: 0 !important;
+  color: var(--jlpt-title) !important;
+  font-size: 18px !important;
+  font-weight: 750 !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.035em !important;
+}
+.quiz-card .mock-exam-answer-review .mock-exam-seen-feedback h4,
+.result-card .mock-exam-seen-feedback h4,
+.mock-page-shell .mock-exam-seen-feedback h4 {
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.035em !important;
+}
+.mock-exam-seen-feedback .feedback-buttons {
+  gap: 10px !important;
+}
+.mock-exam-seen-feedback .feedback-buttons button {
+  min-height: 46px !important;
+  border: 1px solid var(--jlpt-border) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: var(--jlpt-title) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+.mock-exam-seen-feedback .feedback-buttons button:hover {
+  background: #fafafa !important;
+  border-color: #bdbdbd !important;
+}
+.mock-exam-seen-feedback .feedback-buttons button[data-selected="true"] {
+  border-color: var(--jlpt-title) !important;
+  background: #fafafa !important;
+  color: var(--jlpt-title) !important;
+  font-weight: 800 !important;
+}
 @media (min-width: 760px) {
   .mock-exam-sticky-status {
     grid-template-columns: minmax(0, 1fr) auto 170px !important;

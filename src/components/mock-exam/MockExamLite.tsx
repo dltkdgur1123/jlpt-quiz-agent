@@ -88,9 +88,9 @@ type MockExamDraft = {
 };
 
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
-  yes: "본 적 있음",
-  no: "본 적 없음",
-  unknown: "모르겠음",
+  yes: "그렇게 느껴짐",
+  no: "그렇지 않음",
+  unknown: "잘 모르겠음",
 };
 
 const MOCK_TOTAL_SCORE = 180;
@@ -710,7 +710,7 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
                     <p>정답: {CHOICE_NUMBERS[currentCorrectChoice]}</p>
                     <p>{currentQuestion.question.explanation}</p>
                     <div className="mock-exam-seen-feedback">
-                      <h4>이 문제가 실제 JLPT에서 출제된 적 있는 것처럼 느껴졌나요?</h4>
+                      <h4>실제 시험 문제처럼 느껴졌나요?</h4>
                       <div className="feedback-buttons">
                         {(Object.keys(FEEDBACK_LABELS) as FeedbackValue[]).map((feedback) => (
                           <button
