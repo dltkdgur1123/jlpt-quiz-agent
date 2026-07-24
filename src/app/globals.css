@@ -5325,3 +5325,19 @@ main:has(.home-page-frame) {
     background: #ffffff !important;
   }
 }
+
+/* mobile active exam keeps submit/restart controls inside the question sheet only */
+@media (max-width: 1180px) {
+  .mock-exam-shell--active .mock-exam-submit-card {
+    display: none !important;
+  }
+}
+@media (max-width: 760px) {
+  .mock-exam-shell--active .mock-exam-bottom-nav {
+    margin-top: 32px !important;
+    margin-bottom: 14px !important;
+  }
+  .mock-exam-shell--active .mock-mobile-nav-trigger {
+    margin-top: 0 !important;
+  }
+}
