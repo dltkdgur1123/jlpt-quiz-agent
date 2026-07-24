@@ -1887,16 +1887,22 @@ main:has(.mock-page-shell) {
 }
 .settings-secondary-button {
   border: 1px solid var(--jlpt-border, #e5e5e5);
-  color: var(--jlpt-title, #212121);
+  color: var(--jlpt-title, #212121) !important;
+}
+.settings-secondary-button:hover {
+  border-color: var(--jlpt-primary, #d32f2f);
+  color: var(--jlpt-primary, #d32f2f) !important;
 }
 .settings-danger-button {
   border: 1px solid var(--jlpt-primary, #d32f2f);
-  color: var(--jlpt-primary, #d32f2f);
+  background: var(--jlpt-primary, #d32f2f);
+  color: #fff;
   cursor: pointer;
+  transition: none;
 }
 .settings-danger-button:hover {
-  background: var(--jlpt-primary-hover, #b71c1c);
-  border-color: var(--jlpt-primary-hover, #b71c1c);
+  background: var(--jlpt-primary, #d32f2f);
+  border-color: var(--jlpt-primary, #d32f2f);
   color: #fff;
 }
 .settings-level-list {
@@ -1919,6 +1925,10 @@ main:has(.mock-page-shell) {
   border-color: var(--jlpt-primary, #d32f2f);
   color: #fff;
 }
+.settings-level-button:hover:not([data-selected="true"]) {
+  border-color: var(--jlpt-primary, #d32f2f);
+  color: var(--jlpt-primary, #d32f2f);
+}
 .settings-inline-note {
   color: var(--jlpt-text, #616161) !important;
   font-size: 14px;
@@ -1940,6 +1950,9 @@ main:has(.mock-page-shell) {
   background: #fff;
   text-align: left;
   cursor: pointer;
+}
+.settings-toggle-row:hover {
+  border-color: var(--jlpt-primary, #d32f2f);
 }
 .settings-toggle-row span {
   display: grid;
@@ -2002,6 +2015,9 @@ main:has(.mock-page-shell) {
 .settings-option-card[data-selected="true"] {
   border-color: var(--jlpt-primary, #d32f2f);
   background: #fff5f5;
+}
+.settings-option-card:hover:not([data-selected="true"]) {
+  border-color: var(--jlpt-primary, #d32f2f);
 }
 .settings-option-card strong {
   color: var(--jlpt-title, #212121);

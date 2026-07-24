@@ -176,9 +176,15 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".settings-grid",
     ".settings-card-head > span",
     "grid-template-columns: auto minmax(0, 1fr)",
+    ".settings-secondary-button:hover",
+    ".settings-danger-button:hover",
+    "transition: none",
     ".settings-level-button[data-selected=\"true\"]",
+    ".settings-level-button:hover:not([data-selected=\"true\"])",
     ".settings-toggle-row",
+    ".settings-toggle-row:hover",
     ".settings-option-grid",
+    ".settings-option-card:hover:not([data-selected=\"true\"])",
   ]) {
     assert.ok(css.includes(style), style);
   }
