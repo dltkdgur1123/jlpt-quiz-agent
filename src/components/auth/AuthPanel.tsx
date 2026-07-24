@@ -16,10 +16,10 @@ function safeNextPath(value: string | null): string {
   return value;
 }
 
-const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string }> = [
-  { provider: "google", label: "Google", tone: "google", mark: "G" },
-  { provider: "kakao", label: "Kakao", tone: "kakao", mark: "K" },
-  { provider: "custom:naver", label: "Naver", tone: "naver", mark: "N" },
+const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string; title: string; subtitle: string }> = [
+  { provider: "google", label: "Google", tone: "google", mark: "G", title: "Google 계정으로 계속", subtitle: "공식 OAuth 로그인" },
+  { provider: "kakao", label: "Kakao", tone: "kakao", mark: "K", title: "Kakao 계정으로 계속", subtitle: "공식 OAuth 로그인" },
+  { provider: "custom:naver", label: "Naver", tone: "naver", mark: "N", title: "Naver 계정으로 계속", subtitle: "공식 OAuth 로그인" },
 ];
 
 export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant }) {
@@ -136,16 +136,20 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
       {isAuthLoading ? <p className="auth-helper">확인 중</p> : null}
 
       <div className="auth-provider-grid">
-        {providers.map(({ provider, label, tone, mark }) => (
+        {providers.map(({ provider, label, tone, mark, title, subtitle }) => (
           <button
             className={`auth-provider-button auth-provider-${tone}`}
             key={provider}
             type="button"
+            aria-label={`${label} 로그인`}
             disabled={isLoginBusy}
             onClick={() => signInWithProvider(provider)}
           >
-            <span aria-hidden="true">{mark}</span>
-            {label} 로그인
+            <span className="auth-provider-mark" aria-hidden="true">{mark}</span>
+            <span className="auth-provider-copy">
+              <strong className="auth-provider-title">{title}</strong>
+              <small className="auth-provider-subtitle">{subtitle}</small>
+            </span>
           </button>
         ))}
       </div>

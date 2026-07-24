@@ -12,6 +12,7 @@ const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHead
 const authHeaderButton = () => readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8");
 const callbackPage = () => readFileSync(new URL("../src/app/auth/callback/page.tsx", import.meta.url), "utf8");
 const setupDoc = () => readFileSync(new URL("../docs/architecture/auth-provider-dashboard-setup.md", import.meta.url), "utf8");
+const globalCss = () => readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 test("auth panel exposes Google Kakao Naver and email login", () => {
   const source = authPanel();
@@ -20,6 +21,38 @@ test("auth panel exposes Google Kakao Naver and email login", () => {
   }
   assert.match(source, /signInWithOAuth/);
   assert.match(source, /signInWithOtp/);
+});
+
+test("login provider buttons use platform-branded official-style button anatomy", () => {
+  const source = authPanel();
+  const css = globalCss();
+  for (const phrase of [
+    "auth-provider-mark",
+    "auth-provider-copy",
+    "auth-provider-title",
+    "auth-provider-subtitle",
+    "Google 계정으로 계속",
+    "Kakao 계정으로 계속",
+    "Naver 계정으로 계속",
+    "공식 OAuth 로그인",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+  for (const phrase of [
+    "Login provider official-style buttons",
+    ".login-simple-stage .auth-provider-button",
+    ".auth-provider-google .auth-provider-mark",
+    ".auth-provider-kakao .auth-provider-mark",
+    ".auth-provider-naver .auth-provider-mark",
+    "#fee500",
+    "#03c75a",
+    "grid-template-columns: 52px minmax(0, 1fr)",
+    "place-items: start",
+    "width: auto",
+    "background: transparent",
+  ]) {
+    assert.ok(css.includes(phrase), phrase);
+  }
 });
 
 test("auth panel uses safe email magic link instead of password signup", () => {

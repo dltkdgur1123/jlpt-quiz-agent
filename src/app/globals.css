@@ -2304,38 +2304,91 @@ main:has(.mock-page-shell) {
 .login-simple-stage .auth-provider-grid {
   gap: 18px;
 }
+/* Login provider official-style buttons: platform brand anatomy without bundling external logo assets */
 .login-simple-stage .auth-provider-button,
 .login-simple-stage .auth-email-submit,
 .login-simple-stage .auth-dashboard-link,
 .login-simple-stage .auth-signout-button {
-  height: 88px;
-  min-height: 88px;
-  border-radius: 22px;
-  font-size: 28px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
+  height: 76px;
+  min-height: 76px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 850;
+  letter-spacing: -0.035em;
   text-decoration: none;
 }
-.login-simple-stage .auth-provider-button span {
-  width: 48px;
-  height: 48px;
-  font-size: 24px;
-  background: rgba(248, 250, 252, .92);
+.login-simple-stage .auth-provider-button {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  justify-content: stretch;
+  gap: 14px;
+  padding: 0 22px 0 14px;
+  border-width: 1px;
+  text-align: left;
+  box-shadow: none;
+}
+.login-simple-stage .auth-provider-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 950;
+  line-height: 1;
+}
+.login-simple-stage .auth-provider-copy {
+  display: grid;
+  gap: 4px;
+  place-items: start;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  background: transparent;
+}
+.login-simple-stage .auth-provider-title {
+  display: block;
+  color: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.login-simple-stage .auth-provider-subtitle {
+  display: block;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1;
+  opacity: .68;
 }
 .login-simple-stage .auth-provider-google {
-  border-color: #e5e7eb;
-  background: #fff;
-  color: #3f4654;
+  border-color: #dadce0;
+  background: #ffffff;
+  color: #3c4043;
+}
+.login-simple-stage .auth-provider-google .auth-provider-mark {
+  border: 1px solid #dadce0;
+  background: #ffffff;
+  color: #4285f4;
 }
 .login-simple-stage .auth-provider-kakao {
-  border-color: #ffeb3b;
-  background: #ffeb3b;
-  color: #3f4654;
+  border-color: #fee500;
+  background: #fee500;
+  color: #000000;
+}
+.login-simple-stage .auth-provider-kakao .auth-provider-mark {
+  background: #000000;
+  color: #fee500;
 }
 .login-simple-stage .auth-provider-naver {
-  border-color: #49d687;
-  background: #49d687;
-  color: #fff;
+  border-color: #03c75a;
+  background: #03c75a;
+  color: #ffffff;
+}
+.login-simple-stage .auth-provider-naver .auth-provider-mark {
+  background: #ffffff;
+  color: #03c75a;
 }
 .login-simple-stage .auth-divider {
   margin: 18px 0 2px;
@@ -2400,10 +2453,22 @@ main:has(.mock-page-shell) {
     border-radius: 18px;
     font-size: 20px;
   }
-  .login-simple-stage .auth-provider-button span {
+  .login-simple-stage .auth-provider-button {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    padding: 0 14px 0 10px;
+  }
+  .login-simple-stage .auth-provider-mark {
     width: 36px;
     height: 36px;
-    font-size: 18px;
+    border-radius: 9px;
+    font-size: 17px;
+  }
+  .login-simple-stage .auth-provider-title {
+    font-size: 15px;
+  }
+  .login-simple-stage .auth-provider-subtitle {
+    font-size: 10px;
   }
   .login-simple-stage .auth-divider,
   .login-simple-stage .auth-email-field {
