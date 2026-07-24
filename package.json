@@ -14,7 +14,8 @@
     "validate:final-shorts-source": "node scripts/validate-final-shorts-source-snapshot.mjs",
     "sync:final-shorts-source": "node scripts/sync-final-shorts-source-snapshot.mjs",
     "build:n5-mock-exam-lite-set": "node scripts/build-n5-mock-exam-lite-set.mjs",
-    "build:n5-realistic-mock-exam-002": "node scripts/build-n5-realistic-mock-exam-002.mjs"
+    "build:n5-realistic-mock-exam-002": "node scripts/build-n5-realistic-mock-exam-002.mjs",
+    "build:n5-realistic-mock-exam-003": "node scripts/build-n5-realistic-mock-exam-003.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",

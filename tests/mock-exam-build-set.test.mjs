@@ -162,10 +162,29 @@ test("realistic N5 mock exam 002 has production-ready draft composition", () => 
   const artifact = JSON.parse(
     readFileSync(new URL("../data/generated/n5-realistic-mock-exam-002.json", import.meta.url), "utf8"),
   );
+  assertRealisticN5DraftArtifact(artifact, "n5-realistic-mock-exam-002");
+});
+
+test("realistic N5 mock exam 003 has production-ready draft composition and no prior overlap", () => {
+  const artifact001 = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-001.json", import.meta.url), "utf8"),
+  );
+  const artifact002 = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-002.json", import.meta.url), "utf8"),
+  );
+  const artifact003 = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-003.json", import.meta.url), "utf8"),
+  );
+  assertRealisticN5DraftArtifact(artifact003, "n5-realistic-mock-exam-003");
+  const priorQuestionTexts = new Set([...artifact001.questions, ...artifact002.questions].map((question) => question.question_text));
+  assert.equal(artifact003.questions.some((question) => priorQuestionTexts.has(question.question_text)), false);
+});
+
+function assertRealisticN5DraftArtifact(artifact, expectedSetCode) {
   const preAnswerFields = ["question_text", "choice_a", "choice_b", "choice_c", "choice_d"];
   const hasKorean = /[가-힣]/;
 
-  assert.equal(artifact.set.set_code, "n5-realistic-mock-exam-002");
+  assert.equal(artifact.set.set_code, expectedSetCode);
   assert.equal(artifact.set.question_count, 50);
   assert.equal(artifact.set.listening_included, false);
   assert.deepEqual(
@@ -199,4 +218,4 @@ test("realistic N5 mock exam 002 has production-ready draft composition", () => 
   ]) {
     assert.ok(artifact.questions.some((question) => question.question_type === questionType), `${questionType} missing`);
   }
-});
+}

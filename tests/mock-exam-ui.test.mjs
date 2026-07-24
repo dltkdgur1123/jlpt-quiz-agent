@@ -12,6 +12,8 @@ const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
 const realisticMockExam002Page = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-002/page.tsx", import.meta.url), "utf8");
+const realisticMockExam003Page = () =>
+  readFileSync(new URL("../src/app/mock-exams/n5-realistic-003/page.tsx", import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
 const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
@@ -426,6 +428,11 @@ test("N5 realistic mock exam page loads generated 50-question set", () => {
   assert.match(source002, /<SiteHeader active="mock"/);
   assert.match(source002, /MockExamLite/);
   assert.match(source002, /exam-portal-layout/);
+  const source003 = realisticMockExam003Page();
+  assert.match(source003, /n5-realistic-mock-exam-003\.json/);
+  assert.match(source003, /<SiteHeader active="mock"/);
+  assert.match(source003, /MockExamLite/);
+  assert.match(source003, /exam-portal-layout/);
 });
 
 test("mock exam start screen is optimized for mobile before the exam begins", () => {
