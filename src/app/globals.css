@@ -3813,6 +3813,190 @@ button:hover:not(:disabled),
   transition: none !important;
   transform: none !important;
 }
+
+/* Mobile homepage responsive v1: single-column start flow and compact fixed header */
+@media (max-width: 760px) {
+  main:has(.home-page-frame) {
+    padding: 0 16px clamp(72px, 18vw, 108px) !important;
+    overflow-x: hidden !important;
+  }
+  .home-page-frame,
+  .home-redesign-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  .home-redesign-shell {
+    gap: 28px !important;
+    padding-top: var(--site-content-top-offset, 88px) !important;
+  }
+  .site-header .home-nav,
+  .site-header .figma-nav {
+    display: none !important;
+  }
+  .site-header .home-brand strong,
+  .site-header .figma-brand strong {
+    font-size: clamp(1.15rem, 5vw, 1.45rem) !important;
+    letter-spacing: .06em !important;
+    white-space: nowrap !important;
+  }
+  .site-header .home-login-button,
+  .site-header .auth-profile-trigger {
+    height: 40px !important;
+    min-height: 40px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+  .home-redesign-panel {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 28px 0 24px !important;
+    gap: 22px !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+  .home-redesign-hero {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 2px !important;
+  }
+  .home-redesign-kicker {
+    margin-bottom: 10px !important;
+    font-size: .68rem !important;
+    letter-spacing: .16em !important;
+  }
+  .home-dday-title {
+    gap: 8px !important;
+  }
+  .home-dday-title span {
+    font-size: clamp(1.08rem, 5.6vw, 1.38rem) !important;
+    line-height: 1.25 !important;
+  }
+  .home-dday-title strong {
+    font-size: clamp(4.15rem, 22vw, 5.85rem) !important;
+    line-height: .92 !important;
+    letter-spacing: -.075em !important;
+  }
+  .home-dday-meta {
+    display: grid !important;
+    justify-items: center !important;
+    gap: 6px !important;
+    margin-top: 16px !important;
+    font-size: .92rem !important;
+    line-height: 1.45 !important;
+    word-break: keep-all !important;
+  }
+  .home-redesign-divider {
+    width: 100% !important;
+  }
+  .home-start-console {
+    width: 100% !important;
+    gap: 14px !important;
+  }
+  .home-start-console h2 {
+    font-size: 1rem !important;
+  }
+  .home-level-switch {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+  }
+  .home-level-switch-indicator {
+    top: 4px !important;
+    bottom: 4px !important;
+    left: 4px !important;
+    width: calc((100% - 8px) / 5) !important;
+  }
+  .home-level-switch-item {
+    min-width: 0 !important;
+    min-height: 50px !important;
+  }
+  .home-level-switch-item strong {
+    font-size: 1rem !important;
+  }
+  .home-exam-summary {
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+  .home-exam-summary dl {
+    grid-template-columns: 1fr !important;
+    border-top: 1px solid var(--jlpt-border, #e5e5e5) !important;
+    border-bottom: 1px solid var(--jlpt-border, #e5e5e5) !important;
+  }
+  .home-exam-summary div {
+    grid-template-columns: minmax(96px, auto) minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 2px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--jlpt-border, #e5e5e5) !important;
+    text-align: left !important;
+  }
+  .home-exam-summary div:last-child {
+    border-bottom: 0 !important;
+  }
+  .home-start-button {
+    width: 100% !important;
+    min-height: 58px !important;
+    margin-top: 4px !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+  }
+  .home-start-button span {
+    font-size: 1.08rem !important;
+  }
+  .home-progress-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    border-color: var(--jlpt-border, #e5e5e5) !important;
+  }
+  .home-progress-grid-item {
+    min-height: auto !important;
+    padding: 20px 2px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--jlpt-border, #e5e5e5) !important;
+  }
+  .home-progress-grid-item:last-child {
+    border-bottom: 0 !important;
+  }
+  .home-progress-grid-item strong {
+    font-size: 1.12rem !important;
+    line-height: 1.45 !important;
+    word-break: keep-all !important;
+  }
+  .home-progress-grid-item p {
+    line-height: 1.65 !important;
+    word-break: keep-all !important;
+  }
+  .home-shorts-grid-section {
+    gap: 16px !important;
+    padding: 22px 0 clamp(72px, 18vw, 108px) !important;
+  }
+  .home-redesign-section-head {
+    display: grid !important;
+    gap: 10px !important;
+  }
+  .home-redesign-section-head h2 {
+    font-size: 1.55rem !important;
+  }
+  .home-redesign-section-head a {
+    width: fit-content !important;
+  }
+  .home-shorts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .home-shorts-grid-link {
+    width: 100% !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 12px !important;
+  }
+}
 .home-brand span,
 .figma-brand span,
 .site-header .home-brand span,
