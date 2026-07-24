@@ -4,6 +4,8 @@ import test from "node:test";
 
 const authPanel = () => readFileSync(new URL("../src/components/auth/AuthPanel.tsx", import.meta.url), "utf8");
 const loginPage = () => readFileSync(new URL("../src/app/login/page.tsx", import.meta.url), "utf8");
+const settingsPage = () => readFileSync(new URL("../src/app/settings/page.tsx", import.meta.url), "utf8");
+const settingsClient = () => readFileSync(new URL("../src/components/settings/SettingsClient.tsx", import.meta.url), "utf8");
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
 const guidePage = () => readFileSync(new URL("../src/app/guide/page.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
@@ -94,6 +96,25 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.doesNotMatch(source, /N5 모의고사 시작/);
   assert.doesNotMatch(source, /시험 당일 준비물, 규정 신분증, 부정행위 유의사항을 한눈에 확인하세요/);
   assert.doesNotMatch(source, /합격 보장|출제 예상|공식 문제/);
+});
+
+test("settings page provides account learning defaults and safe service guidance", () => {
+  const pageSource = settingsPage();
+  const clientSource = settingsClient();
+  assert.match(pageSource, /<SiteHeader \/>/);
+  assert.match(pageSource, /<SettingsClient \/>/);
+  assert.match(clientSource, /SETTINGS_STORAGE_KEY/);
+  assert.match(clientSource, /jlpt-quiz-user-settings/);
+  assert.match(clientSource, /기본 JLPT 레벨/);
+  assert.match(clientSource, /N5/);
+  assert.match(clientSource, /오답노트/);
+  assert.match(clientSource, /미응답 문제 포함/);
+  assert.match(clientSource, /취약 영역 기준/);
+  assert.match(clientSource, /출제 체감 score는 학습자 응답 기반 참고 지표입니다/);
+  assert.match(clientSource, /공식 JLPT 출제 이력이나 합격 가능성을 의미하지 않습니다/);
+  assert.match(clientSource, /getSession/);
+  assert.match(clientSource, /signOut/);
+  assert.doesNotMatch(clientSource, /결제|구독|합격 보장|출제 예상/);
 });
 
 test("auth callback page handles OAuth code and magic link hash sessions", () => {

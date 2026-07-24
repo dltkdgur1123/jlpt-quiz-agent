@@ -172,6 +172,12 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".guide-two-column",
     ".guide-panel p span",
     "word-break: keep-all",
+    ".settings-hero",
+    ".settings-grid",
+    ".settings-level-button[data-selected=\"true\"]",
+    ".settings-toggle-row",
+    ".settings-option-grid",
+    ".settings-info-card li::before",
   ]) {
     assert.ok(css.includes(style), style);
   }
