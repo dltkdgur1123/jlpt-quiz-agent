@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type OAuthProvider = "google" | "kakao" | `custom:${string}`;
 type AuthPanelVariant = "compact" | "page";
+type PendingAction = OAuthProvider | "email" | "signout" | null;
+
+function safeNextPath(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
+  if (value.startsWith("/auth/callback") || value.startsWith("/login")) return "/";
+  return value;
+}
 
 const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string }> = [
   { provider: "google", label: "Google", tone: "google", mark: "G" },
@@ -15,10 +23,12 @@ const providers: Array<{ provider: OAuthProvider; label: string; tone: string; m
 ];
 
 export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant }) {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [pendingAction, setPendingAction] = useState<PendingAction>(null);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -40,12 +50,24 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
   }, []);
 
   const isSignedIn = Boolean(sessionEmail);
+  const isLoginBusy = isAuthLoading || pendingAction !== null;
+  const nextPath = safeNextPath(searchParams.get("next"));
+
+  function buildRedirectTo() {
+    const callbackUrl = new URL("/auth/callback", window.location.origin);
+    if (nextPath !== "/") {
+      callbackUrl.searchParams.set("next", nextPath);
+    }
+    return callbackUrl.toString();
+  }
 
   async function signInWithProvider(provider: OAuthProvider) {
-    if (isSignedIn) return;
+    if (isSignedIn || isLoginBusy) return;
 
     const supabase = getSupabaseBrowserClient();
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = buildRedirectTo();
+    setMessage("로그인 요청을 처리하고 있습니다.");
+    setPendingAction(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo },
@@ -53,38 +75,47 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
 
     if (error) {
       setMessage(error.message);
+      setPendingAction(null);
     }
   }
 
   async function signInWithEmailLink() {
-    if (isSignedIn) return;
+    if (isSignedIn || isLoginBusy) return;
+    const trimmedEmail = email.trim();
 
-    if (!email) {
-      setMessage("Email을 입력해주세요.");
+    if (!trimmedEmail || !trimmedEmail.includes("@")) {
+      setMessage("올바른 이메일 주소를 입력해주세요.");
       return;
     }
 
     const supabase = getSupabaseBrowserClient();
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = buildRedirectTo();
+    setMessage("로그인 요청을 처리하고 있습니다.");
+    setPendingAction("email");
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: trimmedEmail,
       options: { emailRedirectTo: redirectTo },
     });
 
     setMessage(error ? error.message : "이메일 링크를 보냈습니다.");
+    setPendingAction(null);
   }
 
   async function signOut() {
+    if (pendingAction) return;
     const supabase = getSupabaseBrowserClient();
+    setPendingAction("signout");
     const { error } = await supabase.auth.signOut();
 
     if (error) {
       setMessage(error.message);
+      setPendingAction(null);
       return;
     }
 
     setSessionEmail(null);
     setMessage("로그아웃되었습니다.");
+    setPendingAction(null);
   }
 
   if (isSignedIn) {
@@ -110,7 +141,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
             className={`auth-provider-button auth-provider-${tone}`}
             key={provider}
             type="button"
-            disabled={isAuthLoading}
+            disabled={isLoginBusy}
             onClick={() => signInWithProvider(provider)}
           >
             <span aria-hidden="true">{mark}</span>
@@ -127,11 +158,11 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
           type="email"
           placeholder="you@example.com"
           value={email}
-          disabled={isAuthLoading}
+          disabled={isLoginBusy}
           onChange={(event) => setEmail(event.target.value)}
         />
       </label>
-      <button className="auth-email-submit" type="button" disabled={isAuthLoading} onClick={signInWithEmailLink}>
+      <button className="auth-email-submit" type="button" disabled={isLoginBusy} onClick={signInWithEmailLink}>
         이메일 링크로 로그인
       </button>
       {message ? <p className="auth-message">{message}</p> : null}

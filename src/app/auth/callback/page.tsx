@@ -11,14 +11,23 @@ function cleanCallbackUrl() {
   window.history.replaceState({}, document.title, "/auth/callback");
 }
 
+function safeNextPath(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
+  if (value.startsWith("/auth/callback") || value.startsWith("/login")) return "/";
+  return value;
+}
+
 export default function AuthCallbackPage() {
   const [status, setStatus] = useState<CallbackStatus>("loading");
   const [message, setMessage] = useState("로그인 정보를 확인하고 있습니다.");
+  const [nextPath, setNextPath] = useState("/");
 
   useEffect(() => {
     async function completeSignIn() {
       const supabase = getSupabaseBrowserClient();
       const url = new URL(window.location.href);
+      const next = safeNextPath(new URLSearchParams(window.location.search).get("next"));
+      setNextPath(next);
       const code = url.searchParams.get("code");
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const accessToken = hashParams.get("access_token");
@@ -44,7 +53,7 @@ export default function AuthCallbackPage() {
 
         cleanCallbackUrl();
         setStatus("success");
-        setMessage("로그인이 완료되었습니다. 홈으로 이동해도 됩니다.");
+        setMessage(next === "/" ? "로그인이 완료되었습니다. 홈으로 이동해도 됩니다." : "로그인이 완료되었습니다. 이전 화면으로 이동해도 됩니다.");
       } catch (error) {
         cleanCallbackUrl();
         setStatus("error");
@@ -61,7 +70,7 @@ export default function AuthCallbackPage() {
         <p className="section-eyebrow">Auth callback</p>
         <h1>{status === "success" ? "로그인 완료" : "로그인 처리 중"}</h1>
         <p>{message}</p>
-        <Link href="/">홈으로 이동</Link>
+        <Link href={nextPath}>{nextPath === "/" ? "홈으로 이동" : "이전 화면으로 이동"}</Link>
       </section>
     </main>
   );

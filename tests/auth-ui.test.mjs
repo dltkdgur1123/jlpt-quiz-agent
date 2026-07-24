@@ -38,6 +38,32 @@ test("auth panel switches to account actions when a session exists", () => {
   assert.match(source, /signOut/);
 });
 
+test("auth panel guards duplicate login actions and preserves a safe next path", () => {
+  const source = authPanel();
+  assert.match(source, /useSearchParams/);
+  assert.match(source, /safeNextPath/);
+  assert.match(source, /pendingAction/);
+  assert.match(source, /setPendingAction/);
+  assert.match(source, /isLoginBusy/);
+  assert.match(source, /trimmedEmail/);
+  assert.match(source, /emailRedirectTo: redirectTo/);
+  assert.match(source, /searchParams\.set\("next", nextPath\)/);
+  assert.match(source, /로그인 요청을 처리하고 있습니다/);
+  assert.match(source, /올바른 이메일 주소를 입력해주세요/);
+  assert.doesNotMatch(source, /window\.location\.href\.includes/);
+});
+
+test("auth callback keeps tokens scrubbed and exposes a safe return link", () => {
+  const source = callbackPage();
+  assert.match(source, /safeNextPath/);
+  assert.match(source, /nextPath/);
+  assert.match(source, /URLSearchParams\(window\.location\.search\)/);
+  assert.match(source, /replaceState/);
+  assert.match(source, /href=\{nextPath\}/);
+  assert.match(source, /이전 화면으로 이동/);
+  assert.doesNotMatch(source, /window\.location\.assign/);
+});
+
 test("login page is a centered auth-only screen and headers are shared", () => {
   const loginSource = loginPage();
   const homeSource = homePage();
