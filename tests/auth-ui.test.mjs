@@ -50,16 +50,26 @@ test("login provider buttons use platform-branded official-style button anatomy"
     ".auth-provider-naver .auth-provider-mark",
     "auth-provider-official-image",
     "#03c75a",
-    "grid-template-columns: 52px minmax(0, 1fr)",
+    "grid-template-columns: 40px minmax(0, 1fr)",
     "place-items: start",
     "width: auto",
     "background: transparent",
-    "width: min(600px, 100%)",
-    "max-height: 90px",
+    "width: min(420px, 100%)",
+    "max-height: 56px",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
   assert.equal(kakaoLoginPng().subarray(1, 4).toString("ascii"), "PNG");
+});
+
+test("login page uses a compact auth form instead of oversized controls", () => {
+  const css = globalCss();
+  assert.match(css, /\.login-simple-stage \.auth-card--page \{[\s\S]*?width: min\(420px, 100%\)/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-button,[\s\S]*?height: 52px/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-title \{[\s\S]*?font-size: 14px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-field \{[\s\S]*?font-size: 14px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-field input \{[\s\S]*?height: 52px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-submit,[\s\S]*?height: 52px/);
 });
 
 test("auth panel uses safe email magic link instead of password signup", () => {
