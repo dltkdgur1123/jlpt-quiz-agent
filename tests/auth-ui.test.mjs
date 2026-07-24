@@ -201,4 +201,10 @@ test("dashboard setup doc lists all selected providers and no secrets", () => {
     assert.match(source, new RegExp(label));
   }
   assert.match(source, /secret 값은 문서나 채팅에 기록하지 않는다/);
+  assert.match(source, /Kakao 로그인 실제 연결 절차/);
+  assert.match(source, /Unsupported provider: provider is not enabled/);
+  assert.match(source, /provider=kakao/);
+  assert.match(source, /Supabase Dashboard → Authentication → Providers → Kakao 활성화/);
+  assert.match(source, /https:\/\/<supabase-project-ref>\.supabase\.co\/auth\/v1\/callback/);
+  assert.match(source, /http:\/\/127\.0\.0\.1:3010\/auth\/callback/);
 });
