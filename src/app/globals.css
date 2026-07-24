@@ -5365,6 +5365,22 @@ main:has(.home-page-frame) {
     width: 100% !important;
     gap: 14px !important;
   }
+  /* Mobile dashboard summary cards use a two-by-two grid */
+  .figma-shell.dashboard-page .dashboard-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    padding: 0 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-card {
+    min-height: 118px !important;
+    padding: 18px 14px !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-card strong {
+    font-size: clamp(1.28rem, 7vw, 1.72rem) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-card small {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
   .figma-shell.dashboard-page .dashboard-panel,
   .figma-shell.dashboard-page .dashboard-goal-card,
   .figma-shell.dashboard-page .dashboard-stat-card {
@@ -5383,5 +5399,9 @@ main:has(.home-page-frame) {
     border-right: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-card {
+    min-height: 118px !important;
+    padding: 18px 14px !important;
   }
 }
