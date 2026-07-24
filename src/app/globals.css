@@ -1387,7 +1387,22 @@ main:has(.home-shell) { padding: 0 0 80px; }
   justify-content: center;
   height: 44px;
   min-height: 44px;
+  min-width: 104px;
+  padding: 0 18px;
+  border: 1px solid var(--jlpt-primary, #d32f2f) !important;
+  border-radius: 14px;
+  background: var(--jlpt-primary, #d32f2f) !important;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 850;
   line-height: 1;
+  text-decoration: none;
+  box-shadow: none !important;
+}
+.home-login-button:hover {
+  border-color: var(--jlpt-primary-hover, #b71c1c) !important;
+  background: var(--jlpt-primary-hover, #b71c1c) !important;
+  color: #fff !important;
 }
 .home-hero {
   height: auto;
@@ -2403,6 +2418,26 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage .auth-provider-grid {
   gap: 18px;
+}
+.login-simple-stage .auth-start-copy {
+  display: grid;
+  gap: 6px;
+  padding: 0 2px;
+  color: var(--jlpt-title, #212121);
+  text-align: left;
+}
+.login-simple-stage .auth-start-copy strong {
+  color: var(--jlpt-title, #212121);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+.login-simple-stage .auth-start-copy span {
+  color: var(--jlpt-text, #616161);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.6;
+  word-break: keep-all;
 }
 /* Login provider official-style buttons: platform brand anatomy without bundling external logo assets */
 .login-simple-stage .auth-provider-button,
@@ -3710,6 +3745,21 @@ main,
   color: #1f1b16 !important;
   font-size: 14px !important;
   font-weight: 650 !important;
+}
+.site-header .home-login-button {
+  min-width: 104px !important;
+  padding: 0 18px !important;
+  border: 1px solid var(--jlpt-primary, #d32f2f) !important;
+  border-radius: 14px !important;
+  background: var(--jlpt-primary, #d32f2f) !important;
+  color: #fff !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+.site-header .home-login-button:hover {
+  border-color: var(--jlpt-primary-hover, #b71c1c) !important;
+  background: var(--jlpt-primary-hover, #b71c1c) !important;
+  color: #fff !important;
 }
 
 /* Mock exam submitted-state QA: prevent controls/results from bleeding into right rail */

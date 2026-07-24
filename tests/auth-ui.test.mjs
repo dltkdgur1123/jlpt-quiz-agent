@@ -124,6 +124,11 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(headerButtonSource, /auth-profile-avatar/);
   assert.match(headerButtonSource, /auth-profile-name/);
   assert.match(headerButtonSource, /auth-profile-dropdown/);
+  assert.match(headerButtonSource, /로그인\/가입/);
+  assert.match(globalCss(), /\.site-header \.home-login-button \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important/);
+  assert.match(globalCss(), /\.site-header \.home-login-button:hover \{[\s\S]*?#b71c1c/);
+  assert.match(panelSource, /처음이신가요\?/);
+  assert.match(panelSource, /소셜 계정으로 바로 시작할 수 있습니다/);
   assert.match(headerSource, /학습 기록/);
   assert.match(headerSource, /수험안내/);
   assert.match(headerSource, /active === "guide"/);

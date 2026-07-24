@@ -136,7 +136,7 @@ export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderBut
 
   return (
     <Link className={`${className} auth-header-button`} href="/login">
-      로그인
+      로그인/가입
     </Link>
   );
 }
