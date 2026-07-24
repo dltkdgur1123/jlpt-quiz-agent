@@ -194,6 +194,19 @@ test("settings page provides account learning defaults without extra service not
   assert.doesNotMatch(clientSource, /결제|구독|합격 보장|출제 예상/);
 });
 
+test("settings and guide avoid bordered containers nested inside cards", () => {
+  const css = globalCss();
+  const settingsToggleRule = css.match(/\.settings-toggle-row \{[\s\S]*?\n\}/)?.[0] ?? "";
+  const guideListRule = css.match(/\.guide-level-list \{[\s\S]*?\n\}/)?.[0] ?? "";
+
+  assert.match(settingsToggleRule, /border:\s*0/);
+  assert.match(settingsToggleRule, /border-radius:\s*0/);
+  assert.match(settingsToggleRule, /padding:\s*0/);
+  assert.doesNotMatch(guideListRule, /border:\s*1px/);
+  assert.match(guideListRule, /border:\s*0/);
+  assert.match(guideListRule, /border-radius:\s*0/);
+});
+
 test("auth callback page handles OAuth code and magic link hash sessions", () => {
   const source = callbackPage();
   assert.match(source, /exchangeCodeForSession/);

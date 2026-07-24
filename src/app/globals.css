@@ -2053,19 +2053,19 @@ main:has(.mock-page-shell) {
   justify-content: space-between;
   gap: 18px;
   width: 100%;
-  min-height: 96px;
-  padding: 18px;
-  border: 1px solid var(--jlpt-border, #e5e5e5);
-  border-radius: 18px;
-  background: #fff;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   text-align: left;
   cursor: pointer;
   transition: none !important;
   transform: none !important;
 }
 .settings-toggle-row:hover {
-  background: #fff;
-  border-color: var(--jlpt-border, #e5e5e5);
+  background: transparent;
+  border-color: transparent;
   color: var(--jlpt-title, #212121);
   transition: none !important;
   transform: none !important;
@@ -2286,9 +2286,9 @@ main:has(.mock-page-shell) {
 .guide-level-list {
   display: grid;
   gap: 0;
-  border: 1px solid var(--jlpt-border, #e5e5e5);
-  border-radius: 18px;
-  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
 }
 .guide-level-row {
   display: grid;
