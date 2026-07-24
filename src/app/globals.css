@@ -1884,15 +1884,19 @@ main:has(.mock-page-shell) {
   font-size: 14px;
   font-weight: 850;
   text-decoration: none;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-secondary-button {
   border: 1px solid var(--jlpt-border, #e5e5e5);
   color: var(--jlpt-title, #212121) !important;
 }
 .settings-secondary-button:hover {
-  border-color: var(--jlpt-primary, #d32f2f);
-  background: var(--jlpt-primary, #d32f2f);
-  color: #fff !important;
+  border-color: var(--jlpt-border, #e5e5e5);
+  background: #fff;
+  color: var(--jlpt-title, #212121) !important;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-danger-button {
   border: 1px solid var(--jlpt-primary, #d32f2f) !important;
@@ -1923,6 +1927,8 @@ main:has(.mock-page-shell) {
   font-size: 15px;
   font-weight: 900;
   cursor: pointer;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-level-button[data-selected="true"] {
   background: var(--jlpt-primary, #d32f2f);
@@ -1930,9 +1936,11 @@ main:has(.mock-page-shell) {
   color: #fff;
 }
 .settings-level-button:hover:not([data-selected="true"]) {
-  background: var(--jlpt-primary, #d32f2f);
-  border-color: var(--jlpt-primary, #d32f2f);
-  color: #fff;
+  background: #fff;
+  border-color: var(--jlpt-border, #e5e5e5);
+  color: var(--jlpt-title, #212121);
+  transition: none !important;
+  transform: none !important;
 }
 .settings-inline-note {
   color: var(--jlpt-text, #616161) !important;
@@ -1955,15 +1963,21 @@ main:has(.mock-page-shell) {
   background: #fff;
   text-align: left;
   cursor: pointer;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-toggle-row:hover {
-  background: var(--jlpt-primary, #d32f2f);
-  border-color: var(--jlpt-primary, #d32f2f);
-  color: #fff;
+  background: #fff;
+  border-color: var(--jlpt-border, #e5e5e5);
+  color: var(--jlpt-title, #212121);
+  transition: none !important;
+  transform: none !important;
 }
-.settings-toggle-row:hover strong,
+.settings-toggle-row:hover strong {
+  color: var(--jlpt-title, #212121);
+}
 .settings-toggle-row:hover em {
-  color: #fff;
+  color: var(--jlpt-text, #616161);
 }
 .settings-toggle-row span {
   display: grid;
@@ -1999,7 +2013,7 @@ main:has(.mock-page-shell) {
   height: 22px;
   border-radius: 999px;
   background: #fff;
-  transition: transform .18s ease;
+  transition: none !important;
 }
 .settings-toggle-row i[data-on="true"] {
   background: var(--jlpt-primary, #d32f2f);
@@ -2022,22 +2036,31 @@ main:has(.mock-page-shell) {
   background: #fff;
   text-align: left;
   cursor: pointer;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-option-card[data-selected="true"] {
   border-color: var(--jlpt-primary, #d32f2f);
   background: var(--jlpt-primary, #d32f2f);
+  color: #fff;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-option-card[data-selected="true"] strong,
 .settings-option-card[data-selected="true"] span {
   color: #fff;
 }
 .settings-option-card:hover:not([data-selected="true"]) {
-  background: var(--jlpt-primary, #d32f2f);
-  border-color: var(--jlpt-primary, #d32f2f);
+  background: #fff;
+  border-color: var(--jlpt-border, #e5e5e5);
+  transition: none !important;
+  transform: none !important;
 }
-.settings-option-card:hover:not([data-selected="true"]) strong,
+.settings-option-card:hover:not([data-selected="true"]) strong {
+  color: var(--jlpt-title, #212121);
+}
 .settings-option-card:hover:not([data-selected="true"]) span {
-  color: #fff;
+  color: var(--jlpt-text, #616161);
 }
 .settings-option-card strong {
   color: var(--jlpt-title, #212121);
@@ -3810,6 +3833,35 @@ button:hover:not(:disabled),
   background: var(--jlpt-primary) !important;
   border-color: var(--jlpt-primary) !important;
   color: #ffffff !important;
+  transition: none !important;
+  transform: none !important;
+}
+/* Settings page: no hover animation/effect; only clicked/selected state changes fill */
+.settings-secondary-button:hover,
+.settings-level-button:hover:not([data-selected="true"]),
+.settings-toggle-row:hover,
+.settings-option-card:hover:not([data-selected="true"]) {
+  background: #ffffff !important;
+  border-color: var(--jlpt-border) !important;
+  transition: none !important;
+  transform: none !important;
+}
+.settings-secondary-button:hover,
+.settings-level-button:hover:not([data-selected="true"]),
+.settings-toggle-row:hover strong,
+.settings-option-card:hover:not([data-selected="true"]) strong {
+  color: var(--jlpt-title) !important;
+}
+.settings-toggle-row:hover em,
+.settings-option-card:hover:not([data-selected="true"]) span {
+  color: var(--jlpt-text) !important;
+}
+.settings-level-button,
+.settings-toggle-row,
+.settings-toggle-row i::after,
+.settings-option-card,
+.settings-secondary-button,
+.settings-danger-button {
   transition: none !important;
   transform: none !important;
 }
