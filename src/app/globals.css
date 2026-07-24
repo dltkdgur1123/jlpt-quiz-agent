@@ -5083,7 +5083,7 @@ main:has(.home-page-frame) {
     bottom: 0;
     z-index: 80;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 2px;
     min-height: calc(72px + env(safe-area-inset-bottom));
     padding: 7px 8px calc(9px + env(safe-area-inset-bottom));
@@ -5110,28 +5110,5 @@ main:has(.home-page-frame) {
   .mobile-bottom-nav-item[data-active="true"] {
     background: #fff5f5;
     color: var(--jlpt-primary, #d32f2f);
-  }
-  .home-shorts-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-    border: 0 !important;
-  }
-  .home-shorts-grid-link {
-    aspect-ratio: 9 / 16 !important;
-    max-height: 220px !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    border: 1px solid var(--jlpt-border, #e5e5e5) !important;
-    border-radius: 12px !important;
-    justify-items: stretch !important;
-  }
-  .home-shorts-grid-link span {
-    left: 8px !important;
-    bottom: 8px !important;
-    min-width: 38px !important;
-    padding: 6px 9px !important;
-    font-size: 12px !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
   }
 }
