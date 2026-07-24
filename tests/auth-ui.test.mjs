@@ -176,9 +176,12 @@ test("settings page provides account learning defaults without extra service not
   assert.match(clientSource, /<span>04<\/span>/);
   assert.match(clientSource, /기본 JLPT 레벨/);
   assert.match(clientSource, /N5/);
+  assert.match(clientSource, /settings-level-and-wrongnote-card/);
+  assert.match(clientSource, /settings-wrongnote-embedded/);
   assert.match(clientSource, /오답노트/);
   assert.match(clientSource, /미응답 문제 포함/);
   assert.match(clientSource, /취약 영역 기준/);
+  assert.doesNotMatch(clientSource, /<article className="dashboard-panel settings-card">\n          <div className="settings-card-head">\n            <span>03<\/span>/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /닉네임/);
   assert.match(clientSource, /nicknameInput/);

@@ -228,7 +228,7 @@ export function SettingsClient() {
           </div>
         </article>
 
-        <article className="dashboard-panel settings-card">
+        <article className="dashboard-panel settings-card settings-level-and-wrongnote-card">
           <div className="settings-card-head">
             <span>02</span>
             <div>
@@ -252,28 +252,28 @@ export function SettingsClient() {
             ))}
           </div>
           <p className="settings-inline-note">현재 기본값: <strong>{settings.defaultLevel}</strong></p>
-        </article>
 
-        <article className="dashboard-panel settings-card">
-          <div className="settings-card-head">
-            <span>03</span>
-            <div>
-              <h2>오답노트</h2>
-              <p>복습할 문제에 미응답 문제를 함께 포함할지 정합니다.</p>
+          <div className="settings-wrongnote-embedded">
+            <div className="settings-card-head">
+              <span>03</span>
+              <div>
+                <h2>오답노트</h2>
+                <p>복습할 문제에 미응답 문제를 함께 포함할지 정합니다.</p>
+              </div>
             </div>
+            <button
+              aria-pressed={settings.includeUnansweredInWrongNote}
+              className="settings-toggle-row"
+              type="button"
+              onClick={() => updateSettings({ includeUnansweredInWrongNote: !settings.includeUnansweredInWrongNote })}
+            >
+              <span>
+                <strong>미응답 문제 포함</strong>
+                <em>{settings.includeUnansweredInWrongNote ? "오답 + 미응답을 함께 복습합니다." : "틀린 문제만 오답노트에 모읍니다."}</em>
+              </span>
+              <i data-on={settings.includeUnansweredInWrongNote} aria-hidden="true" />
+            </button>
           </div>
-          <button
-            aria-pressed={settings.includeUnansweredInWrongNote}
-            className="settings-toggle-row"
-            type="button"
-            onClick={() => updateSettings({ includeUnansweredInWrongNote: !settings.includeUnansweredInWrongNote })}
-          >
-            <span>
-              <strong>미응답 문제 포함</strong>
-              <em>{settings.includeUnansweredInWrongNote ? "오답 + 미응답을 함께 복습합니다." : "틀린 문제만 오답노트에 모읍니다."}</em>
-            </span>
-            <i data-on={settings.includeUnansweredInWrongNote} aria-hidden="true" />
-          </button>
         </article>
 
         <article className="dashboard-panel settings-card settings-wide-card">

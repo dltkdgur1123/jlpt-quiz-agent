@@ -1857,6 +1857,16 @@ main:has(.mock-page-shell) {
   grid-column: 1 / -1;
   min-height: auto;
 }
+.settings-level-and-wrongnote-card {
+  align-content: start;
+}
+.settings-wrongnote-embedded {
+  display: grid;
+  gap: 16px;
+  margin-top: 38px;
+  padding-top: 24px;
+  border-top: 1px solid var(--jlpt-border, #e5e5e5);
+}
 .settings-card-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
