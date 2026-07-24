@@ -162,7 +162,7 @@ test("realistic N5 mock exam 002 has production-ready draft composition", () => 
   const artifact = JSON.parse(
     readFileSync(new URL("../data/generated/n5-realistic-mock-exam-002.json", import.meta.url), "utf8"),
   );
-  assertRealisticN5DraftArtifact(artifact, "n5-realistic-mock-exam-002");
+  assertRealisticDraftArtifact(artifact, "n5-realistic-mock-exam-002", "N5");
 });
 
 test("realistic N5 mock exam 003 has production-ready draft composition and no prior overlap", () => {
@@ -175,16 +175,27 @@ test("realistic N5 mock exam 003 has production-ready draft composition and no p
   const artifact003 = JSON.parse(
     readFileSync(new URL("../data/generated/n5-realistic-mock-exam-003.json", import.meta.url), "utf8"),
   );
-  assertRealisticN5DraftArtifact(artifact003, "n5-realistic-mock-exam-003");
+  assertRealisticDraftArtifact(artifact003, "n5-realistic-mock-exam-003", "N5");
   const priorQuestionTexts = new Set([...artifact001.questions, ...artifact002.questions].map((question) => question.question_text));
   assert.equal(artifact003.questions.some((question) => priorQuestionTexts.has(question.question_text)), false);
 });
 
-function assertRealisticN5DraftArtifact(artifact, expectedSetCode) {
+test("N4 through N1 realistic mock exams match the 50-question production draft contract", () => {
+  for (const level of ["N4", "N3", "N2", "N1"]) {
+    const lower = level.toLowerCase();
+    const artifact = JSON.parse(
+      readFileSync(new URL(`../data/generated/${lower}-realistic-mock-exam-001.json`, import.meta.url), "utf8"),
+    );
+    assertRealisticDraftArtifact(artifact, `${lower}-realistic-mock-exam-001`, level);
+  }
+});
+
+function assertRealisticDraftArtifact(artifact, expectedSetCode, expectedLevel) {
   const preAnswerFields = ["question_text", "choice_a", "choice_b", "choice_c", "choice_d"];
   const hasKorean = /[가-힣]/;
 
   assert.equal(artifact.set.set_code, expectedSetCode);
+  assert.equal(artifact.set.jlpt_level, expectedLevel);
   assert.equal(artifact.set.question_count, 50);
   assert.equal(artifact.set.listening_included, false);
   assert.deepEqual(

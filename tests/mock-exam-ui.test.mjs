@@ -14,6 +14,8 @@ const realisticMockExam002Page = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-002/page.tsx", import.meta.url), "utf8");
 const realisticMockExam003Page = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-003/page.tsx", import.meta.url), "utf8");
+const levelRealisticMockExamPage = (level) =>
+  readFileSync(new URL(`../src/app/mock-exams/${level.toLowerCase()}-realistic-001/page.tsx`, import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
 const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
@@ -104,7 +106,7 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
     assert.ok(levelSwitchSource.includes(phrase), phrase);
   }
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
-  for (const route of ["n4-lite-001", "n3-lite-001", "n2-lite-001", "n1-lite-001"]) {
+  for (const route of ["n4-realistic-001", "n3-realistic-001", "n2-realistic-001", "n1-realistic-001"]) {
     assert.match(source, new RegExp(`/mock-exams/${route}`));
   }
 });
@@ -364,6 +366,18 @@ test("N4 through N1 mock exam pages load real 35-question non-listening draft ar
     assert.equal(artifact.questions.length, 35);
     assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
     assert.equal(artifact.questions.every((question) => question.review_status === "draft"), true);
+  }
+});
+
+test("N4 through N1 realistic mock exam pages load 50-question non-listening artifacts", () => {
+  for (const level of ["N4", "N3", "N2", "N1"]) {
+    const pageSource = levelRealisticMockExamPage(level);
+    const lower = level.toLowerCase();
+
+    assert.match(pageSource, new RegExp(`${lower}-realistic-mock-exam-001\\.json`));
+    assert.match(pageSource, /<SiteHeader active="mock"/);
+    assert.match(pageSource, /MockExamLite/);
+    assert.match(pageSource, /exam-portal-layout/);
   }
 });
 
