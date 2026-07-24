@@ -178,13 +178,19 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "grid-template-columns: auto minmax(0, 1fr)",
     ".settings-secondary-button:hover",
     ".settings-danger-button:hover",
-    "transition: none",
+    ".settings-danger-button:hover:not(:disabled)",
+    "background: var(--jlpt-primary, #d32f2f)",
+    "color: #fff !important",
+    "transition: none !important",
+    "transform: none !important",
     ".settings-level-button[data-selected=\"true\"]",
     ".settings-level-button:hover:not([data-selected=\"true\"])",
     ".settings-toggle-row",
     ".settings-toggle-row:hover",
+    ".settings-toggle-row:hover strong",
     ".settings-option-grid",
     ".settings-option-card:hover:not([data-selected=\"true\"])",
+    ".settings-option-card[data-selected=\"true\"] strong",
   ]) {
     assert.ok(css.includes(style), style);
   }

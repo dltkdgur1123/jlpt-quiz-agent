@@ -1891,19 +1891,23 @@ main:has(.mock-page-shell) {
 }
 .settings-secondary-button:hover {
   border-color: var(--jlpt-primary, #d32f2f);
-  color: var(--jlpt-primary, #d32f2f) !important;
+  background: var(--jlpt-primary, #d32f2f);
+  color: #fff !important;
 }
 .settings-danger-button {
-  border: 1px solid var(--jlpt-primary, #d32f2f);
-  background: var(--jlpt-primary, #d32f2f);
-  color: #fff;
+  border: 1px solid var(--jlpt-primary, #d32f2f) !important;
+  background: var(--jlpt-primary, #d32f2f) !important;
+  color: #fff !important;
   cursor: pointer;
-  transition: none;
+  transition: none !important;
 }
-.settings-danger-button:hover {
-  background: var(--jlpt-primary, #d32f2f);
-  border-color: var(--jlpt-primary, #d32f2f);
-  color: #fff;
+.settings-danger-button:hover,
+.settings-danger-button:hover:not(:disabled) {
+  background: var(--jlpt-primary, #d32f2f) !important;
+  border-color: var(--jlpt-primary, #d32f2f) !important;
+  color: #fff !important;
+  transition: none !important;
+  transform: none !important;
 }
 .settings-level-list {
   display: grid;
@@ -1926,8 +1930,9 @@ main:has(.mock-page-shell) {
   color: #fff;
 }
 .settings-level-button:hover:not([data-selected="true"]) {
+  background: var(--jlpt-primary, #d32f2f);
   border-color: var(--jlpt-primary, #d32f2f);
-  color: var(--jlpt-primary, #d32f2f);
+  color: #fff;
 }
 .settings-inline-note {
   color: var(--jlpt-text, #616161) !important;
@@ -1952,7 +1957,13 @@ main:has(.mock-page-shell) {
   cursor: pointer;
 }
 .settings-toggle-row:hover {
+  background: var(--jlpt-primary, #d32f2f);
   border-color: var(--jlpt-primary, #d32f2f);
+  color: #fff;
+}
+.settings-toggle-row:hover strong,
+.settings-toggle-row:hover em {
+  color: #fff;
 }
 .settings-toggle-row span {
   display: grid;
@@ -2014,10 +2025,19 @@ main:has(.mock-page-shell) {
 }
 .settings-option-card[data-selected="true"] {
   border-color: var(--jlpt-primary, #d32f2f);
-  background: #fff5f5;
+  background: var(--jlpt-primary, #d32f2f);
+}
+.settings-option-card[data-selected="true"] strong,
+.settings-option-card[data-selected="true"] span {
+  color: #fff;
 }
 .settings-option-card:hover:not([data-selected="true"]) {
+  background: var(--jlpt-primary, #d32f2f);
   border-color: var(--jlpt-primary, #d32f2f);
+}
+.settings-option-card:hover:not([data-selected="true"]) strong,
+.settings-option-card:hover:not([data-selected="true"]) span {
+  color: #fff;
 }
 .settings-option-card strong {
   color: var(--jlpt-title, #212121);
@@ -3783,6 +3803,15 @@ button:hover:not(:disabled),
   background: var(--jlpt-primary-hover) !important;
   border-color: var(--jlpt-primary-hover) !important;
   color: #ffffff !important;
+}
+.settings-danger-button,
+.settings-danger-button:hover,
+.settings-danger-button:hover:not(:disabled) {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+  transition: none !important;
+  transform: none !important;
 }
 .home-brand span,
 .figma-brand span,
