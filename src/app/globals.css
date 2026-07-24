@@ -5287,3 +5287,41 @@ main:has(.home-page-frame) {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* mobile active exam paper should read like a full-width document, not a centered card */
+@media (max-width: 760px) {
+  main:has(.mock-exam-shell--active) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: #ffffff !important;
+  }
+  main:has(.mock-exam-shell--active) .exam-portal-layout,
+  main:has(.mock-exam-shell--active) .exam-main-column,
+  main:has(.mock-exam-shell--active) .mock-page-shell,
+  .mock-exam-shell--active {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .mock-exam-shell--active .mock-exam-workspace,
+  .mock-exam-shell--active .mock-exam-paper-column {
+    width: 100% !important;
+    gap: 0 !important;
+  }
+  .mock-exam-shell--active .mock-exam-section {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 26px 18px 28px !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .mock-exam-shell--active .mock-exam-current-card {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+}
