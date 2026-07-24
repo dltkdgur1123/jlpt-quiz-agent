@@ -180,6 +180,10 @@ test("settings page provides account learning defaults without extra service not
   assert.match(clientSource, /미응답 문제 포함/);
   assert.match(clientSource, /취약 영역 기준/);
   assert.match(clientSource, /getSession/);
+  assert.match(clientSource, /닉네임/);
+  assert.match(clientSource, /nicknameInput/);
+  assert.match(clientSource, /updateUser\(\{ data: \{ nickname/);
+  assert.match(clientSource, /프로필 이름이 저장되었습니다/);
   assert.match(clientSource, /signOut/);
   assert.doesNotMatch(clientSource, /서비스 안내/);
   assert.doesNotMatch(clientSource, /출제 체감 score는 학습자 응답 기반 참고 지표입니다/);

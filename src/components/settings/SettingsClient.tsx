@@ -17,6 +17,7 @@ type SettingsState = {
 type AccountState = {
   status: "loading" | "signed-out" | "signed-in";
   email: string | null;
+  nickname: string;
 };
 
 const SETTINGS_STORAGE_KEY = "jlpt-quiz-user-settings";
@@ -46,6 +47,16 @@ const weaknessOptions: Array<{ value: WeaknessBasis; label: string; helper: stri
   },
 ];
 
+function nicknameFromSession(session: { user?: { email?: string | null; user_metadata?: Record<string, unknown> } } | null): string {
+  const metadata = session?.user?.user_metadata ?? {};
+  const rawName = metadata.nickname ?? metadata.full_name ?? metadata.name ?? metadata.user_name;
+  const email = session?.user?.email ?? null;
+
+  return typeof rawName === "string" && rawName.trim()
+    ? rawName.trim()
+    : email?.split("@")[0] || "";
+}
+
 function readSettings(): SettingsState {
   if (typeof window === "undefined") return defaultSettings;
 
@@ -70,7 +81,10 @@ function readSettings(): SettingsState {
 export function SettingsClient() {
   const [settings, setSettings] = useState<SettingsState>(defaultSettings);
   const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
-  const [account, setAccount] = useState<AccountState>({ status: "loading", email: null });
+  const [account, setAccount] = useState<AccountState>({ status: "loading", email: null, nickname: "" });
+  const [nicknameInput, setNicknameInput] = useState("");
+  const [nicknameSaveState, setNicknameSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
 
   useEffect(() => {
     queueMicrotask(() => setSettings(readSettings()));
@@ -80,14 +94,18 @@ export function SettingsClient() {
     try {
       const supabase = getSupabaseBrowserClient();
       supabase.auth.getSession().then(({ data }) => {
-        setAccount({ status: data.session ? "signed-in" : "signed-out", email: data.session?.user.email ?? null });
+        const nickname = nicknameFromSession(data.session);
+        setAccount({ status: data.session ? "signed-in" : "signed-out", email: data.session?.user.email ?? null, nickname });
+        setNicknameInput(nickname);
       });
       const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-        setAccount({ status: session ? "signed-in" : "signed-out", email: session?.user.email ?? null });
+        const nickname = nicknameFromSession(session);
+        setAccount({ status: session ? "signed-in" : "signed-out", email: session?.user.email ?? null, nickname });
+        setNicknameInput(nickname);
       });
       return () => data.subscription.unsubscribe();
     } catch {
-      queueMicrotask(() => setAccount({ status: "signed-out", email: null }));
+      queueMicrotask(() => setAccount({ status: "signed-out", email: null, nickname: "" }));
     }
   }, []);
 
@@ -109,10 +127,40 @@ export function SettingsClient() {
     setSaveState("saved");
   }
 
+  async function saveNickname() {
+    if (account.status !== "signed-in" || nicknameSaveState === "saving") return;
+
+    const trimmedNickname = nicknameInput.trim();
+    if (!trimmedNickname) {
+      setNicknameSaveState("error");
+      setNicknameMessage("닉네임을 입력해주세요.");
+      return;
+    }
+
+    const supabase = getSupabaseBrowserClient();
+    setNicknameSaveState("saving");
+    setNicknameMessage(null);
+
+    const { data, error } = await supabase.auth.updateUser({ data: { nickname: trimmedNickname } });
+
+    if (error) {
+      setNicknameSaveState("error");
+      setNicknameMessage(error.message);
+      return;
+    }
+
+    const nextNickname = nicknameFromSession(data.user ? { user: data.user } : null) || trimmedNickname;
+    setAccount((current) => ({ ...current, nickname: nextNickname }));
+    setNicknameInput(nextNickname);
+    setNicknameSaveState("saved");
+    setNicknameMessage("프로필 이름이 저장되었습니다.");
+  }
+
   async function signOut() {
     const supabase = getSupabaseBrowserClient();
     await supabase.auth.signOut();
-    setAccount({ status: "signed-out", email: null });
+    setAccount({ status: "signed-out", email: null, nickname: "" });
+    setNicknameInput("");
   }
 
   return (
@@ -136,15 +184,40 @@ export function SettingsClient() {
             </div>
           </div>
           <div className="settings-account-box">
-            <strong>{account.status === "signed-in" ? account.email ?? "로그인 계정" : "로그인이 필요합니다"}</strong>
+            <strong>{account.status === "signed-in" ? account.nickname || account.email || "로그인 계정" : "로그인이 필요합니다"}</strong>
             <span>
               {account.status === "loading"
                 ? "계정 정보를 확인 중입니다."
                 : account.status === "signed-in"
-                  ? "학습 기록 저장과 오답노트 연결에 사용됩니다."
+                  ? account.email ?? "학습 기록 저장과 오답노트 연결에 사용됩니다."
                   : "로그인하면 모의고사 기록과 오답노트를 저장할 수 있습니다."}
             </span>
           </div>
+          {account.status === "signed-in" ? (
+            <div className="settings-nickname-form">
+              <label htmlFor="settings-nickname">닉네임</label>
+              <div>
+                <input
+                  id="settings-nickname"
+                  type="text"
+                  value={nicknameInput}
+                  maxLength={24}
+                  placeholder="표시할 닉네임"
+                  onChange={(event) => {
+                    setNicknameInput(event.target.value);
+                    if (nicknameSaveState !== "idle") {
+                      setNicknameSaveState("idle");
+                      setNicknameMessage(null);
+                    }
+                  }}
+                />
+                <button type="button" onClick={saveNickname} disabled={nicknameSaveState === "saving"}>
+                  {nicknameSaveState === "saving" ? "저장 중" : "저장"}
+                </button>
+              </div>
+              {nicknameMessage ? <p data-state={nicknameSaveState}>{nicknameMessage}</p> : null}
+            </div>
+          ) : null}
           <div className="settings-actions">
             {account.status === "signed-in" ? (
               <button className="settings-danger-button" type="button" onClick={signOut}>로그아웃</button>

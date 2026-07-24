@@ -17,7 +17,7 @@ function nicknameFromSession(session: { user?: { email?: string | null; user_met
   if (!user) return null;
 
   const metadata = user.user_metadata ?? {};
-  const rawName = metadata.full_name ?? metadata.name ?? metadata.user_name ?? metadata.nickname;
+  const rawName = metadata.nickname ?? metadata.full_name ?? metadata.name ?? metadata.user_name;
   const email = user.email ?? null;
   const nickname = typeof rawName === "string" && rawName.trim()
     ? rawName.trim()

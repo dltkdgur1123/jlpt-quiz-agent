@@ -1903,6 +1903,62 @@ main:has(.mock-page-shell) {
   flex-wrap: wrap;
   gap: 10px;
 }
+.settings-nickname-form {
+  display: grid;
+  gap: 10px;
+}
+.settings-nickname-form label {
+  color: var(--jlpt-title, #212121);
+  font-size: 13px;
+  font-weight: 900;
+}
+.settings-nickname-form > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+.settings-nickname-form input {
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--jlpt-title, #212121);
+  font-size: 15px;
+  font-weight: 800;
+  outline: none;
+}
+.settings-nickname-form input:focus {
+  border-color: var(--jlpt-primary, #d32f2f);
+}
+.settings-nickname-form button {
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--jlpt-primary, #d32f2f);
+  border-radius: 14px;
+  background: var(--jlpt-primary, #d32f2f);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.settings-nickname-form button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+.settings-nickname-form p {
+  margin: 0;
+  color: var(--jlpt-text, #616161);
+  font-size: 13px;
+  font-weight: 800;
+}
+.settings-nickname-form p[data-state="saved"] {
+  color: var(--jlpt-success, #2e7d32);
+}
+.settings-nickname-form p[data-state="error"] {
+  color: var(--jlpt-primary, #d32f2f);
+}
 .settings-secondary-button,
 .settings-danger-button {
   display: inline-flex;
