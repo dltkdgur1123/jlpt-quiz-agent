@@ -79,7 +79,10 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     setPendingAction(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo },
+      options: {
+        redirectTo,
+        queryParams: provider === "kakao" ? { prompt: "login" } : undefined,
+      },
     });
 
     if (error) {

@@ -88,6 +88,7 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.match(source, /trimmedEmail/);
   assert.match(source, /emailRedirectTo: redirectTo/);
   assert.match(source, /searchParams\.set\("next", nextPath\)/);
+  assert.match(source, /queryParams: provider === "kakao" \? \{ prompt: "login" \}/);
   assert.match(source, /로그인 요청을 처리하고 있습니다/);
   assert.match(source, /올바른 이메일 주소를 입력해주세요/);
   assert.doesNotMatch(source, /window\.location\.href\.includes/);
