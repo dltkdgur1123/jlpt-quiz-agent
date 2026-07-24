@@ -96,7 +96,6 @@ export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderBut
         {isMenuOpen ? (
           <div className="auth-profile-dropdown" role="menu">
             {headerUser.email ? <p>{headerUser.email}</p> : null}
-            <Link href="/dashboard" role="menuitem" onClick={() => setIsMenuOpen(false)}>학습 기록</Link>
             <Link href="/settings" role="menuitem" onClick={() => setIsMenuOpen(false)}>설정</Link>
             <button type="button" role="menuitem" onClick={signOut}>로그아웃</button>
           </div>

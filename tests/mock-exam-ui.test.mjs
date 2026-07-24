@@ -162,6 +162,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "dashboard-weak-grid",
     "dashboard-action-head",
     "min-height: 28px !important",
+    "font-size: 14px !important",
+    "font-weight: 850 !important",
     "padding: 26px !important",
   ]) {
     assert.ok(css.includes(style), style);
