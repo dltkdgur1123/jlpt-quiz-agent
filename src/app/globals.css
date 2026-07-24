@@ -3856,12 +3856,44 @@ button:hover:not(:disabled),
 .settings-option-card:hover:not([data-selected="true"]) span {
   color: var(--jlpt-text) !important;
 }
+.settings-level-button[data-selected="true"],
+.settings-level-button[data-selected="true"]:hover,
+.settings-level-button[data-selected="true"]:hover:not(:disabled),
+.settings-option-card[data-selected="true"],
+.settings-option-card[data-selected="true"]:hover,
+.settings-option-card[data-selected="true"]:hover:not(:disabled) {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  color: #ffffff !important;
+  transition: none !important;
+  transform: none !important;
+}
+.settings-option-card[data-selected="true"] strong,
+.settings-option-card[data-selected="true"] span,
+.settings-option-card[data-selected="true"]:hover strong,
+.settings-option-card[data-selected="true"]:hover span {
+  color: #ffffff !important;
+}
+.settings-toggle-row:hover i[data-on="true"],
+.settings-toggle-row i[data-on="true"],
+.settings-toggle-row i[data-on="true"]:hover {
+  background: var(--jlpt-primary) !important;
+  border-color: var(--jlpt-primary) !important;
+  transition: none !important;
+  transform: none !important;
+}
 .settings-level-button,
+.settings-level-button:hover,
 .settings-toggle-row,
+.settings-toggle-row:hover,
+.settings-toggle-row i,
 .settings-toggle-row i::after,
 .settings-option-card,
+.settings-option-card:hover,
 .settings-secondary-button,
-.settings-danger-button {
+.settings-secondary-button:hover,
+.settings-danger-button,
+.settings-danger-button:hover {
   transition: none !important;
   transform: none !important;
 }

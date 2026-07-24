@@ -211,6 +211,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "Settings page: no hover animation/effect; only clicked/selected state changes fill",
     "background: #ffffff !important",
     "border-color: var(--jlpt-border) !important",
+    ".settings-level-button[data-selected=\"true\"]:hover",
+    ".settings-option-card[data-selected=\"true\"]:hover",
+    ".settings-option-card[data-selected=\"true\"]:hover span",
+    ".settings-toggle-row:hover i[data-on=\"true\"]",
+    "background: var(--jlpt-primary) !important",
     ".settings-toggle-row i::after",
   ]) {
     assert.ok(css.includes(style), style);
