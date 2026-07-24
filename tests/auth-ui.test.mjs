@@ -78,6 +78,8 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.match(source, /성적·주소 관련 유의사항/);
   assert.match(source, /information_02\.html/);
   assert.match(source, /guide-id-row/);
+  assert.doesNotMatch(source, /N5 모의고사 시작/);
+  assert.doesNotMatch(source, /시험 당일 준비물, 규정 신분증, 부정행위 유의사항을 한눈에 확인하세요/);
   assert.doesNotMatch(source, /합격 보장|출제 예상|공식 문제/);
 });
 

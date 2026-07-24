@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const sourceUrl = "https://www.jlpt.or.kr/html/information_02.html";
@@ -51,12 +49,7 @@ export default function GuidePage() {
         <section className="guide-hero" aria-labelledby="guide-title">
           <p className="section-eyebrow">EXAM GUIDE</p>
           <h1 id="guide-title">JLPT 수험안내</h1>
-          <p>
-            시험 당일 준비물, 규정 신분증, 부정행위 유의사항을 한눈에 확인하세요.
-            아래 내용은 JLPT 서울실시위원회 수험자 주의사항을 참고해 학습자용으로 정리한 안내입니다.
-          </p>
           <div className="guide-hero-actions">
-            <Link className="figma-primary" href="/mock-exams/n5-realistic-001">N5 모의고사 시작</Link>
             <a className="guide-secondary-link" href={sourceUrl} rel="noreferrer" target="_blank">공식 안내 원문 보기</a>
           </div>
         </section>
