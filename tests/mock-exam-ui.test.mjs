@@ -160,6 +160,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "dashboard-wrong-note-card",
     "dashboard-weak-full",
     "dashboard-weak-grid",
+    "dashboard-action-head",
+    "min-height: 28px !important",
+    "padding: 26px !important",
   ]) {
     assert.ok(css.includes(style), style);
   }
@@ -172,6 +175,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "DashboardWrongNoteCard",
     "취약 영역 분석",
     "오답노트와 최근 모의고사 기준",
+    "dashboard-action-head",
     "dashboard-weak-full",
     "dashboard-weak-grid",
     "dashboard-stat-grid",

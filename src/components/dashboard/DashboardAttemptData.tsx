@@ -119,7 +119,7 @@ export function DashboardWrongNoteCard() {
 
   return (
     <section className="dashboard-panel dashboard-wrong-note dashboard-wrong-note-card" id="wrong-note" aria-label="오답노트">
-      <div className="dashboard-wrong-note-head">
+      <div className="dashboard-wrong-note-head dashboard-action-head">
         <div>
           <p>오답노트</p>
           <h2>{totalCount ? `복습할 문제 ${totalCount}문항` : "복습할 문제가 없습니다"}</h2>

@@ -792,6 +792,7 @@ dd { margin: 0; color: var(--muted); }
 .dashboard-wrong-note-card {
   align-content: start;
   min-height: 100%;
+  padding: 26px !important;
 }
 .dashboard-wrong-note-head,
 .dashboard-weak-head {
@@ -799,6 +800,28 @@ dd { margin: 0; color: var(--muted); }
   justify-content: space-between;
   align-items: flex-start;
   gap: 18px;
+}
+.dashboard-action-head {
+  min-height: 36px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+}
+.dashboard-action-head > :first-child {
+  min-width: 0 !important;
+}
+.dashboard-action-head > a {
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-height: 28px !important;
+  margin-top: 0 !important;
+  margin-left: auto !important;
+  padding-top: 0 !important;
+  line-height: 1 !important;
+  text-align: right !important;
 }
 .dashboard-wrong-note-head a,
 .dashboard-weak-head a {

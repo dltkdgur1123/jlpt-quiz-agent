@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
         <section className="dashboard-grid-bottom" id="history">
           <article className="dashboard-panel dashboard-recent">
-            <div className="panel-title-row"><h2>최근 모의고사</h2><a href="#history">전체 보기 →</a></div>
+            <div className="panel-title-row dashboard-action-head"><h2>최근 모의고사</h2><a href="#history">전체 보기 →</a></div>
             {recentExams.map((exam) => (
               <div className="recent-exam-row" key={exam.title}>
                 <span>N5</span>
@@ -89,7 +89,7 @@ export default function DashboardPage() {
         </section>
 
         <section className="dashboard-panel dashboard-weak dashboard-weak-full" aria-label="취약 영역 분석">
-          <div className="dashboard-weak-head">
+          <div className="dashboard-weak-head dashboard-action-head">
             <div>
               <h2>취약 영역 분석</h2>
               <p>오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다.</p>
