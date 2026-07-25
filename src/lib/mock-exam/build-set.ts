@@ -47,7 +47,7 @@ export interface MockExamSetArtifact {
     set_code: string;
     set_title: string;
     jlpt_level: JlptLevel;
-    mode: "lite";
+    mode: "realistic";
     status: "draft";
     listening_included: false;
     time_limit_minutes: number;
@@ -187,7 +187,7 @@ export function buildMockExamSet(
       set_code: options.setCode,
       set_title: options.setTitle,
       jlpt_level: options.jlptLevel,
-      mode: "lite",
+      mode: "realistic",
       status: "draft",
       listening_included: false,
       time_limit_minutes: timeLimitMinutes,

@@ -20,7 +20,7 @@ function makeQuestion(item_type, index, review_status = "approved") {
   };
 }
 
-test("buildMockExamSet creates N5 Lite non-listening sections and seeded questions", () => {
+test("buildMockExamSet creates seeded non-listening vocab and grammar sections", () => {
   const pool = [
     ...Array.from({ length: 20 }, (_, index) => makeQuestion("vocab", index)),
     ...Array.from({ length: 20 }, (_, index) => makeQuestion("grammar", index)),
@@ -28,8 +28,8 @@ test("buildMockExamSet creates N5 Lite non-listening sections and seeded questio
   ];
 
   const set = buildMockExamSet(pool, {
-    setCode: "n5-mock-exam-lite-test",
-    setTitle: "N5 모의고사 Lite Test",
+    setCode: "n5-mock-exam-builder-test",
+    setTitle: "N5 모의고사 Builder Test",
     jlptLevel: "N5",
     seed: "fixed",
     vocabCount: 15,
@@ -37,7 +37,7 @@ test("buildMockExamSet creates N5 Lite non-listening sections and seeded questio
     timeLimitMinutes: 35,
   });
 
-  assert.equal(set.set.mode, "lite");
+  assert.equal(set.set.mode, "realistic");
   assert.equal(set.set.listening_included, false);
   assert.equal(set.set.question_count, 30);
   assert.deepEqual(
@@ -71,20 +71,6 @@ test("buildMockExamSet defaults to approved rows and fails on small pools", () =
   );
 });
 
-test("generated N5 mock exam set artifact has 30 draft review questions", () => {
-  const artifact = JSON.parse(
-    readFileSync(new URL("../data/generated/n5-mock-exam-lite-set-001.json", import.meta.url), "utf8"),
-  );
-
-  assert.equal(artifact.set.set_code, "n5-mock-exam-lite-001");
-  assert.equal(artifact.set.listening_included, false);
-  assert.equal(artifact.set.question_count, 30);
-  assert.equal(artifact.sections.length, 2);
-  assert.equal(artifact.questions.filter((question) => question.section_key === "vocab").length, 15);
-  assert.equal(artifact.questions.filter((question) => question.section_key === "grammar").length, 15);
-  assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
-});
-
 test("buildMockExamSet moves recent question IDs behind fresh options when pool allows", () => {
   const pool = [
     ...Array.from({ length: 20 }, (_, index) => makeQuestion("vocab", index)),
@@ -111,33 +97,6 @@ test("buildMockExamSet moves recent question IDs behind fresh options when pool 
   });
 
   assert.equal(recentAware.questions.slice(0, 5).some((question) => recentQuestionIds.includes(question.id)), false);
-});
-
-test("improved N5 mock exam set 002 mixes vocab grammar and reading formats", () => {
-  const artifact = JSON.parse(
-    readFileSync(new URL("../data/generated/n5-mock-exam-lite-set-002.json", import.meta.url), "utf8"),
-  );
-
-  assert.equal(artifact.set.set_code, "n5-mock-exam-lite-002");
-  assert.equal(artifact.set.question_count, 35);
-  assert.deepEqual(
-    artifact.sections.map((section) => section.section_key),
-    ["vocab", "grammar", "reading"],
-  );
-  for (const questionType of [
-    "vocab_reading",
-    "vocab_orthography",
-    "vocab_paraphrase",
-    "grammar_sentence_build",
-    "grammar_text_blank",
-    "reading_info",
-  ]) {
-    assert.ok(
-      artifact.questions.some((question) => question.question_type === questionType),
-      `${questionType} missing`,
-    );
-  }
-  assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
 });
 
 test("realistic N5 mock exam 001 has 50 non-listening questions", () => {

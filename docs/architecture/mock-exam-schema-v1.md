@@ -30,7 +30,7 @@ id uuid pk
 jlpt_level text
 set_code text unique
 set_title text
-mode text -- lite | full
+mode text -- realistic | full
 status text -- draft | published | archived
 time_limit_minutes int
 listening_included boolean default false
@@ -143,7 +143,7 @@ GET  /api/mock-exam-attempts/:attempt_id/result
 
 ## Scoring 정책
 
-초기 Lite는 단순 채점으로 시작한다.
+초기 realistic 운영은 단순 채점으로 시작한다.
 
 ```text
 문항당 1점

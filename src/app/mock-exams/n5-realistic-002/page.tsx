@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { MockExamLite } from "@/components/mock-exam/MockExamLite";
+import { MockExamRunner } from "@/components/mock-exam/MockExamRunner";
 
 function loadMockExamSet() {
   const path = join(process.cwd(), "data/generated/n5-realistic-mock-exam-002.json");
@@ -27,7 +27,7 @@ export default function N5RealisticMockExam002Page() {
         <div className="exam-portal-layout">
           <AdSidebar side="left" />
           <div className="exam-main-column">
-            <MockExamLite artifact={artifact} />
+            <MockExamRunner artifact={artifact} />
           </div>
           <AdSidebar side="right" />
         </div>

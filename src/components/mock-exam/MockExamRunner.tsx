@@ -314,7 +314,7 @@ function clearInProgressDraft(setCode: string) {
   if (draft?.set_code === setCode) window.localStorage.removeItem(IN_PROGRESS_STORAGE_KEY);
 }
 
-export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
+export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const [attemptSeed, setAttemptSeed] = useState(() => `${artifact.set.set_code}:initial`);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [seenFeedbacks, setSeenFeedbacks] = useState<Record<string, FeedbackValue>>({});
@@ -675,10 +675,10 @@ export function MockExamLite({ artifact }: { artifact: MockExamArtifact }) {
   return (
     <div className={`mock-exam-shell ${examStarted ? "mock-exam-shell--active" : "mock-exam-shell--start"}`}>
       <section className="hero-copy mock-exam-hero">
-        <p className="section-eyebrow">JLPT Mock Exam Lite</p>
+        <p className="section-eyebrow">JLPT Realistic Mock Exam</p>
         <h1>{artifact.set.set_title}</h1>
         <p>
-          청해 없이 문자·어휘·문법·독해를 먼저 보는 N5 모의고사 Lite입니다. 문제와 보기는 제출 전 일본어만
+          청해 없이 문자·어휘·문법·독해를 보는 실전형 모의고사입니다. 문제와 보기는 제출 전 일본어만
           노출하고, 해설은 전체 제출 후 확인합니다.
         </p>
         <div className="mock-exam-status-grid" aria-label="모의고사 정보">

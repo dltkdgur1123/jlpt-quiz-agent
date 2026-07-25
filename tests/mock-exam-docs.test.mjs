@@ -18,11 +18,12 @@ test("mock exam platform pivot defines product direction and keeps safe wording"
   assert.match(source, /청해는 지금 만들지 않는다/);
 });
 
-test("mock exam MVP flow starts with non-listening N5 Lite", () => {
+test("mock exam MVP flow starts with non-listening realistic sets", () => {
   const source = flowDoc();
-  assert.match(source, /N5 Mock Exam Lite/);
-  assert.match(source, /문자·어휘: 15문항/);
-  assert.match(source, /문법: 15문항/);
+  assert.match(source, /Realistic Mock Exam/);
+  assert.match(source, /문자·어휘: 20문항/);
+  assert.match(source, /문법: 20문항/);
+  assert.match(source, /독해: 10문항/);
   assert.match(source, /청해: 제외/);
   assert.match(source, /전체 제출 전까지 정답 여부를 보여주지 않는다/);
 });

@@ -8,7 +8,7 @@ JLPT Quiz는 단일 랜덤 퀴즈 사이트가 아니라 **JLPT 시험 준비자
 
 ```text
 레벨 선택
-→ 모의고사 세트 시작
+→ 실전형 모의고사 세트 시작
 → 문자·어휘 / 문법 / 독해 순서로 응시
 → 전체 제출
 → 영역별 결과와 오답 확인
@@ -28,11 +28,11 @@ JLPT Quiz는 단일 랜덤 퀴즈 사이트가 아니라 **JLPT 시험 준비자
 
 ## MVP 포지션
 
-초기 제품명/문구는 아래처럼 잡는다.
+운영 제품명/문구는 아래처럼 잡는다.
 
 ```text
 JLPT Mock Exam Platform
-JLPT 모의고사 Lite
+JLPT Realistic Mock Exam
 공식 문제를 복제하지 않은 JLPT형 자체 제작 모의고사
 사용자 풀이/피드백 기반 출제 체감 score
 ```
@@ -63,27 +63,26 @@ script timing
 
 이 필요하므로 별도 후속 phase로 분리한다.
 
-## 1차 MVP: N5 Mock Exam Lite
+## 1차 운영 세트: Realistic Mock Exam
 
-| 영역 | 문항 수 | source | 상태 |
-|---|---:|---|---|
-| 문자·어휘 | 15 | `vocab_items` | 우선 구현 |
-| 문법 | 15 | `grammar_items` | 우선 구현 |
-| 독해 | 5 | 신규 `reading_passages` 필요 | 후속 |
-| 청해 | 0 | 제외 | 후속 |
+| 영역 | 문항 수 | 상태 |
+|---|---:|---|
+| 문자·어휘 | 20 | 운영 준비 |
+| 문법 | 20 | 운영 준비 |
+| 독해 | 10 | 운영 준비 |
+| 청해 | 0 | 제외 |
 
-처음부터 공식 JLPT와 동일한 문항 수/시간을 복제하려 하지 않는다. 사용자가 모바일에서 끝까지 완료할 수 있는 **짧은 모의고사 Lite**를 먼저 운영한다.
+N5/N4/N3/N2/N1 모두 같은 50문항 비청해 구조로 운영 준비한다.
 
 ## 운영 루프
 
 ```text
-Shorts 최종 검수 source
+Shorts 최종 검수 source / 자체 제작 문항 기획
 → sample09 비청해 형식 참고
 → Hermes 문항 생성
 → 품질 게이트
 → 효쿠님 검수
-→ active 문항 pool
-→ mock exam set 구성
+→ active 문항 pool 또는 published set
 → 응시/채점
 → 영역별 약점과 출제 체감 score
 → 다음 batch 생성 기준 반영
@@ -93,7 +92,7 @@ Shorts 최종 검수 source
 
 | 역할 | 책임 |
 |---|---|
-| Product Planner | 모의고사 Lite 범위와 phase 결정 |
+| Product Planner | realistic 모의고사 범위와 phase 결정 |
 | Quiz UX Designer | 응시 흐름, 타이머, 결과/오답 UX |
 | Data Model Architect | exam set / attempt / answer schema 설계 |
 | Scoring Analyst | 영역별 점수, confidence, perceived score 해석 |
@@ -105,10 +104,9 @@ Shorts 최종 검수 source
 ## 다음 구현 티켓
 
 ```text
-NS-TICKET-019A mock exam docs/schema/UX lock
-NS-TICKET-020 mock_exam_sets schema
-NS-TICKET-021 mock exam set builder
-NS-TICKET-022 mock exam taking UI
-NS-TICKET-023 submit/result/weakness report
-NS-TICKET-024 approved batch import into mock exam pool
+NS-TICKET-025 realistic set 검수/승인 플로우
+NS-TICKET-026 reading schema/import 정식화
+NS-TICKET-027 wrong-note loop
+NS-TICKET-028 published set 관리 화면
+NS-TICKET-029 청해 phase 설계
 ```

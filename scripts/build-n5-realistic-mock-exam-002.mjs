@@ -106,7 +106,7 @@ const artifact = {
     set_code: setCode,
     set_title: "N5 실전형 모의고사 002",
     jlpt_level: "N5",
-    mode: "realistic_lite",
+    mode: "realistic",
     status: "draft",
     listening_included: false,
     time_limit_minutes: 60,

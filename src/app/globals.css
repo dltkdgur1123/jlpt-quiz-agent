@@ -1752,7 +1752,7 @@ main:has(.mock-page-shell) {
   color: #1f1b16;
   font-weight: 650;
 }
-.mock-lite-page-stack {
+.mock-page-stack {
   width: min(980px, 100%);
   margin: 0 auto;
 }
@@ -3955,7 +3955,7 @@ main,
   justify-items: center;
 }
 .exam-portal-layout:has(.mock-exam-shell--start),
-.mock-lite-page-stack:has(.mock-exam-shell--start) {
+.mock-page-stack:has(.mock-exam-shell--start) {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   place-items: center !important;
@@ -3967,7 +3967,7 @@ main,
   display: none !important;
 }
 .exam-main-column:has(.mock-exam-shell--start),
-.mock-lite-page-stack:has(.mock-exam-shell--start) {
+.mock-page-stack:has(.mock-exam-shell--start) {
   width: 100% !important;
   display: grid !important;
   place-items: center !important;
@@ -4031,13 +4031,13 @@ main,
 .mock-page-shell:has(.mock-exam-shell--active) {
   justify-items: stretch !important;
 }
-.mock-lite-page-stack:has(.mock-exam-shell--active) {
+.mock-page-stack:has(.mock-exam-shell--active) {
   width: 100% !important;
   max-width: 100% !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
-.mock-lite-page-stack:has(.mock-exam-shell--active) .mock-exam-shell {
+.mock-page-stack:has(.mock-exam-shell--active) .mock-exam-shell {
   width: 100% !important;
 }
 

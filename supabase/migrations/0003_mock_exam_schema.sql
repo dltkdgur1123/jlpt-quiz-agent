@@ -6,7 +6,7 @@ create table if not exists public.mock_exam_sets (
   jlpt_level text not null check (jlpt_level in ('N1', 'N2', 'N3', 'N4', 'N5')),
   set_code text not null unique,
   set_title text not null,
-  mode text not null default 'lite' check (mode in ('lite', 'full')),
+  mode text not null default 'realistic' check (mode in ('realistic', 'full')),
   status text not null default 'draft' check (status in ('draft', 'published', 'archived')),
   time_limit_minutes integer not null check (time_limit_minutes > 0),
   listening_included boolean not null default false,

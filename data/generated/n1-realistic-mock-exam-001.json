@@ -3,7 +3,7 @@
     "set_code": "n1-realistic-mock-exam-001",
     "set_title": "N1 실전형 모의고사 001",
     "jlpt_level": "N1",
-    "mode": "realistic_lite",
+    "mode": "realistic",
     "status": "draft",
     "listening_included": false,
     "time_limit_minutes": 110,

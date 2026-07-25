@@ -175,7 +175,7 @@ function buildArtifact(level, spec) {
       set_code: setCode,
       set_title: `${level} 실전형 모의고사 001`,
       jlpt_level: level,
-      mode: "realistic_lite",
+      mode: "realistic",
       status: "draft",
       listening_included: false,
       time_limit_minutes: spec.time,

@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         jlpt_level: body.jlpt_level,
         set_code: body.set_code,
         set_title: body.set_title,
-        mode: "lite",
+        mode: "realistic",
         status: "published",
         time_limit_minutes: body.time_limit_minutes,
         listening_included: false,

@@ -3,11 +3,6 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
-const mockExamPage = () => readFileSync(new URL("../src/app/mock-exams/n5-lite-002/page.tsx", import.meta.url), "utf8");
-const levelMockExamPage = (level) =>
-  readFileSync(new URL(`../src/app/mock-exams/${level.toLowerCase()}-lite-001/page.tsx`, import.meta.url), "utf8");
-const levelMockExamArtifact = (level) =>
-  JSON.parse(readFileSync(new URL(`../data/generated/${level.toLowerCase()}-mock-exam-lite-001.json`, import.meta.url), "utf8"));
 const realisticMockExamPage = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-001/page.tsx", import.meta.url), "utf8");
 const realisticMockExam002Page = () =>
@@ -22,7 +17,7 @@ const dashboardAttemptData = () =>
 const mockExamAttemptRoute = () =>
   readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
-  readFileSync(new URL("../src/components/mock-exam/MockExamLite.tsx", import.meta.url), "utf8");
+  readFileSync(new URL("../src/components/mock-exam/MockExamRunner.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
 const homeRecentMockExam = () =>
@@ -339,36 +334,6 @@ test("mock exam attempt API validates login and writes attempt answer result row
   }
 });
 
-test("N5 mock exam page loads generated set artifact", () => {
-  const source = mockExamPage();
-  assert.match(source, /n5-mock-exam-lite-set-002\.json/);
-  assert.match(source, /<SiteHeader active="mock"/);
-  assert.match(source, /MockExamLite/);
-});
-
-test("N4 through N1 mock exam pages load real 35-question non-listening draft artifacts", () => {
-  for (const level of ["N4", "N3", "N2", "N1"]) {
-    const pageSource = levelMockExamPage(level);
-    const artifact = levelMockExamArtifact(level);
-    const lower = level.toLowerCase();
-
-    assert.match(pageSource, new RegExp(`${lower}-mock-exam-lite-001\\.json`));
-    assert.match(pageSource, /<SiteHeader active="mock"/);
-    assert.match(pageSource, /MockExamLite/);
-    assert.equal(artifact.set.set_code, `${lower}-mock-exam-lite-001`);
-    assert.equal(artifact.set.jlpt_level, level);
-    assert.equal(artifact.set.question_count, 35);
-    assert.equal(artifact.set.listening_included, false);
-    assert.deepEqual(
-      artifact.sections.map((section) => `${section.section_key}:${section.question_count}`),
-      ["vocab:15", "grammar:15", "reading:5"],
-    );
-    assert.equal(artifact.questions.length, 35);
-    assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
-    assert.equal(artifact.questions.every((question) => question.review_status === "draft"), true);
-  }
-});
-
 test("N4 through N1 realistic mock exam pages load 50-question non-listening artifacts", () => {
   for (const level of ["N4", "N3", "N2", "N1"]) {
     const pageSource = levelRealisticMockExamPage(level);
@@ -376,7 +341,7 @@ test("N4 through N1 realistic mock exam pages load 50-question non-listening art
 
     assert.match(pageSource, new RegExp(`${lower}-realistic-mock-exam-001\\.json`));
     assert.match(pageSource, /<SiteHeader active="mock"/);
-    assert.match(pageSource, /MockExamLite/);
+    assert.match(pageSource, /MockExamRunner/);
     assert.match(pageSource, /exam-portal-layout/);
   }
 });
@@ -416,7 +381,7 @@ test("mock exam CSS keeps current question panel paper-like while aligned with h
     "display: none !important",
     "height: 44px !important",
     "Common active mock-exam contract",
-    ".mock-lite-page-stack:has(.mock-exam-shell--active)",
+    ".mock-page-stack:has(.mock-exam-shell--active)",
     "margin-left: 0 !important",
     "margin-right: 0 !important",
     "gap: 18px",
@@ -434,18 +399,18 @@ test("N5 realistic mock exam page loads generated 50-question set", () => {
   const source002 = realisticMockExam002Page();
   assert.match(source, /n5-realistic-mock-exam-001\.json/);
   assert.match(source, /<SiteHeader active="mock"/);
-  assert.match(source, /MockExamLite/);
+  assert.match(source, /MockExamRunner/);
   assert.match(source, /exam-portal-layout/);
   assert.match(source, /exam-ad-sidebar/);
   assert.match(source, /Google Ad/);
   assert.match(source002, /n5-realistic-mock-exam-002\.json/);
   assert.match(source002, /<SiteHeader active="mock"/);
-  assert.match(source002, /MockExamLite/);
+  assert.match(source002, /MockExamRunner/);
   assert.match(source002, /exam-portal-layout/);
   const source003 = realisticMockExam003Page();
   assert.match(source003, /n5-realistic-mock-exam-003\.json/);
   assert.match(source003, /<SiteHeader active="mock"/);
-  assert.match(source003, /MockExamLite/);
+  assert.match(source003, /MockExamRunner/);
   assert.match(source003, /exam-portal-layout/);
 });
 
