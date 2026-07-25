@@ -15,7 +15,8 @@
     "sync:final-shorts-source": "node scripts/sync-final-shorts-source-snapshot.mjs",
     "build:n5-realistic-mock-exam-002": "node scripts/build-n5-realistic-mock-exam-002.mjs",
     "build:n5-realistic-mock-exam-003": "node scripts/build-n5-realistic-mock-exam-003.mjs",
-    "build:realistic-mock-exams-n4-n1": "node scripts/build-realistic-mock-exams-n4-n1.mjs"
+    "build:realistic-mock-exams-n4-n1": "node scripts/build-realistic-mock-exams-n4-n1.mjs",
+    "strengthen:realistic-reading": "node scripts/strengthen-realistic-reading-passages.mjs && node scripts/strengthen-realistic-reading-passages-pass2.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",

@@ -152,6 +152,7 @@ test("N4 through N1 realistic mock exams match the 50-question production draft 
 function assertRealisticDraftArtifact(artifact, expectedSetCode, expectedLevel) {
   const preAnswerFields = ["question_text", "choice_a", "choice_b", "choice_c", "choice_d"];
   const hasKorean = /[가-힣]/;
+  const readingMinimums = { N1: 300, N2: 240, N3: 190, N4: 140, N5: 120 };
 
   assert.equal(artifact.set.set_code, expectedSetCode);
   assert.equal(artifact.set.jlpt_level, expectedLevel);
@@ -169,6 +170,12 @@ function assertRealisticDraftArtifact(artifact, expectedSetCode, expectedLevel) 
     { vocab: 20, grammar: 20, reading: 10 },
   );
   assert.equal(new Set(artifact.questions.map((question) => question.question_text)).size, artifact.questions.length);
+  const readingQuestions = artifact.questions.filter((question) => question.section_key === "reading");
+  assert.equal(
+    readingQuestions.every((question) => question.question_text.length >= readingMinimums[expectedLevel]),
+    true,
+    `${expectedLevel} reading passages must be strengthened beyond placeholder length`,
+  );
   assert.equal(artifact.questions.some((question) => question.question_type.toLowerCase().includes("listening")), false);
   assert.equal(
     artifact.questions.some((question) => preAnswerFields.some((field) => hasKorean.test(String(question[field] ?? "")))),
