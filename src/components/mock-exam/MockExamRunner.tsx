@@ -191,7 +191,20 @@ function nextSeed(seed: number) {
   return Math.imul(seed ^ (seed >>> 15), 2246822507) >>> 0;
 }
 
-function buildRenderedChoices(question: MockExamQuestion, attemptSeed: string): RenderedChoice[] {
+export function seededShuffle<T>(rows: T[], seedText: string): T[] {
+  let seed = hashSeed(seedText);
+  const shuffledRows = [...rows];
+
+  for (let index = shuffledRows.length - 1; index > 0; index -= 1) {
+    seed = nextSeed(seed + index);
+    const swapIndex = seed % (index + 1);
+    [shuffledRows[index], shuffledRows[swapIndex]] = [shuffledRows[swapIndex], shuffledRows[index]];
+  }
+
+  return shuffledRows;
+}
+
+export function buildRenderedChoices(question: MockExamQuestion, attemptSeed: string): RenderedChoice[] {
   const originalChoices = CHOICE_KEYS.map((originalKey) => ({
     originalKey,
     text: choiceText(question, originalKey),
@@ -400,9 +413,12 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const flattenedQuestions = useMemo(
     () =>
       PROBLEM_DEFINITIONS.flatMap((problem) =>
-        problemQuestions(artifact, problem).map((question, questionIndex) => ({ problem, question, questionIndex })),
+        seededShuffle(
+          problemQuestions(artifact, problem),
+          `${attemptSeed}:${artifact.set.set_code}:problem:${problem.problemNo}`,
+        ).map((question, questionIndex) => ({ problem, question, questionIndex })),
       ),
-    [artifact],
+    [artifact, attemptSeed],
   );
   const currentQuestion = flattenedQuestions[currentQuestionIndex] ?? flattenedQuestions[0];
   const currentQuestionNumber = currentQuestionIndex + 1;

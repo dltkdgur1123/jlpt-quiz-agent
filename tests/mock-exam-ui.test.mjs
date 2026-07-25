@@ -521,6 +521,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-exam-bottom-nav",
     "grammar_sentence_build",
     "attemptSeed",
+    "seededShuffle",
     "buildRenderedChoices",
     "renderedCorrectChoice",
     "randomUUID",
@@ -553,6 +554,13 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     assert.ok(source.includes(phrase), phrase);
   }
   assert.match(source, /submitted \? \(/);
+  assert.match(source, /seededShuffle\([\s\S]*?problemQuestions\(artifact, problem\)[\s\S]*?attemptSeed[\s\S]*?problem\.problemNo/);
+  assert.match(source, /const originalCorrectIndex = CHOICE_KEYS\.indexOf\(question\.correct_choice\)/);
+  assert.match(source, /const renderedCorrectIndex = shuffledChoices\.findIndex/);
+  assert.match(source, /renderedCorrectIndex === originalCorrectIndex/);
+  assert.match(source, /renderedCorrectChoice\(question, renderedChoices\)/);
+  assert.doesNotMatch(source, /selectedAnswers\[question\.id\] === question\.correct_choice/);
+  assert.doesNotMatch(source, /problemQuestions\(artifact, problem\)\.map/);
   assert.doesNotMatch(source, /feedbackSummary/);
   assert.doesNotMatch(source, /출제 경험 체크/);
   assert.doesNotMatch(source, /본 적 있음 \{feedbackSummary\.yes\}/);
