@@ -28,17 +28,17 @@ export function SiteHeader({ active = "home" }: SiteHeaderProps) {
         </Link>
         <nav aria-label="메인 메뉴" className="home-nav">
           <Link className={active === "home" ? "active" : undefined} href="/">홈</Link>
+          <Link className={active === "guide" ? "active" : undefined} href="/guide">수험안내</Link>
           <Link className={active === "mock" ? "active" : undefined} href="/mock-exams/n5-realistic-001">모의고사</Link>
           <Link className={active === "history" ? "active" : undefined} href="/dashboard">학습 기록</Link>
-          <Link className={active === "guide" ? "active" : undefined} href="/guide">수험안내</Link>
         </nav>
         <AuthHeaderButton />
       </header>
       <nav aria-label="모바일 하단 메뉴" className="mobile-bottom-nav">
         <Link className="mobile-bottom-nav-item" data-active={active === "home"} href="/">홈</Link>
+        <Link className="mobile-bottom-nav-item" data-active={active === "guide"} href="/guide">수험안내</Link>
         <Link className="mobile-bottom-nav-item" data-active={active === "mock"} href="/mock-exams/n5-realistic-001">모의고사</Link>
         <Link className="mobile-bottom-nav-item" data-active={active === "history"} href="/dashboard">기록</Link>
-        <Link className="mobile-bottom-nav-item" data-active={active === "guide"} href="/guide">수험안내</Link>
       </nav>
     </>
   );

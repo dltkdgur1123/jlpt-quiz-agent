@@ -164,6 +164,14 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(panelSource, /소셜 계정으로 바로 시작할 수 있습니다/);
   assert.match(headerSource, /학습 기록/);
   assert.match(headerSource, /수험안내/);
+  assert.match(
+    headerSource,
+    /href="\/">홈<\/Link>[\s\S]*?href="\/guide">수험안내<\/Link>[\s\S]*?href="\/mock-exams\/n5-realistic-001">모의고사<\/Link>[\s\S]*?href="\/dashboard">학습 기록<\/Link>/,
+  );
+  assert.match(
+    headerSource,
+    /href="\/">홈<\/Link>[\s\S]*?href="\/guide">수험안내<\/Link>[\s\S]*?href="\/mock-exams\/n5-realistic-001">모의고사<\/Link>[\s\S]*?href="\/dashboard">기록<\/Link>/,
+  );
   assert.match(headerSource, /mobile-bottom-nav/);
   assert.match(headerSource, /모바일 하단 메뉴/);
   assert.match(headerSource, /active === "guide"/);
