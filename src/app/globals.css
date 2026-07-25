@@ -5465,6 +5465,39 @@ main:has(.home-page-frame) {
   }
 }
 
+/* Mobile active exam previous/next controls: keep step buttons single-line and balanced */
+@media (max-width: 760px) {
+  .mock-exam-shell--active .mock-exam-bottom-nav {
+    display: grid !important;
+    grid-template-columns: minmax(126px, .34fr) minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin-top: 32px !important;
+    margin-bottom: 18px !important;
+  }
+  .mock-exam-shell--active .mock-exam-bottom-nav .secondary-action,
+  .mock-exam-shell--active .mock-exam-bottom-nav .primary-action {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 70px !important;
+    min-height: 70px !important;
+    padding: 0 12px !important;
+    border-radius: 14px !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.055em !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+}
+
 /* Mobile dashboard page should not look like narrow centered cards */
 @media (max-width: 760px) {
   main:has(.dashboard-page) {

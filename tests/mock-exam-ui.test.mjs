@@ -583,6 +583,10 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-section \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-current-card \{[\s\S]*?border: 0 !important;[\s\S]*?border-radius: 0 !important/);
   assert.match(styles, /mobile active exam keeps submit\/restart controls inside the question sheet only/);
+  assert.match(styles, /mobile active exam previous\/next controls: keep step buttons single-line and balanced/i);
+  assert.match(styles, /\.mock-exam-shell--active \.mock-exam-bottom-nav \{[\s\S]*?grid-template-columns: minmax\(126px, \.34fr\) minmax\(0, 1fr\) !important/);
+  assert.match(styles, /\.mock-exam-shell--active \.mock-exam-bottom-nav \.secondary-action,[\s\S]*?white-space: nowrap !important/);
+  assert.match(styles, /\.mock-exam-shell--active \.mock-exam-bottom-nav \.secondary-action,[\s\S]*?word-break: keep-all !important/);
   assert.match(styles, /@media \(max-width: 1180px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-submit-card \{[\s\S]*?display: none !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-bottom-nav \{[\s\S]*?margin-bottom: 14px !important/);
 });
