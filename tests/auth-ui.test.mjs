@@ -33,6 +33,10 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "auth-provider-title",
     "auth-provider-subtitle",
     "Google 계정으로 계속",
+    "가장 빠른 로그인",
+    "auth-provider-primary",
+    "data-provider={provider}",
+    "data-primary={primary ? \"true\" : \"false\"}",
     "카카오 로그인",
     "Naver 계정으로 계속",
     "공식 OAuth 로그인",
@@ -45,6 +49,7 @@ test("login provider buttons use platform-branded official-style button anatomy"
   for (const phrase of [
     "Login provider official-style buttons",
     ".login-simple-stage .auth-provider-button",
+    ".login-simple-stage .auth-provider-primary[data-provider=\"google\"]",
     ".auth-provider-google .auth-provider-mark",
     ".auth-provider-kakao .auth-provider-mark",
     ".auth-provider-naver .auth-provider-mark",
@@ -56,6 +61,7 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "background: transparent",
     "width: min(420px, 100%)",
     "max-height: 56px",
+    "height: 58px",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
@@ -121,7 +127,11 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.match(source, /trimmedEmail/);
   assert.match(source, /emailRedirectTo: redirectTo/);
   assert.match(source, /searchParams\.set\("next", nextPath\)/);
-  assert.match(source, /queryParams: provider === "kakao" \? \{ prompt: "login" \}/);
+  assert.match(source, /queryParams: providerQueryParams\(provider\)/);
+  assert.match(source, /providerQueryParams/);
+  assert.match(source, /provider === "google"\) return \{ prompt: "select_account" \}/);
+  assert.match(source, /Google 로그인 화면으로 이동합니다/);
+  assert.match(source, /로그인 설정을 확인할 수 없습니다/);
   assert.match(source, /로그인 요청을 처리하고 있습니다/);
   assert.match(source, /올바른 이메일 주소를 입력해주세요/);
   assert.doesNotMatch(source, /window\.location\.href\.includes/);

@@ -10,6 +10,16 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 type OAuthProvider = "google" | "kakao" | `custom:${string}`;
 type AuthPanelVariant = "compact" | "page";
 type PendingAction = OAuthProvider | "email" | "signout" | null;
+type AuthProviderConfig = {
+  provider: OAuthProvider;
+  label: string;
+  tone: string;
+  mark: string;
+  title: string;
+  subtitle: string;
+  primary?: boolean;
+  officialImageSrc?: string;
+};
 
 function safeNextPath(value: string | null): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
@@ -17,8 +27,8 @@ function safeNextPath(value: string | null): string {
   return value;
 }
 
-const providers: Array<{ provider: OAuthProvider; label: string; tone: string; mark: string; title: string; subtitle: string; officialImageSrc?: string }> = [
-  { provider: "google", label: "Google", tone: "google", mark: "G", title: "Google 계정으로 계속", subtitle: "공식 OAuth 로그인" },
+const providers: AuthProviderConfig[] = [
+  { provider: "google", label: "Google", tone: "google", mark: "G", title: "Google 계정으로 계속", subtitle: "가장 빠른 로그인", primary: true },
   {
     provider: "kakao",
     label: "Kakao",
@@ -70,18 +80,31 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     return callbackUrl.toString();
   }
 
+  function providerQueryParams(provider: OAuthProvider) {
+    if (provider === "google") return { prompt: "select_account" };
+    if (provider === "kakao") return { prompt: "login" };
+    return undefined;
+  }
+
   async function signInWithProvider(provider: OAuthProvider) {
     if (isSignedIn || isLoginBusy) return;
 
-    const supabase = getSupabaseBrowserClient();
+    let supabase;
+    try {
+      supabase = getSupabaseBrowserClient();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "로그인 설정을 확인할 수 없습니다.");
+      return;
+    }
+
     const redirectTo = buildRedirectTo();
-    setMessage("로그인 요청을 처리하고 있습니다.");
+    setMessage(provider === "google" ? "Google 로그인 화면으로 이동합니다." : "로그인 요청을 처리하고 있습니다.");
     setPendingAction(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo,
-        queryParams: provider === "kakao" ? { prompt: "login" } : undefined,
+        queryParams: providerQueryParams(provider),
       },
     });
 
@@ -152,9 +175,11 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
       </div>
 
       <div className="auth-provider-grid">
-        {providers.map(({ provider, label, tone, mark, title, subtitle, officialImageSrc }) => (
+        {providers.map(({ provider, label, tone, mark, title, subtitle, primary, officialImageSrc }) => (
           <button
-            className={`auth-provider-button auth-provider-${tone}`}
+            className={`auth-provider-button auth-provider-${tone}${primary ? " auth-provider-primary" : ""}`}
+            data-provider={provider}
+            data-primary={primary ? "true" : "false"}
             key={provider}
             type="button"
             aria-label={`${label} 로그인`}

@@ -2535,6 +2535,24 @@ main:has(.mock-page-shell) {
   background: #ffffff;
   color: #4285f4;
 }
+.login-simple-stage .auth-provider-primary[data-provider="google"] {
+  height: 58px;
+  min-height: 58px;
+  border-color: #dadce0;
+  background: #ffffff;
+  color: #202124;
+}
+.login-simple-stage .auth-provider-primary[data-provider="google"]:hover {
+  border-color: #c6cacf;
+  background: #f8fafd;
+}
+.login-simple-stage .auth-provider-primary[data-provider="google"] .auth-provider-title {
+  font-size: 15px;
+}
+.login-simple-stage .auth-provider-primary[data-provider="google"] .auth-provider-subtitle {
+  color: #5f6368;
+  opacity: 1;
+}
 .login-simple-stage .auth-provider-kakao {
   display: flex;
   justify-content: center;

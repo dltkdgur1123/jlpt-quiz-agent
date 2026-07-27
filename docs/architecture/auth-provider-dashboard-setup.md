@@ -24,6 +24,68 @@ Email
 4. 각 provider의 callback URL을 외부 개발자 콘솔에 등록
 5. Site URL과 Redirect URL을 배포 URL에 맞게 설정
 
+## Google 로그인 실제 연결 절차
+
+현재 프론트엔드는 Google 버튼 클릭 시 Supabase OAuth authorize endpoint로 이동한다.
+
+```text
+Supabase authorize endpoint:
+/auth/v1/authorize?provider=google&redirect_to=<site>/auth/callback&prompt=select_account
+```
+
+로컬 smoke에서 Supabase authorize URL 생성이 성공해야 한다. 현재 프로젝트에서는 authorize URL 생성과 버튼 클릭 후 Supabase authorize endpoint 이동까지 확인됐으며, Supabase provider가 비활성 상태이면 다음 응답이 나온다.
+
+```text
+Unsupported provider: provider is not enabled
+```
+
+이 메시지가 나오면 프론트 코드 문제가 아니라 Supabase Dashboard의 Google provider 활성화가 아직 안 된 상태다.
+
+```bash
+set -a; . ./.env.local; set +a
+node - <<'NODE'
+const { createClient } = require('@supabase/supabase-js')
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+;(async()=>{
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'http://localhost:3010/auth/callback?next=%2Fdashboard',
+      skipBrowserRedirect: true,
+      queryParams: { prompt: 'select_account' },
+    },
+  })
+  console.log({ ok: !error, hasUrl: Boolean(data?.url), error: error?.message })
+})()
+NODE
+```
+
+실제 Google consent 화면까지 동작하려면 외부 대시보드 설정이 필요하다.
+
+1. Google Cloud Console에서 OAuth client 생성
+2. Authorized redirect URI에 Supabase Auth callback URL 등록
+
+```text
+https://<supabase-project-ref>.supabase.co/auth/v1/callback
+```
+
+3. Supabase Dashboard → Authentication → Providers → Google 활성화
+4. Google client id/secret 입력
+5. Supabase Authentication URL Configuration에 사이트 URL과 허용 redirect URL 등록
+
+```text
+Local redirect:
+http://127.0.0.1:3010/auth/callback
+http://localhost:3010/auth/callback
+
+Production redirect:
+https://<vercel-domain>/auth/callback
+```
+
+6. `/login`에서 Google 버튼 클릭 → Google consent 화면 → `/auth/callback` → 로그인 상태 반영까지 확인
+
+주의: Google client secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
+
 ## Kakao 로그인 실제 연결 절차
 
 현재 프론트엔드는 카카오 버튼 클릭 시 Supabase OAuth endpoint로 정상 이동한다.
