@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { buildUserProfileUpsert } from "@/lib/auth/user-sync";
 import type { ActiveMockExamSectionKey, ChoiceKey } from "@/lib/db/types";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { getSupabaseServerClient, getSupabaseServiceRoleClient } from "@/lib/supabase/server";
 
 type AttemptAnswerInput = {
   question_id: string;
@@ -85,9 +85,11 @@ export async function POST(request: NextRequest) {
     const accessToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
     if (!accessToken) throw new Error("login required");
 
-    const client = getSupabaseBrowserClient();
-    const { data: authData, error: authError } = await client.auth.getUser(accessToken);
+    const authClient = getSupabaseServerClient();
+    const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
     if (authError || !authData.user) throw new Error("login required");
+
+    const client = getSupabaseServiceRoleClient();
 
     const profile = buildUserProfileUpsert(authData.user);
     const { data: userProfile, error: userError } = await client
@@ -202,9 +204,11 @@ export async function GET(request: NextRequest) {
     const accessToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
     if (!accessToken) throw new Error("login required");
 
-    const client = getSupabaseBrowserClient();
-    const { data: authData, error: authError } = await client.auth.getUser(accessToken);
+    const authClient = getSupabaseServerClient();
+    const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
     if (authError || !authData.user) throw new Error("login required");
+
+    const client = getSupabaseServiceRoleClient();
 
     const profile = buildUserProfileUpsert(authData.user);
     const { data: userProfile, error: userError } = await client

@@ -333,6 +333,8 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
     "deterministicUuid",
     "auth.getUser",
+    "getSupabaseServiceRoleClient",
+    "getSupabaseServerClient",
     "onConflict: \"mock_exam_set_id,sort_order\"",
     "errorMessage",
   ]) {
