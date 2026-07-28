@@ -143,6 +143,7 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.match(source, /queryParams: providerQueryParams\(provider\)/);
   assert.match(source, /providerQueryParams/);
   assert.match(source, /provider === "google"\) return \{ prompt: "select_account" \}/);
+  assert.match(source, /provider === "custom:naver"\) return \{ auth_type: "reauthenticate" \}/);
   assert.match(source, /provider === "custom:naver"\) return "네이버 로그인 화면으로 이동합니다/);
   assert.match(source, /Google 로그인 화면으로 이동합니다/);
   assert.match(source, /로그인 설정을 확인할 수 없습니다/);

@@ -98,9 +98,10 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     return callbackUrl.toString();
   }
 
-  function providerQueryParams(provider: OAuthProvider) {
+  function providerQueryParams(provider: OAuthProvider): Record<string, string> | undefined {
     if (provider === "google") return { prompt: "select_account" };
     if (provider === "kakao") return { prompt: "login" };
+    if (provider === "custom:naver") return { auth_type: "reauthenticate" };
     return undefined;
   }
 

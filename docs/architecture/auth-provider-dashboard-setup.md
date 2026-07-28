@@ -134,7 +134,7 @@ Supabase 기본 Social Provider 목록에는 Naver가 없으므로 Custom OAuth/
 
 ```text
 Supabase authorize endpoint:
-/auth/v1/authorize?provider=custom%3Anaver&redirect_to=<site>/auth/callback
+/auth/v1/authorize?provider=custom%3Anaver&redirect_to=<site>/auth/callback&auth_type=reauthenticate
 ```
 
 로컬 smoke에서 `custom:naver` authorize URL 생성은 성공해야 한다. 현재 프론트 클릭은 Supabase authorize endpoint까지 이동하며, Supabase Custom provider가 아직 생성되지 않았으면 다음 응답이 나온다.
@@ -156,6 +156,7 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.
     options: {
       redirectTo: 'http://localhost:3010/auth/callback?next=%2Fdashboard',
       skipBrowserRedirect: true,
+      queryParams: { auth_type: 'reauthenticate' },
     },
   })
   console.log({ ok: !error, hasUrl: Boolean(data?.url), error: error?.message })
@@ -204,6 +205,8 @@ https://<vercel-domain>/auth/callback
 ```
 
 주의: Naver 사용자 정보는 `response.id`, `response.email`, `response.name`처럼 감싸져 반환될 수 있으므로 Supabase Custom OAuth 매핑/응답 파싱이 지원되는지 실제 consent 후 반드시 확인한다. Client Secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
+
+다른 네이버 계정으로 테스트해야 할 때는 프론트에서 `auth_type=reauthenticate`를 함께 보낸다. 그래도 네이버가 기존 세션을 유지하면 브라우저에서 `naver.com` 로그아웃 또는 시크릿 창으로 다시 테스트한다.
 
 ## Email 방식
 
