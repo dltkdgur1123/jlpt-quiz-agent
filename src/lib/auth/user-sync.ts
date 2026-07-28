@@ -11,7 +11,7 @@ export interface SupabaseAuthUser {
 
 export type UserProfileUpsert = Pick<
   UserProfile,
-  "auth_provider" | "provider_user_id" | "display_name" | "last_seen_at"
+  "id" | "auth_provider" | "provider_user_id" | "display_name" | "last_seen_at"
 >;
 
 export function buildUserProfileUpsert(authUser: SupabaseAuthUser): UserProfileUpsert {
@@ -22,6 +22,7 @@ export function buildUserProfileUpsert(authUser: SupabaseAuthUser): UserProfileU
     null;
 
   return {
+    id: authUser.id,
     auth_provider: "supabase",
     provider_user_id: authUser.id,
     display_name: displayName,

@@ -14,6 +14,7 @@ test("anonymous users may read quiz and submit attempts but cannot submit score 
 });
 
 test("auth user sync maps Supabase user to MVP users table fields", () => {
+  assert.match(userSync, /id: authUser\.id/);
   assert.match(userSync, /auth_provider: "supabase"/);
   assert.match(userSync, /provider_user_id: authUser\.id/);
   assert.match(userSync, /display_name/);
