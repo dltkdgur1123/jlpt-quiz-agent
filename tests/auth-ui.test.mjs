@@ -33,7 +33,9 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "auth-provider-title",
     "auth-provider-subtitle",
     "Google 계정으로 계속",
-    "가장 빠른 로그인",
+    "iconSrc",
+    "/auth/google-g-logo.svg",
+    "auth-provider-google-mark",
     "auth-provider-primary",
     "data-provider={provider}",
     "data-primary={primary ? \"true\" : \"false\"}",
@@ -50,6 +52,7 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "Login provider official-style buttons",
     ".login-simple-stage .auth-provider-button",
     ".login-simple-stage .auth-provider-primary[data-provider=\"google\"]",
+    "Google Identity branding guideline",
     ".auth-provider-google .auth-provider-mark",
     ".auth-provider-kakao .auth-provider-mark",
     ".auth-provider-naver .auth-provider-mark",
@@ -61,11 +64,16 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "background: transparent",
     "width: min(420px, 100%)",
     "max-height: 56px",
-    "height: 58px",
+    "#747775",
+    "#1f1f1f",
+    "font-family: Roboto, Arial, sans-serif",
+    "grid-template-columns: 40px minmax(0, 1fr) 40px",
+    "width: 18px",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
   assert.equal(kakaoLoginPng().subarray(1, 4).toString("ascii"), "PNG");
+  assert.match(readFileSync(new URL("../public/auth/google-g-logo.svg", import.meta.url), "utf8"), /#4285F4/);
 });
 
 test("login page uses a compact auth form instead of oversized controls", () => {

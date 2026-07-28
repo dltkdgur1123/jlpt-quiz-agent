@@ -18,6 +18,7 @@ type AuthProviderConfig = {
   title: string;
   subtitle: string;
   primary?: boolean;
+  iconSrc?: string;
   officialImageSrc?: string;
 };
 
@@ -28,7 +29,16 @@ function safeNextPath(value: string | null): string {
 }
 
 const providers: AuthProviderConfig[] = [
-  { provider: "google", label: "Google", tone: "google", mark: "G", title: "Google 계정으로 계속", subtitle: "가장 빠른 로그인", primary: true },
+  {
+    provider: "google",
+    label: "Google",
+    tone: "google",
+    mark: "G",
+    title: "Google 계정으로 계속",
+    subtitle: "",
+    primary: true,
+    iconSrc: "/auth/google-g-logo.svg",
+  },
   {
     provider: "kakao",
     label: "Kakao",
@@ -175,7 +185,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
       </div>
 
       <div className="auth-provider-grid">
-        {providers.map(({ provider, label, tone, mark, title, subtitle, primary, officialImageSrc }) => (
+        {providers.map(({ provider, label, tone, mark, title, subtitle, primary, iconSrc, officialImageSrc }) => (
           <button
             className={`auth-provider-button auth-provider-${tone}${primary ? " auth-provider-primary" : ""}`}
             data-provider={provider}
@@ -195,6 +205,15 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
                 height={90}
                 aria-hidden="true"
               />
+            ) : iconSrc ? (
+              <>
+                <span className="auth-provider-mark auth-provider-google-mark" aria-hidden="true">
+                  <Image src={iconSrc} alt="" width={18} height={18} aria-hidden="true" />
+                </span>
+                <span className="auth-provider-copy">
+                  <strong className="auth-provider-title">{title}</strong>
+                </span>
+              </>
             ) : (
               <>
                 <span className="auth-provider-mark" aria-hidden="true">{mark}</span>
