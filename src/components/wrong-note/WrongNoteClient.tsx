@@ -167,7 +167,7 @@ export function WrongNoteClient() {
               <div className="wrong-note-complete-actions">
                 <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
                 <Link href="/dashboard">학습 기록 보기</Link>
-                <Link href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
+                <Link className="wrong-note-primary-cta" href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
               </div>
             </div>
           ) : (

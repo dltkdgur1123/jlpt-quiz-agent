@@ -648,6 +648,7 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(clientSource, /마지막 문제까지 확인했습니다/);
   assert.match(clientSource, /다시 한 번 풀기/);
   assert.match(clientSource, /새 모의고사 풀기/);
+  assert.match(clientSource, /wrong-note-primary-cta/);
   assert.match(clientSource, /isLastItem && isRevealed/);
   assert.match(clientSource, /wrong-note-progress/);
   assert.match(clientSource, /wrong-note-inline-complete/);
@@ -661,6 +662,8 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(css, /\.wrong-note-shell \{[\s\S]*?margin: 0 auto/);
   assert.match(css, /\.wrong-note-page \{[\s\S]*?grid-template-columns: minmax\(360px, 460px\) minmax\(560px, 720px\)/);
   assert.match(css, /\.wrong-note-inline-complete/);
+  assert.match(css, /\.wrong-note-complete-actions \.wrong-note-primary-cta[\s\S]*?color: #ffffff !important/);
+  assert.match(css, /-webkit-text-fill-color: #ffffff !important/);
   assert.match(css, /\.wrong-note-complete-actions \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.wrong-note-choice\[data-correct="true"\]/);
 });
