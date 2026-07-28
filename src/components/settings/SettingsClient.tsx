@@ -258,21 +258,15 @@ export function SettingsClient() {
               <span>03</span>
               <div>
                 <h2>오답노트</h2>
-                <p>복습할 문제에 미응답 문제를 함께 포함할지 정합니다.</p>
+                <p>실제로 풀고 틀린 문제만 모아 복습합니다.</p>
               </div>
             </div>
-            <button
-              aria-pressed={settings.includeUnansweredInWrongNote}
-              className="settings-toggle-row"
-              type="button"
-              onClick={() => updateSettings({ includeUnansweredInWrongNote: !settings.includeUnansweredInWrongNote })}
-            >
+            <div className="settings-toggle-row settings-static-row" aria-label="오답노트 기준">
               <span>
-                <strong>미응답 문제 포함</strong>
-                <em>{settings.includeUnansweredInWrongNote ? "오답 + 미응답을 함께 복습합니다." : "틀린 문제만 오답노트에 모읍니다."}</em>
+                <strong>틀린 문제 전용</strong>
+                <em>미응답 문제는 오답노트에 넣지 않습니다.</em>
               </span>
-              <i data-on={settings.includeUnansweredInWrongNote} aria-hidden="true" />
-            </button>
+            </div>
           </div>
         </article>
 

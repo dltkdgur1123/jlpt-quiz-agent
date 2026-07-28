@@ -303,19 +303,18 @@ export async function GET(request: NextRequest) {
         .select("id, mock_exam_attempt_id, selected_choice, is_correct, mock_exam_questions(sort_order, mock_exam_sections(section_key))")
         .in("mock_exam_attempt_id", attemptIds)
         .eq("is_correct", false)
+        .not("selected_choice", "is", null)
         .order("created_at", { ascending: false })
         .limit(200);
 
       if (wrongAnswerError) throw wrongAnswerError;
 
       const rows = wrongAnswers ?? [];
-      const wrongCount = rows.filter((row) => Boolean(row.selected_choice)).length;
-      const unansweredCount = rows.length - wrongCount;
 
       wrongNote = {
         total_count: rows.length,
-        wrong_count: wrongCount,
-        unanswered_count: unansweredCount,
+        wrong_count: rows.length,
+        unanswered_count: 0,
         recent_items: rows.slice(0, 6).map((row) => {
           const question = Array.isArray(row.mock_exam_questions) ? row.mock_exam_questions[0] : row.mock_exam_questions;
           const section = Array.isArray(question?.mock_exam_sections) ? question?.mock_exam_sections[0] : question?.mock_exam_sections;
@@ -324,7 +323,7 @@ export async function GET(request: NextRequest) {
             attempt_id: row.mock_exam_attempt_id,
             question_no: typeof question?.sort_order === "number" ? question.sort_order : null,
             section_label: sectionTitleKo(section?.section_key),
-            status: row.selected_choice ? "wrong" : "unanswered",
+            status: "wrong",
           };
         }),
       };

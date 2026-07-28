@@ -308,19 +308,21 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-grid \.weak-row \{[\s\S]*?display: grid !important;[\s\S]*?grid-template-columns: minmax\(0, 1fr\) auto/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-grid \.weak-row p \{[\s\S]*?white-space: nowrap !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-panel,/);
-  assert.match(css, /\.dashboard-wrong-note-priority \{[\s\S]*?border-radius: 18px/);
-  assert.match(css, /\.dashboard-wrong-note-chips em \{[\s\S]*?border-radius: 999px/);
-  assert.match(css, /\.dashboard-wrong-note-chips em\[data-tone="unanswered"\]/);
+  assert.match(css, /\.dashboard-wrong-note-summary em \{[\s\S]*?border-radius: 999px/);
+  assert.doesNotMatch(css, /dashboard-wrong-note-priority/);
+  assert.doesNotMatch(css, /dashboard-wrong-note-chips/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
   assert.match(clientSource, /저장된 최근 기록/);
   assert.match(clientSource, /오답노트/);
   assert.match(clientSource, /wrong_note/);
-  assert.match(clientSource, /복습 대기/);
+  assert.match(clientSource, /틀린 문제/);
   assert.match(clientSource, /dashboard-wrong-note-card/);
-  assert.match(clientSource, /dashboard-wrong-note-priority/);
-  assert.match(clientSource, /dashboard-wrong-note-chips/);
-  assert.match(clientSource, /먼저 오답부터/);
+  assert.match(clientSource, /dashboard-wrong-note-summary/);
+  assert.match(clientSource, /최근 오답/);
+  assert.doesNotMatch(clientSource, /먼저 오답부터/);
+  assert.doesNotMatch(clientSource, /미응답부터 채우기/);
+  assert.doesNotMatch(clientSource, /남은 미응답은 다음 회차/);
   assert.match(clientSource, /다시 풀기/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
   assert.match(clientSource, /buildLocalDashboardResponse/);
@@ -340,6 +342,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "section_summary",
     "attempt_count",
     "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
+    ".not(\"selected_choice\", \"is\", null)",
+    "unanswered_count: 0",
+    "status: \"wrong\"",
     "deterministicUuid",
     "auth.getUser",
     "getSupabasePrivilegedClient",

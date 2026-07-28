@@ -756,14 +756,14 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
         const selectedChoice = selectedAnswers[question.id] ?? null;
         const correctChoice = renderedCorrectChoice(question, renderedChoices);
-        if (selectedChoice === correctChoice) return [];
+        if (!selectedChoice || selectedChoice === correctChoice) return [];
         return [
           {
             id: `${localAttemptId}:${question.id}`,
             attempt_id: localAttemptId,
             question_no: index + 1,
             section_label: localSectionLabel(question.section_key),
-            status: selectedChoice ? "wrong" as const : "unanswered" as const,
+            status: "wrong" as const,
           },
         ];
       });

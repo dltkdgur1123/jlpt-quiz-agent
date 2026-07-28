@@ -141,7 +141,7 @@ function buildLocalDashboardResponse(): DashboardResponse | null {
       sectionMap.set(section.section_key, current);
     }
   }
-  const wrongItems = localAttempts.flatMap((attempt) => attempt.wrong_note_items ?? []);
+  const wrongItems = localAttempts.flatMap((attempt) => attempt.wrong_note_items ?? []).filter((item) => item.status === "wrong");
 
   return {
     attempts,
@@ -152,8 +152,8 @@ function buildLocalDashboardResponse(): DashboardResponse | null {
     section_summary: Array.from(sectionMap.values()),
     wrong_note: {
       total_count: wrongItems.length,
-      wrong_count: wrongItems.filter((item) => item.status === "wrong").length,
-      unanswered_count: wrongItems.filter((item) => item.status === "unanswered").length,
+      wrong_count: wrongItems.length,
+      unanswered_count: 0,
       recent_items: wrongItems.slice(0, 6),
     },
   };
@@ -393,23 +393,15 @@ function DashboardRecentExamList({ data, status }: DashboardDataState) {
 
 function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
   const wrongNote = data?.wrong_note;
-  const recentItems = wrongNote?.recent_items ?? [];
-  const totalCount = wrongNote?.total_count ?? 0;
+  const recentItems = (wrongNote?.recent_items ?? []).filter((item) => item.status === "wrong");
   const wrongCount = wrongNote?.wrong_count ?? 0;
-  const unansweredCount = wrongNote?.unanswered_count ?? 0;
-  const priorityLabel = wrongCount > 0 ? "먼저 오답부터" : unansweredCount > 0 ? "미응답부터 채우기" : "복습 대기";
-  const reviewHelp = wrongCount > 0
-    ? "틀린 문제를 먼저 확인하고, 남은 미응답은 다음 회차에서 보완하세요."
-    : unansweredCount > 0
-      ? "아직 풀지 않은 문항이 많습니다. 한 번에 다 풀기보다 영역별로 나눠 보세요."
-      : "최근 모의고사에서 틀렸거나 풀지 않은 문제가 여기에 기록됩니다.";
 
   return (
     <section className="dashboard-panel dashboard-wrong-note dashboard-wrong-note-card" id="wrong-note" aria-label="오답노트">
       <div className="dashboard-wrong-note-head dashboard-action-head">
         <div>
           <p>오답노트</p>
-          <h2>{totalCount ? `${totalCount}문항 복습 대기` : "복습할 문제가 없습니다"}</h2>
+          <h2>{wrongCount ? `틀린 문제 ${wrongCount}개` : "틀린 문제가 없습니다"}</h2>
         </div>
         <Link href="#wrong-note">다시 풀기 →</Link>
       </div>
@@ -417,34 +409,29 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
       {status === "loading" ? (
         <span>오답노트 기록을 불러오는 중입니다.</span>
       ) : status === "login_required" ? (
-        <span>로그인하면 틀렸거나 풀지 않은 문제가 여기에 저장됩니다.</span>
+        <span>로그인하면 틀린 문제가 여기에 저장됩니다.</span>
       ) : status === "error" ? (
         <span>오답노트 기록을 불러오지 못했습니다.</span>
-      ) : totalCount ? (
+      ) : wrongCount ? (
         <>
-          <div className="dashboard-wrong-note-priority" aria-label="오답노트 요약">
-            <span>{priorityLabel}</span>
-            <p>{reviewHelp}</p>
-            <div className="dashboard-wrong-note-chips">
-              <em data-tone="wrong">오답 <b>{wrongCount}</b></em>
-              <em data-tone="unanswered">미응답 <b>{unansweredCount}</b></em>
-            </div>
+          <div className="dashboard-wrong-note-summary" aria-label="오답노트 요약">
+            <em>오답 <b>{wrongCount}</b></em>
           </div>
           <div className="dashboard-wrong-note-recent">
-            <p>최근 복습 대상</p>
+            <p>최근 오답</p>
             <ul>
               {recentItems.slice(0, 3).map((item) => (
                 <li key={item.id}>
                   <strong>{item.question_no ? `${item.question_no}번` : "문항"}</strong>
                   <span>{item.section_label}</span>
-                  <em data-status={item.status}>{item.status === "wrong" ? "오답" : "미응답"}</em>
+                  <em data-status="wrong">오답</em>
                 </li>
               ))}
             </ul>
           </div>
         </>
       ) : (
-        <span>{reviewHelp}</span>
+        <span>최근 모의고사에서 틀린 문제가 여기에 기록됩니다.</span>
       )}
     </section>
   );

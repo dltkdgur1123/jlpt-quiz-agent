@@ -278,7 +278,9 @@ test("settings page provides account learning defaults without extra service not
   assert.match(clientSource, /settings-level-and-wrongnote-card/);
   assert.match(clientSource, /settings-wrongnote-embedded/);
   assert.match(clientSource, /오답노트/);
-  assert.match(clientSource, /미응답 문제 포함/);
+  assert.match(clientSource, /틀린 문제 전용/);
+  assert.match(clientSource, /미응답 문제는 오답노트에 넣지 않습니다/);
+  assert.doesNotMatch(clientSource, /미응답 문제 포함/);
   assert.match(clientSource, /취약 영역 기준/);
   assert.doesNotMatch(clientSource, /<article className="dashboard-panel settings-card">\n          <div className="settings-card-head">\n            <span>03<\/span>/);
   assert.match(clientSource, /getSession/);
@@ -301,7 +303,8 @@ test("settings and guide avoid bordered containers nested inside cards", () => {
   assert.match(settingsToggleRule, /border:\s*0/);
   assert.match(settingsToggleRule, /border-radius:\s*0/);
   assert.match(settingsToggleRule, /padding:\s*0/);
-  assert.match(css, /\.settings-wrongnote-embedded \.settings-toggle-row \{[\s\S]*?padding-left:\s*30px/);
+  assert.match(css, /\.settings-static-row \{[\s\S]*?cursor:\s*default/);
+  assert.doesNotMatch(css, /\.settings-wrongnote-embedded \.settings-toggle-row \{[\s\S]*?padding-left:\s*30px/);
   assert.doesNotMatch(guideListRule, /border:\s*1px/);
   assert.match(guideListRule, /border:\s*0/);
   assert.match(guideListRule, /border-radius:\s*0/);
