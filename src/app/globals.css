@@ -229,6 +229,24 @@ button:disabled { cursor: not-allowed; opacity: 0.72; }
 .auth-callback-card a { color: var(--accent); font-weight: 800; }
 .auth-callback-card--success { border-color: #86efac; }
 .auth-callback-card--error { border-color: #fca5a5; }
+.auth-callback-diagnostics {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #7c2d12;
+  font-size: .88rem;
+  font-weight: 750;
+}
+.auth-callback-diagnostics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.auth-callback-diagnostics dt,
+.auth-callback-diagnostics dd { margin: 0; }
 .review-page-stack { width: min(980px, 100%); }
 .review-entry-card a, .hero-copy a { font-weight: 800; }
 .review-summary-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 16px 0; }

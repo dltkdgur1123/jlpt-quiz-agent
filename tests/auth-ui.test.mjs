@@ -154,8 +154,16 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
 
 test("auth callback skips the success screen and auto-redirects after session handling", () => {
   const source = callbackPage();
+  const css = globalCss();
   assert.match(source, /safeNextPath/);
   assert.match(source, /URLSearchParams\(window\.location\.search\)/);
+  assert.match(source, /oauthError/);
+  assert.match(source, /oauthErrorDescription/);
+  assert.match(source, /세션 교환 실패/);
+  assert.match(source, /OAuth code 수신/);
+  assert.match(source, /세션 토큰 수신/);
+  assert.match(source, /auth-callback-diagnostics/);
+  assert.match(css, /\.auth-callback-diagnostics/);
   assert.match(source, /replaceState/);
   assert.match(source, /window\.location\.replace\(next\)/);
   assert.match(source, /로그인 처리 중/);

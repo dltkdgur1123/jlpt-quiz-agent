@@ -206,6 +206,20 @@ https://<vercel-domain>/auth/callback
 
 주의: Naver 사용자 정보는 `response.id`, `response.email`, `response.name`처럼 감싸져 반환될 수 있으므로 Supabase Custom OAuth 매핑/응답 파싱이 지원되는지 실제 consent 후 반드시 확인한다. Client Secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
 
+승인/2단계 인증까지 성공했는데 앱의 `/auth/callback`에서 실패하면 callback 진단 정보를 본다.
+
+```text
+OAuth code 수신 = 예, 세션 교환 실패
+```
+
+이면 네이버 인증은 성공했지만 Supabase가 네이버 token/userinfo 응답을 Supabase 세션으로 변환하지 못한 것이다. 이 경우 Supabase Custom OAuth/OIDC provider가 네이버의 `response.*` userinfo 또는 ID token/JWKS 요구조건과 맞지 않는지 확인해야 한다.
+
+```text
+OAuth code 수신 = 아니요, 세션 토큰 수신 = 아니요
+```
+
+이면 redirect URL 또는 OAuth error 파라미터 문제다. 화면의 OAuth error 내용을 우선 확인한다.
+
 다른 네이버 계정으로 테스트해야 할 때는 프론트에서 `auth_type=reauthenticate`를 함께 보낸다. 그래도 네이버가 기존 세션을 유지하면 브라우저에서 `naver.com` 로그아웃 또는 시크릿 창으로 다시 테스트한다.
 
 ## Email 방식
