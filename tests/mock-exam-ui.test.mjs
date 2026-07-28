@@ -271,6 +271,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "dashboard-bars-goal",
     "aria-label=\"최근 7일 요일별 문제 풀이 수\"",
     "dashboard-stat-grid",
+    "dashboard-live-sections",
+    "dashboard-desktop-flow",
+    "dashboard-mobile-record-flow",
+    "aria-label=\"모바일 학습 기록\"",
+    "history-mobile",
     "weakestSectionLabel",
     "모의고사",
     "평균 정답률",
@@ -296,6 +301,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing/);
   assert.match(css, /Mobile dashboard weak area cards: stack as readable full-width rows on phones/);
   assert.match(css, /Mobile dashboard record flow: summary → recent exams → wrong note → weak areas → weekly activity/);
+  assert.match(css, /\.dashboard-mobile-record-flow \{[\s\S]*?display: none/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-mobile-record-flow \{[\s\S]*?display: grid !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-desktop-flow \{[\s\S]*?display: none !important/);
   assert.match(css, /--dashboard-mobile-section-gap: 12px/);
   assert.match(css, /--dashboard-mobile-section-bottom-room: 18px/);
   assert.match(css, /--dashboard-mobile-section-y: 30px/);

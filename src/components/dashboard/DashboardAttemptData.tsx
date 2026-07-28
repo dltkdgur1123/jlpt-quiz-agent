@@ -493,16 +493,26 @@ export function DashboardLiveData() {
   const state = useDashboardAttemptData();
 
   return (
-    <>
+    <div className="dashboard-live-sections">
       <DashboardStatGrid {...state} />
       <DashboardAttemptSummary {...state} />
-      <DashboardActivityAndGoal {...state} />
-      <section className="dashboard-grid-bottom" id="history">
-        <DashboardRecentExamList {...state} />
-        <DashboardWrongNoteCard {...state} />
-      </section>
-      <DashboardWeakAreaPanel {...state} />
-    </>
+      <div className="dashboard-desktop-flow">
+        <DashboardActivityAndGoal {...state} />
+        <section className="dashboard-grid-bottom" id="history">
+          <DashboardRecentExamList {...state} />
+          <DashboardWrongNoteCard {...state} />
+        </section>
+        <DashboardWeakAreaPanel {...state} />
+      </div>
+      <div className="dashboard-mobile-record-flow" aria-label="모바일 학습 기록">
+        <section className="dashboard-grid-bottom" id="history-mobile">
+          <DashboardRecentExamList {...state} />
+          <DashboardWrongNoteCard {...state} />
+        </section>
+        <DashboardWeakAreaPanel {...state} />
+        <DashboardActivityAndGoal {...state} />
+      </div>
+    </div>
   );
 }
 

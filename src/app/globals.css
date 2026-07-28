@@ -722,6 +722,14 @@ dd { margin: 0; color: var(--muted); }
 .dashboard-stat-card span { color: #74798b; font-weight: 800; }
 .dashboard-stat-card strong { font-size: 2rem; letter-spacing: -0.06em; }
 .dashboard-stat-card small { color: #9aa1ad; font-weight: 800; }
+.dashboard-live-sections,
+.dashboard-desktop-flow {
+  display: grid;
+  gap: 24px;
+}
+.dashboard-mobile-record-flow {
+  display: none;
+}
 .dashboard-grid-top, .dashboard-grid-bottom { display: grid; grid-template-columns: 1fr; gap: 20px; }
 .dashboard-panel { padding: 26px; background: #fff; }
 .dashboard-panel h2 { margin: 0 0 8px; font-size: 1.55rem; letter-spacing: -0.05em; }
@@ -5824,6 +5832,15 @@ main:has(.home-page-frame) {
   .figma-shell.dashboard-page .dashboard-hero {
     padding: 28px 18px 24px !important;
     border-bottom: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-live-sections,
+  .figma-shell.dashboard-page .dashboard-mobile-record-flow {
+    display: grid !important;
+    gap: var(--dashboard-mobile-section-gap) !important;
+    width: 100% !important;
+  }
+  .figma-shell.dashboard-page .dashboard-desktop-flow {
+    display: none !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-grid {
     order: 1 !important;
