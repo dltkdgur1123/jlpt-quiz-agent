@@ -2559,7 +2559,8 @@ main:has(.mock-page-shell) {
   outline-offset: 2px;
 }
 .login-simple-stage .auth-provider-google .auth-provider-mark,
-.login-simple-stage .auth-provider-google-mark {
+.login-simple-stage .auth-provider-google-mark,
+.login-simple-stage .auth-provider-icon-mark {
   width: 40px;
   height: 40px;
   border: 0;
@@ -2568,7 +2569,8 @@ main:has(.mock-page-shell) {
   color: inherit;
 }
 .login-simple-stage .auth-provider-google .auth-provider-mark img,
-.login-simple-stage .auth-provider-google-mark img {
+.login-simple-stage .auth-provider-google-mark img,
+.login-simple-stage .auth-provider-icon-mark img {
   display: block;
   width: 18px;
   height: 18px;
@@ -2614,13 +2616,46 @@ main:has(.mock-page-shell) {
   object-fit: contain;
 }
 .login-simple-stage .auth-provider-naver {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  height: 52px;
+  min-height: 52px;
+  padding: 0;
   border-color: #03c75a;
+  border-radius: 6px;
+  background: #03c75a;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.login-simple-stage .auth-provider-naver .auth-provider-mark {
+  width: 40px;
+  height: 52px;
+  border-radius: 0;
   background: #03c75a;
   color: #ffffff;
 }
-.login-simple-stage .auth-provider-naver .auth-provider-mark {
-  background: #ffffff;
-  color: #03c75a;
+.login-simple-stage .auth-provider-naver .auth-provider-copy {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background: transparent;
+}
+.login-simple-stage .auth-provider-naver .auth-provider-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 20px;
+}
+.login-simple-stage .auth-provider-naver .auth-provider-subtitle {
+  display: none;
+}
+.login-simple-stage .auth-provider-naver:hover {
+  background: #02b350;
+  border-color: #02b350;
 }
 .login-simple-stage .auth-divider {
   margin: 10px 0 0;

@@ -48,7 +48,15 @@ const providers: AuthProviderConfig[] = [
     subtitle: "공식 OAuth 로그인",
     officialImageSrc: "/auth/kakao_login_large_wide.png",
   },
-  { provider: "custom:naver", label: "Naver", tone: "naver", mark: "N", title: "Naver 계정으로 계속", subtitle: "공식 OAuth 로그인" },
+  {
+    provider: "custom:naver",
+    label: "Naver",
+    tone: "naver",
+    mark: "N",
+    title: "네이버 로그인",
+    subtitle: "Custom OAuth 로그인",
+    iconSrc: "/auth/naver-n-logo.svg",
+  },
 ];
 
 export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant }) {
@@ -96,6 +104,13 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     return undefined;
   }
 
+  function providerLoadingMessage(provider: OAuthProvider) {
+    if (provider === "google") return "Google 로그인 화면으로 이동합니다.";
+    if (provider === "kakao") return "카카오 로그인 화면으로 이동합니다.";
+    if (provider === "custom:naver") return "네이버 로그인 화면으로 이동합니다.";
+    return "로그인 요청을 처리하고 있습니다.";
+  }
+
   async function signInWithProvider(provider: OAuthProvider) {
     if (isSignedIn || isLoginBusy) return;
 
@@ -108,7 +123,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     }
 
     const redirectTo = buildRedirectTo();
-    setMessage(provider === "google" ? "Google 로그인 화면으로 이동합니다." : "로그인 요청을 처리하고 있습니다.");
+    setMessage(providerLoadingMessage(provider));
     setPendingAction(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -207,7 +222,7 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
               />
             ) : iconSrc ? (
               <>
-                <span className="auth-provider-mark auth-provider-google-mark" aria-hidden="true">
+                <span className={`auth-provider-mark auth-provider-${tone}-mark auth-provider-icon-mark`} aria-hidden="true">
                   <Image src={iconSrc} alt="" width={18} height={18} aria-hidden="true" />
                 </span>
                 <span className="auth-provider-copy">

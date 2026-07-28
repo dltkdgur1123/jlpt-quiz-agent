@@ -128,6 +128,83 @@ https://<vercel-domain>/auth/callback
 
 주의: Kakao secret/client secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
 
+## Naver 로그인 실제 연결 절차
+
+Supabase 기본 Social Provider 목록에는 Naver가 없으므로 Custom OAuth/OIDC provider로 연결한다. 현재 프론트엔드는 네이버 버튼 클릭 시 다음 Supabase authorize endpoint를 사용한다.
+
+```text
+Supabase authorize endpoint:
+/auth/v1/authorize?provider=custom%3Anaver&redirect_to=<site>/auth/callback
+```
+
+로컬 smoke에서 `custom:naver` authorize URL 생성은 성공해야 한다. 현재 프론트 클릭은 Supabase authorize endpoint까지 이동하며, Supabase Custom provider가 아직 생성되지 않았으면 다음 응답이 나온다.
+
+```text
+Unsupported provider: custom provider custom:naver not found
+```
+
+이 메시지가 나오면 프론트 코드 문제가 아니라 Supabase Dashboard에서 Custom OAuth/OIDC provider id `naver`가 아직 생성되지 않은 상태다.
+
+```bash
+set -a; . ./.env.local; set +a
+node - <<'NODE'
+const { createClient } = require('@supabase/supabase-js')
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+;(async()=>{
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'custom:naver',
+    options: {
+      redirectTo: 'http://localhost:3010/auth/callback?next=%2Fdashboard',
+      skipBrowserRedirect: true,
+    },
+  })
+  console.log({ ok: !error, hasUrl: Boolean(data?.url), error: error?.message })
+})()
+NODE
+```
+
+실제 Naver consent 화면까지 동작하려면 외부 대시보드 설정이 필요하다.
+
+1. Naver Developers에서 애플리케이션 생성
+2. 로그인 오픈 API 사용 설정
+3. Callback URL에 Supabase Auth callback URL 등록
+
+```text
+https://<supabase-project-ref>.supabase.co/auth/v1/callback
+```
+
+4. Naver Developers의 Client ID / Client Secret 확인
+5. Supabase Dashboard → Authentication → Providers → Custom OAuth/OIDC provider 추가
+6. provider id를 `naver`로 설정하여 프론트 provider 값 `custom:naver`와 맞춘다
+7. Custom OAuth endpoint 입력
+
+```text
+Authorization URL:
+https://nid.naver.com/oauth2.0/authorize
+
+Token URL:
+https://nid.naver.com/oauth2.0/token
+
+User Info URL:
+https://openapi.naver.com/v1/nid/me
+
+Scopes:
+name email
+```
+
+8. Supabase Authentication URL Configuration에 사이트 URL과 허용 redirect URL 등록
+
+```text
+Local redirect:
+http://127.0.0.1:3010/auth/callback
+http://localhost:3010/auth/callback
+
+Production redirect:
+https://<vercel-domain>/auth/callback
+```
+
+주의: Naver 사용자 정보는 `response.id`, `response.email`, `response.name`처럼 감싸져 반환될 수 있으므로 Supabase Custom OAuth 매핑/응답 파싱이 지원되는지 실제 consent 후 반드시 확인한다. Client Secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
+
 ## Email 방식
 
 MVP에서는 비밀번호 직접 관리 대신 이메일 링크 로그인을 우선 사용한다.

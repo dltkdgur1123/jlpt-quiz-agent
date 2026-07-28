@@ -35,12 +35,14 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "Google 계정으로 계속",
     "iconSrc",
     "/auth/google-g-logo.svg",
-    "auth-provider-google-mark",
+    "auth-provider-icon-mark",
     "auth-provider-primary",
     "data-provider={provider}",
     "data-primary={primary ? \"true\" : \"false\"}",
     "카카오 로그인",
-    "Naver 계정으로 계속",
+    "네이버 로그인",
+    "Custom OAuth 로그인",
+    "/auth/naver-n-logo.svg",
     "공식 OAuth 로그인",
     "officialImageSrc",
     "/auth/kakao_login_large_wide.png",
@@ -56,6 +58,7 @@ test("login provider buttons use platform-branded official-style button anatomy"
     ".auth-provider-google .auth-provider-mark",
     ".auth-provider-kakao .auth-provider-mark",
     ".auth-provider-naver .auth-provider-mark",
+    ".login-simple-stage .auth-provider-naver",
     "auth-provider-official-image",
     "#03c75a",
     "grid-template-columns: 40px minmax(0, 1fr)",
@@ -69,11 +72,13 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "font-family: Roboto, Arial, sans-serif",
     "grid-template-columns: 40px minmax(0, 1fr) 40px",
     "width: 18px",
+    "#02b350",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
   assert.equal(kakaoLoginPng().subarray(1, 4).toString("ascii"), "PNG");
   assert.match(readFileSync(new URL("../public/auth/google-g-logo.svg", import.meta.url), "utf8"), /#4285F4/);
+  assert.match(readFileSync(new URL("../public/auth/naver-n-logo.svg", import.meta.url), "utf8"), /#FFFFFF/);
 });
 
 test("login page uses a compact auth form instead of oversized controls", () => {
@@ -138,6 +143,7 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.match(source, /queryParams: providerQueryParams\(provider\)/);
   assert.match(source, /providerQueryParams/);
   assert.match(source, /provider === "google"\) return \{ prompt: "select_account" \}/);
+  assert.match(source, /provider === "custom:naver"\) return "네이버 로그인 화면으로 이동합니다/);
   assert.match(source, /Google 로그인 화면으로 이동합니다/);
   assert.match(source, /로그인 설정을 확인할 수 없습니다/);
   assert.match(source, /로그인 요청을 처리하고 있습니다/);
@@ -292,8 +298,14 @@ test("dashboard setup doc lists all selected providers and no secrets", () => {
   }
   assert.match(source, /secret 값은 문서나 채팅에 기록하지 않는다/);
   assert.match(source, /Kakao 로그인 실제 연결 절차/);
+  assert.match(source, /Naver 로그인 실제 연결 절차/);
   assert.match(source, /Unsupported provider: provider is not enabled/);
   assert.match(source, /provider=kakao/);
+  assert.match(source, /provider=custom%3Anaver/);
+  assert.match(source, /Authorization URL:\nhttps:\/\/nid\.naver\.com\/oauth2\.0\/authorize/);
+  assert.match(source, /Token URL:\nhttps:\/\/nid\.naver\.com\/oauth2\.0\/token/);
+  assert.match(source, /User Info URL:\nhttps:\/\/openapi\.naver\.com\/v1\/nid\/me/);
+  assert.match(source, /provider id를 `naver`로 설정/);
   assert.match(source, /Supabase Dashboard → Authentication → Providers → Kakao 활성화/);
   assert.match(source, /https:\/\/<supabase-project-ref>\.supabase\.co\/auth\/v1\/callback/);
   assert.match(source, /http:\/\/127\.0\.0\.1:3010\/auth\/callback/);
