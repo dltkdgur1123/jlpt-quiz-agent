@@ -641,10 +641,16 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(pageSource, /WrongNoteClient/);
   assert.match(pageSource, /SiteHeader active="history"/);
   assert.match(clientSource, /오답 다시 풀기/);
-  assert.match(clientSource, /미응답 문제는 오답노트에 포함하지 않습니다/);
+  assert.match(clientSource, /틀렸던 문제만 다시 풀고/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
   assert.match(clientSource, /item\.status === "wrong" && item\.question/);
   assert.match(clientSource, /정답 확인/);
+  assert.match(clientSource, /오답 복습을 마쳤습니다/);
+  assert.match(clientSource, /다시 한 번 풀기/);
+  assert.match(clientSource, /새 모의고사 풀기/);
+  assert.match(clientSource, /reviewComplete/);
+  assert.match(clientSource, /wrong-note-progress/);
+  assert.match(clientSource, /wrong-note-complete/);
   assert.match(clientSource, /다시 맞힌 문제/);
   assert.match(clientSource, /wrong-note-choice/);
   assert.match(mockSource, /question_text: question\.question_text/);
@@ -652,5 +658,8 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(mockSource, /correct_choice: question\.correct_choice/);
   assert.match(mockSource, /if \(!selectedChoice \|\| selectedChoice === correctChoice\) return \[\]/);
   assert.match(css, /\/\* Wrong-note retry page \*\//);
+  assert.match(css, /\.wrong-note-shell \{[\s\S]*?margin: 0 auto/);
+  assert.match(css, /\.wrong-note-page \{[\s\S]*?grid-template-columns: minmax\(280px, 360px\) minmax\(0, 1fr\)/);
+  assert.match(css, /\.wrong-note-complete-actions \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.wrong-note-choice\[data-correct="true"\]/);
 });

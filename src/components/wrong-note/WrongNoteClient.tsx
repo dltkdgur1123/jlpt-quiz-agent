@@ -73,7 +73,10 @@ export function WrongNoteClient() {
   const currentQuestion = currentItem?.question;
   const selectedAnswer = currentItem ? selectedAnswers[currentItem.id] : undefined;
   const isRevealed = currentItem ? Boolean(revealed[currentItem.id]) : false;
+  const reviewedCount = useMemo(() => items.filter((item) => revealed[item.id]).length, [items, revealed]);
   const solvedCount = useMemo(() => items.filter((item) => revealed[item.id] && selectedAnswers[item.id] === item.question?.correct_choice).length, [items, revealed, selectedAnswers]);
+  const reviewComplete = items.length > 0 && reviewedCount === items.length;
+  const reviewProgress = items.length ? Math.round((reviewedCount / items.length) * 100) : 0;
 
   function selectAnswer(choice: ChoiceKey) {
     if (!currentItem || isRevealed) return;
@@ -89,15 +92,24 @@ export function WrongNoteClient() {
     setCurrentIndex((index) => Math.min(Math.max(index + step, 0), Math.max(items.length - 1, 0)));
   }
 
+  function restartReview() {
+    setCurrentIndex(0);
+    setSelectedAnswers({});
+    setRevealed({});
+  }
+
   return (
     <section className="wrong-note-page" aria-label="오답노트 다시 풀기">
       <div className="wrong-note-hero">
         <p className="section-eyebrow">Wrong Note</p>
         <h1>오답 다시 풀기</h1>
-        <p>실제로 풀고 틀렸던 문제만 다시 확인합니다. 미응답 문제는 오답노트에 포함하지 않습니다.</p>
+        <p>틀렸던 문제만 다시 풀고, 마지막에는 다음 학습으로 이어갑니다.</p>
         <div className="wrong-note-summary-row">
           <strong>오답 {items.length}개</strong>
-          <span>다시 맞힌 문제 {solvedCount}개</span>
+          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개</span>
+        </div>
+        <div className="wrong-note-progress" aria-label="오답 재풀이 진행률">
+          <i style={{ width: `${reviewProgress}%` }} />
         </div>
       </div>
 
@@ -154,6 +166,19 @@ export function WrongNoteClient() {
           </div>
         </div>
       )}
+
+      {reviewComplete ? (
+        <div className="wrong-note-complete" aria-label="오답 재풀이 완료">
+          <p className="section-eyebrow">Review Complete</p>
+          <h2>오답 복습을 마쳤습니다</h2>
+          <p>{items.length}개 중 {solvedCount}개를 다시 맞혔습니다. 틀린 문제가 남아 있으면 한 번 더 풀고, 아니면 새 모의고사로 넘어가세요.</p>
+          <div className="wrong-note-complete-actions">
+            <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
+            <Link href="/dashboard">학습 기록 보기</Link>
+            <Link href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
