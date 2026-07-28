@@ -103,6 +103,16 @@ type LocalMockExamWrongNoteItem = {
   question_no: number | null;
   section_label: string;
   status: "wrong" | "unanswered";
+  question?: {
+    id: string;
+    question_text: string;
+    choice_a: string;
+    choice_b: string;
+    choice_c: string;
+    choice_d: string;
+    correct_choice: ChoiceKey;
+    explanation: string;
+  };
 };
 
 type LocalMockExamSavedAttempt = {
@@ -764,6 +774,16 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             question_no: index + 1,
             section_label: localSectionLabel(question.section_key),
             status: "wrong" as const,
+            question: {
+              id: question.id,
+              question_text: question.question_text,
+              choice_a: question.choice_a,
+              choice_b: question.choice_b,
+              choice_c: question.choice_c,
+              choice_d: question.choice_d,
+              correct_choice: question.correct_choice,
+              explanation: question.explanation,
+            },
           },
         ];
       });

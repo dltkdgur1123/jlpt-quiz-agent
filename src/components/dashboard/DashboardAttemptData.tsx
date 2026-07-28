@@ -20,6 +20,16 @@ type WrongNoteItem = {
   question_no: number | null;
   section_label: string;
   status: "wrong" | "unanswered";
+  question?: {
+    id: string;
+    question_text: string;
+    choice_a: string;
+    choice_b: string;
+    choice_c: string;
+    choice_d: string;
+    correct_choice: "A" | "B" | "C" | "D";
+    explanation: string;
+  };
 };
 
 type WeeklyActivity = {
@@ -403,7 +413,7 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
           <p>오답노트</p>
           <h2>{wrongCount ? `틀린 문제 ${wrongCount}개` : "틀린 문제가 없습니다"}</h2>
         </div>
-        <Link href="#wrong-note">다시 풀기 →</Link>
+        <Link href="/wrong-note">다시 풀기 →</Link>
       </div>
 
       {status === "loading" ? (

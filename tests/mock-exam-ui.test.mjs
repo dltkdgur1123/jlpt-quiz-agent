@@ -18,6 +18,8 @@ const mockExamAttemptRoute = () =>
   readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamRunner.tsx", import.meta.url), "utf8");
+const wrongNotePage = () => readFileSync(new URL("../src/app/wrong-note/page.tsx", import.meta.url), "utf8");
+const wrongNoteClient = () => readFileSync(new URL("../src/components/wrong-note/WrongNoteClient.tsx", import.meta.url), "utf8");
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
 const homeRecentMockExam = () =>
@@ -324,6 +326,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.doesNotMatch(clientSource, /미응답부터 채우기/);
   assert.doesNotMatch(clientSource, /남은 미응답은 다음 회차/);
   assert.match(clientSource, /다시 풀기/);
+  assert.match(clientSource, /href="\/wrong-note"/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
   assert.match(clientSource, /buildLocalDashboardResponse/);
   assert.match(clientSource, /readLocalDashboardAttempts/);
@@ -621,4 +624,28 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(styles, /\.mock-exam-shell--active \.mock-exam-bottom-nav \.secondary-action,[\s\S]*?word-break: keep-all !important/);
   assert.match(styles, /@media \(max-width: 1180px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-submit-card \{[\s\S]*?display: none !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-bottom-nav \{[\s\S]*?margin-bottom: 14px !important/);
+});
+
+
+test("wrong-note retry page replays only attempted wrong local fallback questions", () => {
+  const pageSource = wrongNotePage();
+  const clientSource = wrongNoteClient();
+  const mockSource = mockExamClient();
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+
+  assert.match(pageSource, /WrongNoteClient/);
+  assert.match(pageSource, /SiteHeader active="history"/);
+  assert.match(clientSource, /오답 다시 풀기/);
+  assert.match(clientSource, /미응답 문제는 오답노트에 포함하지 않습니다/);
+  assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
+  assert.match(clientSource, /item\.status === "wrong" && item\.question/);
+  assert.match(clientSource, /정답 확인/);
+  assert.match(clientSource, /다시 맞힌 문제/);
+  assert.match(clientSource, /wrong-note-choice/);
+  assert.match(mockSource, /question_text: question\.question_text/);
+  assert.match(mockSource, /choice_a: question\.choice_a/);
+  assert.match(mockSource, /correct_choice: question\.correct_choice/);
+  assert.match(mockSource, /if \(!selectedChoice \|\| selectedChoice === correctChoice\) return \[\]/);
+  assert.match(css, /\/\* Wrong-note retry page \*\//);
+  assert.match(css, /\.wrong-note-choice\[data-correct="true"\]/);
 });
