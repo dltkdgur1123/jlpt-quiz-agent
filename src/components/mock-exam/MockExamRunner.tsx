@@ -721,6 +721,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         return {
           question_id: question.id,
           section_key: question.section_key,
+          source_sort_order: question.sort_order,
           selected_choice: selectedChoice,
           is_correct: selectedChoice === renderedCorrectChoice(question, renderedChoices),
         };
@@ -748,6 +749,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             section_key: section.section_key,
             correct: section.correct,
             question_count: section.answered,
+            full_question_count: section.question_count,
             rate: section.answeredRate,
           })),
         }),
@@ -809,7 +811,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         wrong_note_items: localWrongNoteItems,
       });
       setSaveStatus("saved");
-      setSaveMessage("서버 저장 응답이 지연되어 브라우저에 임시 저장했습니다. 학습기록에서 확인할 수 있습니다.");
+      setSaveMessage("서버 저장을 완료하지 못해 브라우저에 임시 저장했습니다. 학습기록에서 확인할 수 있습니다.");
       console.warn("mock exam server save failed; stored local fallback", error);
     }
   }

@@ -8,6 +8,7 @@ import { getSupabasePrivilegedClient, getSupabaseServerClient } from "@/lib/supa
 type AttemptAnswerInput = {
   question_id: string;
   section_key: ActiveMockExamSectionKey;
+  source_sort_order?: number;
   selected_choice: ChoiceKey | null;
   is_correct: boolean;
 };
@@ -16,6 +17,7 @@ type SectionResultInput = {
   section_key: ActiveMockExamSectionKey;
   correct: number;
   question_count: number;
+  full_question_count?: number;
   rate: number;
 };
 
@@ -128,7 +130,7 @@ export async function POST(request: NextRequest) {
       section_key: section.section_key,
       section_title: SECTION_TITLES[section.section_key] ?? section.section_key,
       sort_order: index + 1,
-      question_count: section.question_count,
+      question_count: section.full_question_count ?? section.question_count,
       time_limit_minutes: Math.round(body.time_limit_minutes / body.section_results.length),
     }));
     const { error: sectionError } = await client.from("mock_exam_sections").upsert(sections, {
@@ -143,7 +145,7 @@ export async function POST(request: NextRequest) {
       section_id: sectionIdMap[answer.section_key],
       item_type: answer.section_key,
       item_id: deterministicUuid("mock_exam_item", answer.question_id),
-      sort_order: index + 1,
+      sort_order: answer.source_sort_order ?? index + 1,
       points: 1,
     }));
     const { error: questionError } = await client.from("mock_exam_questions").upsert(questions, {

@@ -345,6 +345,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "section_summary",
     "attempt_count",
     "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
+    "source_sort_order?: number",
+    "full_question_count?: number",
+    "sort_order: answer.source_sort_order ?? index + 1",
     ".not(\"selected_choice\", \"is\", null)",
     "unanswered_count: 0",
     "status: \"wrong\"",
@@ -577,11 +580,13 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-question-nav",
     "문제 목록",
     "모의고사 기록을 저장했습니다",
-    "서버 저장 응답이 지연되어 브라우저에 임시 저장했습니다",
+    "서버 저장을 완료하지 못해 브라우저에 임시 저장했습니다",
     "LOCAL_ATTEMPTS_STORAGE_KEY",
     "writeLocalMockExamAttempt",
     "readLocalMockExamAttempts",
     "/api/mock-exams/attempts",
+    "source_sort_order: question.sort_order",
+    "full_question_count: section.question_count",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
