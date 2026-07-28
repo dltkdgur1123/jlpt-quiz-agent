@@ -353,6 +353,8 @@ test("naver login uses app-owned callback and Supabase magic-link bridge", () =>
   assert.match(callback, /NAVER_CLIENT_SECRET/);
   assert.match(callback, /configuredUrl/);
   assert.match(callback, /request\.nextUrl\.origin/);
+  assert.match(callback, /readableSupabaseAdminError/);
+  assert.match(callback, /SUPABASE_SERVICE_ROLE_KEY가 유효하지 않습니다/);
   assert.match(callback, /https:\/\/nid\.naver\.com\/oauth2\.0\/token/);
   assert.match(callback, /https:\/\/openapi\.naver\.com\/v1\/nid\/me/);
   assert.match(callback, /parseNaverUserInfo/);
@@ -364,4 +366,6 @@ test("naver login uses app-owned callback and Supabase magic-link bridge", () =>
   assert.match(lib, /fields\.id/);
   assert.match(lib, /fields\.email/);
   assert.match(supabaseServer, /getSupabaseServiceRoleClient/);
+  assert.match(supabaseServer, /normalizeSupabaseKey/);
+  assert.match(supabaseServer, /replace\(\/\^Bearer/);
 });

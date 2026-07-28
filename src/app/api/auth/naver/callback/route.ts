@@ -15,6 +15,13 @@ type NaverTokenResponse = {
   error_description?: string;
 };
 
+function readableSupabaseAdminError(message: string) {
+  if (/valid Bearer token|JWT|invalid token|signature/i.test(message)) {
+    return "SUPABASE_SERVICE_ROLE_KEY가 유효하지 않습니다. Supabase Project Settings → API의 service_role secret key를 Vercel Production 환경변수에 다시 넣고 재배포해주세요.";
+  }
+  return message;
+}
+
 function siteUrlFromRequest(request: NextRequest) {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (!configuredUrl) return request.nextUrl.origin;
@@ -121,7 +128,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (createUserError && !/already|registered|exists/i.test(createUserError.message)) {
-      throw new Error(createUserError.message);
+      throw new Error(readableSupabaseAdminError(createUserError.message));
     }
 
     const { data, error: linkError } = await supabase.auth.admin.generateLink({
@@ -134,7 +141,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (linkError || !data.properties?.action_link) {
-      throw new Error(linkError?.message ?? "Supabase 로그인 링크 생성 실패");
+      throw new Error(readableSupabaseAdminError(linkError?.message ?? "Supabase 로그인 링크 생성 실패"));
     }
 
     const response = NextResponse.redirect(data.properties.action_link);
