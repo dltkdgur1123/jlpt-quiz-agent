@@ -4529,10 +4529,21 @@ button:hover:not(:disabled),
   }
   .site-header .home-login-button,
   .site-header .auth-profile-trigger {
-    height: 40px !important;
-    min-height: 40px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    min-width: 84px !important;
+    max-width: 96px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
     font-size: 13px !important;
+    line-height: 1 !important;
     white-space: nowrap !important;
+  }
+  .site-header .home-login-button .auth-header-signup-suffix {
+    display: none !important;
+  }
+  .site-header .auth-profile-trigger {
+    max-width: 116px !important;
   }
   .home-redesign-panel {
     width: 100% !important;

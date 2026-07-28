@@ -115,6 +115,9 @@ test("mobile layout uses four bottom tabs and keeps original shorts thumbnail si
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mobile-bottom-nav \{[\s\S]*?display: grid/);
   assert.match(css, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.mobile-bottom-nav-item\[data-active="true"\] \{[\s\S]*?color: var\(--jlpt-primary/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?height: 38px !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?min-width: 84px !important/);
+  assert.match(css, /\.site-header \.home-login-button \.auth-header-signup-suffix \{[\s\S]*?display: none !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid \{[\s\S]*?grid-template-columns: 1fr/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-shorts-grid-link \{[\s\S]*?aspect-ratio: 16 \/ 9/);
   assert.doesNotMatch(css, /max-height: 220px/);
@@ -206,7 +209,8 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(headerButtonSource, /auth-profile-avatar/);
   assert.match(headerButtonSource, /auth-profile-name/);
   assert.match(headerButtonSource, /auth-profile-dropdown/);
-  assert.match(headerButtonSource, /로그인\/가입/);
+  assert.match(headerButtonSource, /aria-label="로그인 또는 가입"/);
+  assert.match(headerButtonSource, /auth-header-signup-suffix/);
   assert.match(globalCss(), /\.site-header \.home-login-button \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important/);
   assert.match(globalCss(), /\.site-header \.home-login-button:hover \{[\s\S]*?#b71c1c/);
   assert.match(panelSource, /학습 기록을 이어가세요/);

@@ -135,8 +135,8 @@ export function AuthHeaderButton({ variant = "home" }: { variant?: AuthHeaderBut
   }
 
   return (
-    <Link className={`${className} auth-header-button`} href="/login">
-      로그인/가입
+    <Link className={`${className} auth-header-button`} href="/login" aria-label="로그인 또는 가입">
+      <span>로그인</span><span className="auth-header-signup-suffix">/가입</span>
     </Link>
   );
 }
