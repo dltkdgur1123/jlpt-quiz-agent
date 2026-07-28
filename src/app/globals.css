@@ -3877,7 +3877,8 @@ main,
 .home-redesign-shell,
 .mock-page-shell,
 .login-page-shell,
-.figma-shell.dashboard-page {
+.figma-shell.dashboard-page,
+.wrong-note-shell {
   padding-top: var(--site-content-top-offset) !important;
 }
 

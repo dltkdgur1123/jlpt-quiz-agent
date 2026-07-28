@@ -659,6 +659,7 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(mockSource, /correct_choice: question\.correct_choice/);
   assert.match(mockSource, /if \(!selectedChoice \|\| selectedChoice === correctChoice\) return \[\]/);
   assert.match(css, /\/\* Wrong-note retry page \*\//);
+  assert.match(css, /\.figma-shell\.dashboard-page,\n\.wrong-note-shell \{\n  padding-top: var\(--site-content-top-offset\) !important;/);
   assert.match(css, /\.wrong-note-shell \{[\s\S]*?margin: 0 auto/);
   assert.match(css, /\.wrong-note-page \{[\s\S]*?grid-template-columns: minmax\(360px, 460px\) minmax\(560px, 720px\)/);
   assert.match(css, /\.wrong-note-inline-complete/);
