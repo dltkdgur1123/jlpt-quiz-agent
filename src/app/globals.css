@@ -5890,16 +5890,17 @@ main:has(.home-page-frame) {
 
 /* Wrong-note retry page */
 .wrong-note-shell {
-  width: min(1120px, calc(100% - 40px));
+  width: min(1480px, calc(100% - 72px)) !important;
   margin: 0 auto;
   display: grid;
-  gap: 24px;
+  gap: 28px;
 }
 .wrong-note-page {
   display: grid;
-  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  grid-template-columns: minmax(360px, 460px) minmax(560px, 720px);
   align-items: start;
-  gap: 22px;
+  justify-content: center;
+  gap: 28px;
 }
 .wrong-note-hero,
 .wrong-note-review-card,
@@ -6027,12 +6028,22 @@ main:has(.home-page-frame) {
   background: var(--jlpt-primary, #d32f2f);
 }
 .wrong-note-review-card {
-  min-height: 520px;
+  min-height: 560px;
 }
+.wrong-note-inline-complete,
 .wrong-note-complete {
-  grid-column: 2;
-  border-color: #f3d5d5;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #f3d5d5;
+  border-radius: 18px;
   background: #fffafa;
+}
+.wrong-note-inline-complete strong {
+  color: var(--jlpt-title, #212121);
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
 }
 .wrong-note-complete-actions {
   display: grid;
@@ -6074,6 +6085,11 @@ main:has(.home-page-frame) {
 .wrong-note-actions button:nth-child(2) {
   border-color: var(--jlpt-primary, #d32f2f);
   background: var(--jlpt-primary, #d32f2f);
+  color: #ffffff;
+}
+.wrong-note-actions button:nth-child(3):not(:disabled) {
+  border-color: var(--jlpt-title, #212121);
+  background: var(--jlpt-title, #212121);
   color: #ffffff;
 }
 .wrong-note-actions button:disabled {

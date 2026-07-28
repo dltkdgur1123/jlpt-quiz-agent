@@ -75,8 +75,9 @@ export function WrongNoteClient() {
   const isRevealed = currentItem ? Boolean(revealed[currentItem.id]) : false;
   const reviewedCount = useMemo(() => items.filter((item) => revealed[item.id]).length, [items, revealed]);
   const solvedCount = useMemo(() => items.filter((item) => revealed[item.id] && selectedAnswers[item.id] === item.question?.correct_choice).length, [items, revealed, selectedAnswers]);
-  const reviewComplete = items.length > 0 && reviewedCount === items.length;
   const reviewProgress = items.length ? Math.round((reviewedCount / items.length) * 100) : 0;
+  const isLastItem = currentIndex >= items.length - 1;
+  const isCurrentCorrect = Boolean(currentQuestion && selectedAnswer === currentQuestion.correct_choice);
 
   function selectAnswer(choice: ChoiceKey) {
     if (!currentItem || isRevealed) return;
@@ -103,7 +104,7 @@ export function WrongNoteClient() {
       <div className="wrong-note-hero">
         <p className="section-eyebrow">Wrong Note</p>
         <h1>오답 다시 풀기</h1>
-        <p>틀렸던 문제만 다시 풀고, 마지막에는 다음 학습으로 이어갑니다.</p>
+        <p>틀렸던 문제만 다시 풀고, 마지막 문제를 확인하면 바로 다음 학습으로 이어갑니다.</p>
         <div className="wrong-note-summary-row">
           <strong>오답 {items.length}개</strong>
           <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개</span>
@@ -159,26 +160,25 @@ export function WrongNoteClient() {
             </div>
           ) : null}
 
-          <div className="wrong-note-actions">
-            <button type="button" onClick={() => move(-1)} disabled={currentIndex === 0}>이전</button>
-            <button type="button" onClick={revealAnswer} disabled={!selectedAnswer || isRevealed}>정답 확인</button>
-            <button type="button" onClick={() => move(1)} disabled={currentIndex >= items.length - 1}>다음</button>
-          </div>
+          {isLastItem && isRevealed ? (
+            <div className="wrong-note-inline-complete" aria-label="마지막 오답 확인 완료">
+              <strong>{isCurrentCorrect ? "마지막 문제까지 다시 맞혔습니다" : "마지막 문제까지 확인했습니다"}</strong>
+              <p>{items.length}개 중 {solvedCount}개를 다시 맞혔습니다. 여기서 복습을 한 번 더 돌리거나, 학습 기록을 확인한 뒤 새 모의고사로 넘어가세요.</p>
+              <div className="wrong-note-complete-actions">
+                <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
+                <Link href="/dashboard">학습 기록 보기</Link>
+                <Link href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
+              </div>
+            </div>
+          ) : (
+            <div className="wrong-note-actions">
+              <button type="button" onClick={() => move(-1)} disabled={currentIndex === 0}>이전</button>
+              <button type="button" onClick={revealAnswer} disabled={!selectedAnswer || isRevealed}>정답 확인</button>
+              <button type="button" onClick={() => move(1)} disabled={!isRevealed || isLastItem}>다음 문제</button>
+            </div>
+          )}
         </div>
       )}
-
-      {reviewComplete ? (
-        <div className="wrong-note-complete" aria-label="오답 재풀이 완료">
-          <p className="section-eyebrow">Review Complete</p>
-          <h2>오답 복습을 마쳤습니다</h2>
-          <p>{items.length}개 중 {solvedCount}개를 다시 맞혔습니다. 틀린 문제가 남아 있으면 한 번 더 풀고, 아니면 새 모의고사로 넘어가세요.</p>
-          <div className="wrong-note-complete-actions">
-            <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
-            <Link href="/dashboard">학습 기록 보기</Link>
-            <Link href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }
