@@ -103,7 +103,8 @@ test("login page uses a compact auth form instead of oversized controls", () => 
   assert.match(css, /\.login-simple-stage \.auth-card button:hover,[\s\S]*?filter: none !important/);
   assert.match(css, /\.login-simple-stage \.auth-provider-google:hover,[\s\S]*?background: #ffffff !important/);
   assert.match(css, /\.login-simple-stage \.auth-provider-kakao:hover,[\s\S]*?background: #fee500 !important/);
-  assert.match(css, /\.login-simple-stage \.auth-provider-naver:hover,[\s\S]*?background: #03c75a !important/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-naver \{[\s\S]*?overflow: hidden;[\s\S]*?border-radius: 8px/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-naver \.auth-provider-mark \{[\s\S]*?border-radius: 8px 0 0 8px/);
   assert.match(css, /\.login-simple-stage \.auth-provider-official-image \{[\s\S]*?object-fit: contain/);
 });
 

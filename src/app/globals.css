@@ -2659,9 +2659,10 @@ main:has(.mock-page-shell) {
   grid-template-columns: 40px minmax(0, 1fr) 40px;
   height: 44px;
   min-height: 44px;
+  overflow: hidden;
   padding: 0;
   border-color: #03c75a;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #03c75a;
   color: #ffffff;
   font-family: Arial, sans-serif;
@@ -2673,7 +2674,7 @@ main:has(.mock-page-shell) {
 .login-simple-stage .auth-provider-naver .auth-provider-mark {
   width: 40px;
   height: 44px;
-  border-radius: 0;
+  border-radius: 8px 0 0 8px;
   background: #03c75a;
   color: #ffffff;
 }
