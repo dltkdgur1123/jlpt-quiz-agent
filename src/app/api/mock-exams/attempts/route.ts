@@ -220,19 +220,66 @@ export async function GET(request: NextRequest) {
       .eq("user_id", userProfile.id)
       .eq("status", "submitted")
       .order("submitted_at", { ascending: false })
-      .limit(5);
+      .limit(30);
     if (error) throw error;
 
-    const totalQuestions = (attempts ?? []).reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
-    const averageRate = attempts?.length
+    const attemptRows = attempts ?? [];
+    const totalQuestions = attemptRows.reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
+    const averageRate = attemptRows.length
       ? Math.round(
-          (attempts.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
-            attempts.length) *
+          (attemptRows.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
+            attemptRows.length) *
             100,
         )
       : 0;
 
-    const attemptIds = (attempts ?? []).map((attempt) => attempt.id);
+    const weeklyMap = new Map<string, number>();
+    for (let index = 6; index >= 0; index -= 1) {
+      const date = new Date();
+      date.setDate(date.getDate() - index);
+      weeklyMap.set(date.toISOString().slice(0, 10), 0);
+    }
+    for (const attempt of attemptRows) {
+      const submittedDay = attempt.submitted_at ? new Date(attempt.submitted_at).toISOString().slice(0, 10) : null;
+      if (submittedDay && weeklyMap.has(submittedDay)) {
+        weeklyMap.set(submittedDay, (weeklyMap.get(submittedDay) ?? 0) + Number(attempt.question_count ?? 0));
+      }
+    }
+    const weeklyActivity = Array.from(weeklyMap.entries()).map(([date, question_count]) => ({ date, question_count }));
+
+    const attemptIds = attemptRows.map((attempt) => attempt.id);
+    let sectionSummary = [
+      { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+      { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+      { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+    ];
+    if (attemptIds.length > 0) {
+      const { data: sectionRows, error: sectionSummaryError } = await client
+        .from("mock_exam_section_results")
+        .select("section_key, correct_count, question_count")
+        .in("mock_exam_attempt_id", attemptIds);
+      if (sectionSummaryError) throw sectionSummaryError;
+
+      const sectionMap = new Map<string, { correct_count: number; question_count: number }>();
+      for (const row of sectionRows ?? []) {
+        const current = sectionMap.get(row.section_key) ?? { correct_count: 0, question_count: 0 };
+        current.correct_count += Number(row.correct_count ?? 0);
+        current.question_count += Number(row.question_count ?? 0);
+        sectionMap.set(row.section_key, current);
+      }
+      sectionSummary = sectionSummary.map((section) => {
+        const current = sectionMap.get(section.section_key) ?? { correct_count: 0, question_count: 0 };
+        const rate = current.question_count ? Math.round((current.correct_count / current.question_count) * 100) : 0;
+        return {
+          ...section,
+          correct_count: current.correct_count,
+          question_count: current.question_count,
+          correct_rate: rate,
+          weakness_label: current.question_count === 0 ? "기록 없음" : rate < 60 ? "복습 필요" : "유지 권장",
+        };
+      });
+    }
+
     let wrongNote = {
       total_count: 0,
       wrong_count: 0,
@@ -279,7 +326,15 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    return NextResponse.json({ attempts: attempts ?? [], total_questions: totalQuestions, average_rate: averageRate, wrong_note: wrongNote });
+    return NextResponse.json({
+      attempts: attemptRows.slice(0, 5),
+      attempt_count: attemptRows.length,
+      total_questions: totalQuestions,
+      average_rate: averageRate,
+      weekly_activity: weeklyActivity,
+      section_summary: sectionSummary,
+      wrong_note: wrongNote,
+    });
   } catch (error) {
     const message = errorMessage(error, "failed to load mock exam attempts");
     const status = message.includes("login required") ? 401 : 500;

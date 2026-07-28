@@ -22,10 +22,27 @@ type WrongNoteItem = {
   status: "wrong" | "unanswered";
 };
 
+type WeeklyActivity = {
+  date: string;
+  question_count: number;
+};
+
+type SectionSummary = {
+  section_key: "vocab" | "grammar" | "reading";
+  section_label: string;
+  correct_count: number;
+  question_count: number;
+  correct_rate: number;
+  weakness_label: string;
+};
+
 type DashboardResponse = {
   attempts: DashboardAttempt[];
+  attempt_count: number;
   total_questions: number;
   average_rate: number;
+  weekly_activity: WeeklyActivity[];
+  section_summary: SectionSummary[];
   wrong_note?: {
     total_count: number;
     wrong_count: number;
@@ -37,6 +54,12 @@ type DashboardResponse = {
 type DashboardDataState = {
   data: DashboardResponse | null;
   status: "loading" | "ready" | "login_required" | "error";
+};
+
+const SECTION_NOTES: Record<SectionSummary["section_key"], string> = {
+  vocab: "한자읽기·표기·문맥 어휘를 우선 점검합니다.",
+  grammar: "문법형식 판단과 문장 만들기를 복습합니다.",
+  reading: "단문·중문·정보검색 흐름을 다시 확인합니다.",
 };
 
 function useDashboardAttemptData(): DashboardDataState {
@@ -81,9 +104,67 @@ function useDashboardAttemptData(): DashboardDataState {
   return { data, status };
 }
 
-export function DashboardAttemptData() {
-  const { data, status } = useDashboardAttemptData();
+function formatDate(value: string | null) {
+  if (!value) return "날짜 없음";
+  return new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric" }).format(new Date(value));
+}
 
+function formatWeekday(value: string) {
+  return new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric", weekday: "short" }).format(new Date(value));
+}
+
+function latestLevel(data: DashboardResponse | null) {
+  const set = data?.attempts?.[0]?.mock_exam_sets;
+  return set?.jlpt_level ?? "-";
+}
+
+function sectionTone(index: number) {
+  return ["orange", "purple", "blue"][index % 3];
+}
+
+function DashboardStatGrid({ data, status }: DashboardDataState) {
+  const stats = [
+    {
+      label: "최근 기록",
+      value: status === "ready" ? `${data?.attempt_count ?? 0}회` : "-",
+      note: "저장된 모의고사 제출 기준",
+      tone: "blue",
+    },
+    {
+      label: "누적 풀이",
+      value: status === "ready" ? `${data?.total_questions ?? 0}문항` : "-",
+      note: "저장된 답안 기준",
+      tone: "mint",
+    },
+    {
+      label: "평균 정답률",
+      value: status === "ready" ? `${data?.average_rate ?? 0}%` : "-",
+      note: "학습 참고 지표",
+      tone: "orange",
+    },
+    {
+      label: "최근 선택 레벨",
+      value: status === "ready" ? latestLevel(data) : "-",
+      note: "최근 제출 세트 기준",
+      tone: "blue",
+    },
+  ];
+
+  return (
+    <section className="dashboard-stat-grid" aria-label="학습 요약">
+      {stats.map((stat) => (
+        <article className="dashboard-stat-card" key={stat.label}>
+          <i className={`tone-${stat.tone}`} />
+          <span>{stat.label}</span>
+          <strong>{stat.value}</strong>
+          <small>{stat.note}</small>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function DashboardAttemptSummary({ data, status }: DashboardDataState) {
   if (status === "loading") {
     return <p className="dashboard-live-note">학습 기록을 불러오는 중입니다.</p>;
   }
@@ -111,8 +192,93 @@ export function DashboardAttemptData() {
   );
 }
 
-export function DashboardWrongNoteCard() {
-  const { data, status } = useDashboardAttemptData();
+function DashboardActivityAndGoal({ data, status }: DashboardDataState) {
+  const weeklyRows = data?.weekly_activity ?? [];
+  const bars = weeklyRows.length ? weeklyRows.map((row) => row.question_count) : [0, 0, 0, 0, 0, 0, 0];
+  const weekLabels = weeklyRows.length ? weeklyRows.map((row) => formatWeekday(row.date)) : ["-", "-", "-", "-", "-", "-", "-"];
+  const weeklyGoal = 70;
+  const weeklyMax = Math.max(...bars, weeklyGoal, 1);
+  const weeklyTotal = bars.reduce((sum, value) => sum + value, 0);
+  const weeklyAverage = Math.round(weeklyTotal / Math.max(bars.length, 1));
+  const weeklyPeakIndex = bars.indexOf(Math.max(...bars));
+  const monthlyGoal = 3;
+  const monthlySubmitted = data?.attempt_count ?? 0;
+  const monthlyProgress = Math.min(100, Math.round((monthlySubmitted / monthlyGoal) * 100));
+  const nextGoalCount = Math.max(0, monthlyGoal - monthlySubmitted);
+  const goalLevel = latestLevel(data) === "-" ? "JLPT" : latestLevel(data);
+
+  return (
+    <section className="dashboard-grid-top">
+      <article className="dashboard-panel dashboard-activity">
+        <div className="dashboard-activity-head">
+          <div>
+            <h2>주간 학습 활동</h2>
+            <p>최근 7일 문제 풀이 수</p>
+          </div>
+          <strong>{status === "ready" ? `${weeklyTotal}문항` : "-"}</strong>
+        </div>
+        <div className="dashboard-activity-summary" aria-label="주간 학습 활동 요약">
+          <span><b>{weeklyAverage}문항</b><em>일평균</em></span>
+          <span><b>{weekLabels[weeklyPeakIndex] ?? "-"}</b><em>최고 활동일</em></span>
+          <span><b>{weeklyGoal}문항</b><em>일 목표</em></span>
+        </div>
+        <div className="dashboard-bars" aria-label="최근 7일 요일별 문제 풀이 수">
+          <div className="dashboard-bars-goal" aria-hidden="true"><span>목표 {weeklyGoal}</span></div>
+          {bars.map((bar, index) => (
+            <div className={index === weeklyPeakIndex && bar > 0 ? "hot" : ""} key={`${weekLabels[index]}-${index}`}>
+              <i style={{ height: `${Math.max(56, Math.round((bar / weeklyMax) * 168))}px` }}>
+                <b>{bar}<small>문항</small></b>
+              </i>
+              <span>{weekLabels[index]}</span>
+            </div>
+          ))}
+        </div>
+      </article>
+      <article className="dashboard-goal-card">
+        <span>이번 달 목표</span>
+        <h2>{goalLevel} 모의고사<br />3회 제출하기</h2>
+        <strong>{monthlySubmitted} / {monthlyGoal}회</strong>
+        <div className="figma-progress"><i style={{ width: `${monthlyProgress}%` }} /></div>
+        <p>{nextGoalCount ? `다음 목표까지 ${nextGoalCount}회 남음` : "이번 달 목표를 달성했습니다"}</p>
+        <Link className="figma-primary" href="/mock-exams/n5-realistic-001">계속 학습하기</Link>
+      </article>
+    </section>
+  );
+}
+
+function DashboardRecentExamList({ data, status }: DashboardDataState) {
+  const attempts = data?.attempts ?? [];
+
+  return (
+    <article className="dashboard-panel dashboard-recent">
+      <div className="panel-title-row dashboard-action-head"><h2>최근 모의고사</h2><a href="#history">전체 보기 →</a></div>
+      {status === "loading" ? (
+        <p>최근 모의고사 기록을 불러오는 중입니다.</p>
+      ) : status === "login_required" ? (
+        <p>로그인하면 제출한 모의고사 기록이 여기에 저장됩니다.</p>
+      ) : status === "error" ? (
+        <p>최근 모의고사 기록을 불러오지 못했습니다.</p>
+      ) : attempts.length ? (
+        attempts.map((exam) => {
+          const set = exam.mock_exam_sets;
+          const rate = Math.round((Number(exam.correct_count ?? 0) / Number(exam.question_count || 1)) * 100);
+          return (
+            <div className="recent-exam-row" key={exam.id}>
+              <span>{set?.jlpt_level ?? "JLPT"}</span>
+              <div><strong>{set?.set_title ?? "실전 모의고사"}</strong><small>{formatDate(exam.submitted_at)}</small></div>
+              <b>{exam.score_total ?? exam.correct_count} / {exam.score_max ?? exam.question_count}</b>
+              <em data-good={rate >= 60}>{rate >= 60 ? "유지 권장" : "보완 필요"}</em>
+            </div>
+          );
+        })
+      ) : (
+        <p>아직 저장된 모의고사 기록이 없습니다.</p>
+      )}
+    </article>
+  );
+}
+
+function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
   const wrongNote = data?.wrong_note;
   const recentItems = wrongNote?.recent_items ?? [];
   const totalCount = wrongNote?.total_count ?? 0;
@@ -157,4 +323,58 @@ export function DashboardWrongNoteCard() {
       )}
     </section>
   );
+}
+
+function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
+  const weakAreas = data?.section_summary ?? [
+    { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+    { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+    { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+  ] satisfies SectionSummary[];
+
+  return (
+    <section className="dashboard-panel dashboard-weak dashboard-weak-full" aria-label="취약 영역 분석">
+      <div className="dashboard-weak-head dashboard-action-head">
+        <div>
+          <h2>취약 영역 분석</h2>
+          <p>오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다.</p>
+        </div>
+        <Link href="/mock-exams/n5-realistic-001">약한 영역 다시 풀기 →</Link>
+      </div>
+      <div className="dashboard-weak-grid">
+        {weakAreas.map((area, index) => (
+          <div className={`weak-row weak-${sectionTone(index)}`} key={area.section_key}>
+            <p><strong>{area.section_label}</strong><b>{status === "ready" ? `${area.correct_rate}%` : "-"}</b></p>
+            <div><i style={{ width: `${status === "ready" ? area.correct_rate : 0}%` }} /></div>
+            <span>{area.question_count ? `${area.weakness_label} · ${area.correct_count}/${area.question_count}문항 · ${SECTION_NOTES[area.section_key]}` : "저장된 기록이 쌓이면 취약 영역을 계산합니다."}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function DashboardLiveData() {
+  const state = useDashboardAttemptData();
+
+  return (
+    <>
+      <DashboardStatGrid {...state} />
+      <DashboardAttemptSummary {...state} />
+      <DashboardActivityAndGoal {...state} />
+      <section className="dashboard-grid-bottom" id="history">
+        <DashboardRecentExamList {...state} />
+        <DashboardWrongNoteCard {...state} />
+      </section>
+      <DashboardWeakAreaPanel {...state} />
+    </>
+  );
+}
+
+export function DashboardAttemptData() {
+  return <DashboardAttemptSummary {...useDashboardAttemptData()} />;
+}
+
+export function DashboardWrongNoteCardStandalone() {
+  return <DashboardWrongNoteCard {...useDashboardAttemptData()} />;
 }

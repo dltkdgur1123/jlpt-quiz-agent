@@ -108,6 +108,8 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
 
 test("dashboard page matches Figma learning dashboard sections", () => {
   const source = dashboardPage();
+  const clientSource = dashboardAttemptData();
+  const dashboardSource = `${source}\n${clientSource}`;
   assert.match(source, /<SiteHeader active="history"/);
   const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   for (const style of [
@@ -260,7 +262,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "weeklyAverage",
     "weeklyPeakIndex",
     "weekLabels",
-    "7/17 금",
+    "formatWeekday",
     "Math.max(56",
     "dashboard-activity-head",
     "dashboard-activity-summary",
@@ -268,11 +270,12 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "aria-label=\"최근 7일 요일별 문제 풀이 수\"",
     "dashboard-stat-grid",
     "dashboard-goal-card",
-    "DashboardAttemptData",
+    "DashboardLiveData",
+    "section_summary",
+    "weekly_activity",
   ]) {
-    assert.ok(source.includes(phrase), phrase);
+    assert.ok(dashboardSource.includes(phrase), phrase);
   }
-  const clientSource = dashboardAttemptData();
   assert.match(css, /Mobile dashboard page should not look like narrow centered cards/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.dashboard-page\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?width: 100% !important;[\s\S]*?max-width: none !important/);
@@ -324,6 +327,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "mock_exam_answers",
     "mock_exam_section_results",
     "wrong_note",
+    "weekly_activity",
+    "section_summary",
+    "attempt_count",
     "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
     "deterministicUuid",
     "auth.getUser",
