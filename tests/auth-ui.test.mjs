@@ -374,6 +374,9 @@ test("naver login uses app-owned callback and Supabase magic-link bridge", () =>
   assert.match(lib, /fields\.id/);
   assert.match(lib, /fields\.email/);
   assert.match(supabaseServer, /getSupabaseServiceRoleClient/);
+  assert.match(supabaseServer, /getSupabasePrivilegedClient/);
+  assert.match(supabaseServer, /getSupabaseUserAccessClient/);
+  assert.match(supabaseServer, /Authorization: `Bearer \$\{normalizeSupabaseKey\(accessToken\)\}`/);
   assert.match(supabaseServer, /normalizeSupabaseKey/);
   assert.match(supabaseServer, /replace\(\/\^Bearer/);
 });

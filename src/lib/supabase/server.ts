@@ -4,29 +4,48 @@ function normalizeSupabaseKey(value: string) {
   return value.trim().replace(/^Bearer\s+/i, "");
 }
 
-function createServerSupabaseClient(key: string) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+function supabaseUrl() {
+  const value = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 
-  if (!supabaseUrl) {
+  if (!value) {
     throw new Error("Missing Supabase URL environment variable");
   }
 
-  return createClient(supabaseUrl, normalizeSupabaseKey(key), {
+  return value;
+}
+
+function supabaseAnonKey() {
+  const value = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
+  if (!value) {
+    throw new Error("Missing Supabase anon environment variable");
+  }
+
+  return value;
+}
+
+function createServerSupabaseClient(key: string, accessToken?: string) {
+  return createClient(supabaseUrl(), normalizeSupabaseKey(key), {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
+    global: accessToken
+      ? {
+          headers: {
+            Authorization: `Bearer ${normalizeSupabaseKey(accessToken)}`,
+          },
+        }
+      : undefined,
   });
 }
 
 export function getSupabaseServerClient() {
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  return createServerSupabaseClient(supabaseAnonKey());
+}
 
-  if (!supabaseAnonKey) {
-    throw new Error("Missing Supabase anon environment variable");
-  }
-
-  return createServerSupabaseClient(supabaseAnonKey);
+export function getSupabaseUserAccessClient(accessToken: string) {
+  return createServerSupabaseClient(supabaseAnonKey(), accessToken);
 }
 
 export function getSupabaseServiceRoleClient() {
@@ -37,4 +56,14 @@ export function getSupabaseServiceRoleClient() {
   }
 
   return createServerSupabaseClient(serviceRoleKey);
+}
+
+export function getSupabasePrivilegedClient(accessToken: string) {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+
+  if (serviceRoleKey) {
+    return createServerSupabaseClient(serviceRoleKey);
+  }
+
+  return getSupabaseUserAccessClient(accessToken);
 }

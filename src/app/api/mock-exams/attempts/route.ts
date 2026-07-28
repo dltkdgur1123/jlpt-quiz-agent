@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { buildUserProfileUpsert } from "@/lib/auth/user-sync";
 import type { ActiveMockExamSectionKey, ChoiceKey } from "@/lib/db/types";
-import { getSupabaseServerClient, getSupabaseServiceRoleClient } from "@/lib/supabase/server";
+import { getSupabasePrivilegedClient, getSupabaseServerClient } from "@/lib/supabase/server";
 
 type AttemptAnswerInput = {
   question_id: string;
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
     if (authError || !authData.user) throw new Error("login required");
 
-    const client = getSupabaseServiceRoleClient();
+    const client = getSupabasePrivilegedClient(accessToken);
 
     const profile = buildUserProfileUpsert(authData.user);
     const { data: userProfile, error: userError } = await client
@@ -208,7 +208,7 @@ export async function GET(request: NextRequest) {
     const { data: authData, error: authError } = await authClient.auth.getUser(accessToken);
     if (authError || !authData.user) throw new Error("login required");
 
-    const client = getSupabaseServiceRoleClient();
+    const client = getSupabasePrivilegedClient(accessToken);
 
     const profile = buildUserProfileUpsert(authData.user);
     const { data: userProfile, error: userError } = await client
