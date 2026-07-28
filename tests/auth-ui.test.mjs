@@ -115,6 +115,8 @@ test("mobile layout uses four bottom tabs and keeps original shorts thumbnail si
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mobile-bottom-nav \{[\s\S]*?display: grid/);
   assert.match(css, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.mobile-bottom-nav-item\[data-active="true"\] \{[\s\S]*?color: var\(--jlpt-primary/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \{[\s\S]*?grid-template-columns: auto minmax\(0, 1fr\) !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header > \.auth-header-button,[\s\S]*?justify-self: end !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?height: 38px !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?min-width: 84px !important/);
   assert.match(css, /\.site-header \.home-login-button \.auth-header-signup-suffix \{[\s\S]*?display: none !important/);
