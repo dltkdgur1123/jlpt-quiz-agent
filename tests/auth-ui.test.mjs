@@ -98,9 +98,12 @@ test("login page uses a compact auth form instead of oversized controls", () => 
   assert.match(css, /\.login-page-main \{[\s\S]*?min-height: auto/);
   assert.match(css, /\.login-page-shell \{[\s\S]*?min-height: auto/);
   assert.match(css, /\.login-simple-stage \.auth-provider-button,[\s\S]*?transition: none !important/);
-  assert.match(css, /\.login-simple-stage \.auth-provider-google:hover,[\s\S]*?background: #ffffff/);
-  assert.match(css, /\.login-simple-stage \.auth-provider-kakao:hover,[\s\S]*?background: #fee500/);
-  assert.match(css, /\.login-simple-stage \.auth-provider-naver:hover,[\s\S]*?background: #03c75a/);
+  assert.match(css, /\.login-simple-stage \.auth-card button,[\s\S]*?animation: none !important/);
+  assert.match(css, /\.login-simple-stage \.auth-card button \*,[\s\S]*?transition-duration: 0s !important/);
+  assert.match(css, /\.login-simple-stage \.auth-card button:hover,[\s\S]*?filter: none !important/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-google:hover,[\s\S]*?background: #ffffff !important/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-kakao:hover,[\s\S]*?background: #fee500 !important/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-naver:hover,[\s\S]*?background: #03c75a !important/);
   assert.match(css, /\.login-simple-stage \.auth-provider-official-image \{[\s\S]*?object-fit: contain/);
 });
 

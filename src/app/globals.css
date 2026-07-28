@@ -2765,6 +2765,82 @@ main:has(.mock-page-shell) {
   border-radius: 14px;
   font-size: 16px;
 }
+.login-simple-stage .auth-card button,
+.login-simple-stage .auth-card a,
+.login-simple-stage .auth-card button *,
+.login-simple-stage .auth-card a * {
+  animation: none !important;
+  transition: none !important;
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  rotate: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+.login-simple-stage .auth-card button:hover,
+.login-simple-stage .auth-card button:hover:not(:disabled),
+.login-simple-stage .auth-card button:active,
+.login-simple-stage .auth-card button:focus,
+.login-simple-stage .auth-card button:focus-visible,
+.login-simple-stage .auth-card a:hover,
+.login-simple-stage .auth-card a:active,
+.login-simple-stage .auth-card a:focus,
+.login-simple-stage .auth-card a:focus-visible,
+.login-simple-stage .auth-card button:hover *,
+.login-simple-stage .auth-card button:active *,
+.login-simple-stage .auth-card button:focus *,
+.login-simple-stage .auth-card a:hover *,
+.login-simple-stage .auth-card a:active *,
+.login-simple-stage .auth-card a:focus * {
+  animation: none !important;
+  transition: none !important;
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  rotate: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+.login-simple-stage .auth-provider-google:hover,
+.login-simple-stage .auth-provider-google:hover:not(:disabled),
+.login-simple-stage .auth-provider-google:active,
+.login-simple-stage .auth-provider-google:focus {
+  border-color: #747775 !important;
+  background: #ffffff !important;
+  color: #1f1f1f !important;
+}
+.login-simple-stage .auth-provider-kakao:hover,
+.login-simple-stage .auth-provider-kakao:hover:not(:disabled),
+.login-simple-stage .auth-provider-kakao:active,
+.login-simple-stage .auth-provider-kakao:focus {
+  border-color: transparent !important;
+  background: #fee500 !important;
+  color: #000000 !important;
+}
+.login-simple-stage .auth-provider-naver:hover,
+.login-simple-stage .auth-provider-naver:hover:not(:disabled),
+.login-simple-stage .auth-provider-naver:active,
+.login-simple-stage .auth-provider-naver:focus {
+  border-color: #03c75a !important;
+  background: #03c75a !important;
+  color: #ffffff !important;
+}
+.login-simple-stage .auth-email-submit:hover,
+.login-simple-stage .auth-email-submit:hover:not(:disabled),
+.login-simple-stage .auth-email-submit:active,
+.login-simple-stage .auth-email-submit:focus,
+.login-simple-stage .auth-dashboard-link:hover,
+.login-simple-stage .auth-dashboard-link:active,
+.login-simple-stage .auth-dashboard-link:focus {
+  border-color: transparent !important;
+  background: var(--jlpt-primary, #d32f2f) !important;
+  color: #ffffff !important;
+}
 @media (max-width: 760px) {
   .login-simple-stage {
     min-height: calc(100vh - 96px) !important;
