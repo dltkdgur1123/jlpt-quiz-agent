@@ -533,6 +533,10 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "grammar_sentence_build",
     "attemptSeed",
     "seededShuffle",
+    "orderedProblemDefinitions",
+    "SECTION_ORDER",
+    "problem-order",
+    "question-order",
     "buildRenderedChoices",
     "renderedCorrectChoice",
     "randomUUID",
@@ -569,7 +573,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     assert.ok(source.includes(phrase), phrase);
   }
   assert.match(source, /submitted \? \(/);
-  assert.match(source, /seededShuffle\([\s\S]*?problemQuestions\(artifact, problem\)[\s\S]*?attemptSeed[\s\S]*?problem\.problemNo/);
+  assert.match(source, /orderedProblemDefinitions\(attemptSeed, artifact\.set\.set_code\)\.flatMap/);
+  assert.match(source, /seededShuffle\([\s\S]*?problemQuestions\(artifact, problem\)[\s\S]*?question-order/);
+  assert.match(source, /seededShuffle\([\s\S]*?PROBLEM_DEFINITIONS\.filter\(\(problem\) => problem\.sectionKey === sectionKey\)[\s\S]*?problem-order/);
   assert.match(source, /const originalCorrectIndex = CHOICE_KEYS\.indexOf\(question\.correct_choice\)/);
   assert.match(source, /const renderedCorrectIndex = shuffledChoices\.findIndex/);
   assert.match(source, /renderedCorrectIndex === originalCorrectIndex/);

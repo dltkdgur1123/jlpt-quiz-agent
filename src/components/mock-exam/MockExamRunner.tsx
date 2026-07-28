@@ -129,6 +129,7 @@ const MOCK_LANGUAGE_READING_SCORE = 120;
 const MOCK_LISTENING_SCORE = 60;
 const MOCK_PASS_TOTAL_THRESHOLD = 80;
 const MOCK_SECTION_RATE_THRESHOLD = 30;
+const SECTION_ORDER: MockExamSectionKey[] = ["vocab", "grammar", "reading"];
 
 const PROBLEM_DEFINITIONS: ProblemDefinition[] = [
   {
@@ -268,6 +269,15 @@ function renderedCorrectChoice(question: MockExamQuestion, renderedChoices: Rend
 
 function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition) {
   return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
+}
+
+function orderedProblemDefinitions(attemptSeed: string, setCode: string) {
+  return SECTION_ORDER.flatMap((sectionKey) =>
+    seededShuffle(
+      PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === sectionKey),
+      `${attemptSeed}:${setCode}:section:${sectionKey}:problem-order`,
+    ),
+  );
 }
 
 function formatSectionTitleKo(sectionKey: MockExamSectionKey) {
@@ -469,10 +479,10 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
   const flattenedQuestions = useMemo(
     () =>
-      PROBLEM_DEFINITIONS.flatMap((problem) =>
+      orderedProblemDefinitions(attemptSeed, artifact.set.set_code).flatMap((problem) =>
         seededShuffle(
           problemQuestions(artifact, problem),
-          `${attemptSeed}:${artifact.set.set_code}:problem:${problem.problemNo}`,
+          `${attemptSeed}:${artifact.set.set_code}:problem:${problem.problemNo}:question-order`,
         ).map((question, questionIndex) => ({ problem, question, questionIndex })),
       ),
     [artifact, attemptSeed],
@@ -695,7 +705,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
       setAuthStatus("signed_in");
 
-      const answerRows = artifact.questions.map((question) => {
+      const answerRows = flattenedQuestions.map(({ question }) => {
         const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
         const selectedChoice = selectedAnswers[question.id] ?? null;
         return {
@@ -742,7 +752,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     } catch (error) {
       const submittedAt = new Date().toISOString();
       const localAttemptId = `local:${attemptSeed}:${submittedAt}`;
-      const localWrongNoteItems = artifact.questions.flatMap((question, index) => {
+      const localWrongNoteItems = flattenedQuestions.flatMap(({ question }, index) => {
         const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
         const selectedChoice = selectedAnswers[question.id] ?? null;
         const correctChoice = renderedCorrectChoice(question, renderedChoices);
