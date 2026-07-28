@@ -2448,41 +2448,42 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage {
   width: 100%;
-  min-height: auto !important;
+  min-height: calc(100vh - 132px) !important;
   display: grid;
-  place-items: start center;
-  padding: 48px 24px 24px !important;
+  place-items: center;
+  padding: clamp(32px, 7vh, 72px) 24px 56px !important;
 }
 .login-simple-stage .auth-card--page {
-  width: min(420px, 100%);
+  width: min(372px, 100%);
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  gap: 18px;
+  gap: 14px;
 }
 .login-simple-stage .auth-provider-grid {
-  gap: 10px;
+  gap: 8px;
 }
 .login-simple-stage .auth-start-copy {
   display: grid;
-  gap: 6px;
-  padding: 0 2px;
+  gap: 7px;
+  padding: 0 0 4px;
   color: var(--jlpt-title, #212121);
-  text-align: left;
+  text-align: center;
 }
 .login-simple-stage .auth-start-copy strong {
   color: var(--jlpt-title, #212121);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 900;
-  line-height: 1.3;
+  line-height: 1.35;
+  letter-spacing: -0.055em;
 }
 .login-simple-stage .auth-start-copy span {
   color: var(--jlpt-text, #616161);
-  font-size: 12px;
-  font-weight: 750;
-  line-height: 1.6;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.55;
   word-break: keep-all;
 }
 /* Login provider official-style buttons: platform brand anatomy without bundling external logo assets */
@@ -2490,9 +2491,9 @@ main:has(.mock-page-shell) {
 .login-simple-stage .auth-email-submit,
 .login-simple-stage .auth-dashboard-link,
 .login-simple-stage .auth-signout-button {
-  height: 52px;
-  min-height: 52px;
-  border-radius: 12px;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 850;
   letter-spacing: -0.035em;
@@ -2503,8 +2504,8 @@ main:has(.mock-page-shell) {
   grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
   justify-content: stretch;
-  gap: 10px;
-  padding: 0 16px 0 10px;
+  gap: 8px;
+  padding: 0 14px 0 8px;
   border-width: 1px;
   text-align: left;
   box-shadow: none;
@@ -2577,13 +2578,12 @@ main:has(.mock-page-shell) {
   outline-offset: 2px;
 }
 .login-simple-stage .auth-provider-google .auth-provider-mark,
-.login-simple-stage .auth-provider-google-mark,
-.login-simple-stage .auth-provider-icon-mark {
+.login-simple-stage .auth-provider-google-mark {
   width: 40px;
-  height: 40px;
+  height: 38px;
   border: 0;
   border-radius: 0;
-  background: #ffffff;
+  background: transparent;
   color: inherit;
 }
 .login-simple-stage .auth-provider-google .auth-provider-mark img,
@@ -2615,8 +2615,8 @@ main:has(.mock-page-shell) {
 .login-simple-stage .auth-provider-kakao {
   display: flex;
   justify-content: center;
-  height: 56px;
-  min-height: 56px;
+  height: 44px;
+  min-height: 44px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -2628,16 +2628,16 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage .auth-provider-official-image {
   display: block;
-  width: min(420px, 100%);
-  height: auto;
-  max-height: 56px;
-  object-fit: contain;
+  width: 100%;
+  height: 44px;
+  max-height: none;
+  object-fit: fill;
 }
 .login-simple-stage .auth-provider-naver {
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr) 40px;
-  height: 52px;
-  min-height: 52px;
+  height: 44px;
+  min-height: 44px;
   padding: 0;
   border-color: #03c75a;
   border-radius: 6px;
@@ -2651,7 +2651,7 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage .auth-provider-naver .auth-provider-mark {
   width: 40px;
-  height: 52px;
+  height: 44px;
   border-radius: 0;
   background: #03c75a;
   color: #ffffff;
@@ -2676,24 +2676,24 @@ main:has(.mock-page-shell) {
   border-color: #02b350;
 }
 .login-simple-stage .auth-divider {
-  margin: 10px 0 0;
-  font-size: 15px;
+  margin: 8px 0 0;
+  font-size: 12px;
   color: #9aa1ad;
 }
 .login-simple-stage .auth-email-field {
-  gap: 8px;
-  font-size: 14px;
+  gap: 7px;
+  font-size: 12px;
   color: #263043;
   letter-spacing: -0.04em;
 }
 .login-simple-stage .auth-email-field input {
-  height: 52px;
-  min-height: 52px;
-  border-radius: 12px;
-  padding: 0 16px;
-  background: #f9fafb;
-  font-size: 15px;
-  font-weight: 800;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #fafafa;
+  font-size: 14px;
+  font-weight: 700;
 }
 .login-simple-stage .auth-email-submit,
 .login-simple-stage .auth-dashboard-link {
@@ -2725,17 +2725,17 @@ main:has(.mock-page-shell) {
 }
 @media (max-width: 760px) {
   .login-simple-stage {
-    min-height: auto !important;
-    padding: 28px 16px 24px !important;
+    min-height: calc(100vh - 96px) !important;
+    padding: 24px 18px 32px !important;
   }
   .login-simple-stage .auth-card--page {
-    gap: 16px;
+    gap: 14px;
   }
   .login-simple-stage .auth-provider-button,
   .login-simple-stage .auth-email-submit {
-    height: 52px;
-    min-height: 52px;
-    border-radius: 12px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 8px;
     font-size: 14px;
   }
   .login-simple-stage .auth-provider-button {
@@ -2756,21 +2756,22 @@ main:has(.mock-page-shell) {
     font-size: 10px;
   }
   .login-simple-stage .auth-provider-kakao {
-    height: 56px;
-    min-height: 56px;
-    border-radius: 12px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 8px;
   }
   .login-simple-stage .auth-provider-official-image {
-    max-height: 56px;
+    height: 44px;
+    max-height: none;
   }
   .login-simple-stage .auth-divider,
   .login-simple-stage .auth-email-field {
     font-size: 14px;
   }
   .login-simple-stage .auth-email-field input {
-    height: 52px;
-    min-height: 52px;
-    font-size: 15px;
+    height: 44px;
+    min-height: 44px;
+    font-size: 14px;
   }
 }
 /* Home redesign v1: premium start cockpit, no card-section hero */

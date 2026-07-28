@@ -205,8 +205,8 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
     <section className={`auth-card auth-card--${variant}`} aria-label="로그인">
       {isAuthLoading ? <p className="auth-helper">확인 중</p> : null}
       <div className="auth-start-copy">
-        <strong>처음이신가요?</strong>
-        <span>회원가입 없이 소셜 계정으로 바로 시작할 수 있습니다.</span>
+        <strong>학습 기록을 이어가세요</strong>
+        <span>소셜 계정 또는 이메일 링크로 바로 시작할 수 있습니다.</span>
       </div>
 
       <div className="auth-provider-grid">

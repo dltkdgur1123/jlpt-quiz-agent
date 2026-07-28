@@ -70,8 +70,8 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "place-items: start",
     "width: auto",
     "background: transparent",
-    "width: min(420px, 100%)",
-    "max-height: 56px",
+    "height: 44px",
+    "max-height: none",
     "#747775",
     "#1f1f1f",
     "font-family: Roboto, Arial, sans-serif",
@@ -88,16 +88,16 @@ test("login provider buttons use platform-branded official-style button anatomy"
 
 test("login page uses a compact auth form instead of oversized controls", () => {
   const css = globalCss();
-  assert.match(css, /\.login-simple-stage \.auth-card--page \{[\s\S]*?width: min\(420px, 100%\)/);
-  assert.match(css, /\.login-simple-stage \.auth-provider-button,[\s\S]*?height: 52px/);
+  assert.match(css, /\.login-simple-stage \.auth-card--page \{[\s\S]*?width: min\(372px, 100%\)/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-button,[\s\S]*?height: 44px/);
   assert.match(css, /\.login-simple-stage \.auth-provider-title \{[\s\S]*?font-size: 14px/);
-  assert.match(css, /\.login-simple-stage \.auth-email-field \{[\s\S]*?font-size: 14px/);
-  assert.match(css, /\.login-simple-stage \.auth-email-field input \{[\s\S]*?height: 52px/);
-  assert.match(css, /\.login-simple-stage \.auth-email-submit,[\s\S]*?height: 52px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-field \{[\s\S]*?font-size: 12px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-field input \{[\s\S]*?height: 44px/);
+  assert.match(css, /\.login-simple-stage \.auth-email-submit,[\s\S]*?height: 44px/);
   assert.match(css, /\.login-page-main \{[\s\S]*?min-height: auto/);
   assert.match(css, /\.login-page-shell \{[\s\S]*?min-height: auto/);
-  assert.match(css, /\.login-simple-stage \{[\s\S]*?min-height: auto/);
-  assert.match(css, /\.login-simple-stage \{[\s\S]*?place-items: start center/);
+  assert.match(css, /\.login-simple-stage \{[\s\S]*?min-height: calc\(100vh - 132px\)/);
+  assert.match(css, /\.login-simple-stage \{[\s\S]*?place-items: center/);
 });
 
 test("mobile layout uses four bottom tabs and keeps original shorts thumbnail sizing", () => {
@@ -201,8 +201,8 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   assert.match(headerButtonSource, /로그인\/가입/);
   assert.match(globalCss(), /\.site-header \.home-login-button \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important/);
   assert.match(globalCss(), /\.site-header \.home-login-button:hover \{[\s\S]*?#b71c1c/);
-  assert.match(panelSource, /처음이신가요\?/);
-  assert.match(panelSource, /소셜 계정으로 바로 시작할 수 있습니다/);
+  assert.match(panelSource, /학습 기록을 이어가세요/);
+  assert.match(panelSource, /소셜 계정 또는 이메일 링크로 바로 시작할 수 있습니다/);
   assert.match(headerSource, /학습 기록/);
   assert.match(headerSource, /수험안내/);
   assert.match(
