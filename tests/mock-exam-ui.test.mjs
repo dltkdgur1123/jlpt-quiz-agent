@@ -619,6 +619,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.match(styles, /mobile active exam must never show desktop question nav over the paper/);
   assert.match(styles, /@media \(max-width: 1180px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-question-nav \{[\s\S]*?display: none !important/);
   assert.match(styles, /mobile active exam paper should read like a full-width document, not a centered card/);
+  assert.match(styles, /mobile active exam status bar: compact full-width document header/);
+  assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-sticky-status \{[\s\S]*?top: var\(--site-header-height, 64px\) !important/);
+  assert.match(styles, /\.mock-exam-shell--active \.mock-exam-restart-button \{[\s\S]*?display: none !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.mock-exam-shell--active\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-section \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
   assert.match(styles, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-exam-current-card \{[\s\S]*?border: 0 !important;[\s\S]*?border-radius: 0 !important/);
