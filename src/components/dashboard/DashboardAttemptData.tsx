@@ -252,19 +252,19 @@ function sectionTone(index: number) {
   return ["orange", "purple", "blue"][index % 3];
 }
 
+function weakestSectionLabel(data: DashboardResponse | null) {
+  const sections = data?.section_summary?.filter((section) => section.question_count > 0) ?? [];
+  if (!sections.length) return "-";
+  return sections.reduce((weakest, section) => (section.correct_rate < weakest.correct_rate ? section : weakest), sections[0]).section_label;
+}
+
 function DashboardStatGrid({ data, status }: DashboardDataState) {
   const stats = [
     {
-      label: "최근 기록",
+      label: "모의고사",
       value: status === "ready" ? `${data?.attempt_count ?? 0}회` : "-",
       note: "저장된 모의고사 제출 기준",
       tone: "blue",
-    },
-    {
-      label: "누적 풀이",
-      value: status === "ready" ? `${data?.total_questions ?? 0}문항` : "-",
-      note: "저장된 답안 기준",
-      tone: "mint",
     },
     {
       label: "평균 정답률",
@@ -273,9 +273,15 @@ function DashboardStatGrid({ data, status }: DashboardDataState) {
       tone: "orange",
     },
     {
-      label: "최근 선택 레벨",
-      value: status === "ready" ? latestLevel(data) : "-",
-      note: "최근 제출 세트 기준",
+      label: "오답",
+      value: status === "ready" ? `${data?.wrong_note?.wrong_count ?? 0}문제` : "-",
+      note: "오답노트 기준",
+      tone: "mint",
+    },
+    {
+      label: "취약 영역",
+      value: status === "ready" ? weakestSectionLabel(data) : "-",
+      note: "최근 기록 기준",
       tone: "blue",
     },
   ];

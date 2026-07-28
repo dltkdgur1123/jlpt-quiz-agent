@@ -271,6 +271,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "dashboard-bars-goal",
     "aria-label=\"최근 7일 요일별 문제 풀이 수\"",
     "dashboard-stat-grid",
+    "weakestSectionLabel",
+    "모의고사",
+    "평균 정답률",
+    "오답",
+    "취약 영역",
     "dashboard-goal-card",
     "DashboardLiveData",
     "section_summary",
@@ -290,17 +295,25 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /Mobile dashboard breathing room: connected sections keep comfortable vertical padding/);
   assert.match(css, /Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing/);
   assert.match(css, /Mobile dashboard weak area cards: stack as readable full-width rows on phones/);
+  assert.match(css, /Mobile dashboard record flow: summary → recent exams → wrong note → weak areas → weekly activity/);
   assert.match(css, /--dashboard-mobile-section-gap: 12px/);
   assert.match(css, /--dashboard-mobile-section-bottom-room: 18px/);
   assert.match(css, /--dashboard-mobile-section-y: 30px/);
-  assert.match(css, /--dashboard-mobile-summary-y: 22px/);
+  assert.match(css, /--dashboard-mobile-summary-y: 16px/);
   assert.match(css, /--dashboard-mobile-divider: #f1f1f1/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-grid-bottom \{[\s\S]*?order: 3 !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-weak-full \{[\s\S]*?order: 4 !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-grid-top \{[\s\S]*?order: 5 !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-goal-card \{[\s\S]*?display: none !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-live-data \{[\s\S]*?display: none !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-hero \{[\s\S]*?border-bottom: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
   assert.doesNotMatch(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(odd\) \{[\s\S]*?border-right: 1px solid/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(odd\) \{[\s\S]*?border-right: 0 !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card:nth-child\(n \+ 3\) \{[\s\S]*?border-top: 1px solid var\(--dashboard-mobile-divider, #f1f1f1\) !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-panel,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-section-y\) 18px !important/);
-  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?padding: var\(--dashboard-mobile-summary-y\) 14px !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-stat-card \{[\s\S]*?min-height: 96px !important;[\s\S]*?padding: var\(--dashboard-mobile-summary-y\) 14px !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.recent-exam-row \{[\s\S]*?grid-template-columns: 44px minmax\(0, 1fr\) auto !important/);
+  assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-wrong-note-head a \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important;[\s\S]*?color: #ffffff !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-panel > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-goal-card > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-wrong-note-card > :last-child,[\s\S]*?\.figma-shell\.dashboard-page \.dashboard-weak-full > :last-child \{[\s\S]*?margin-bottom: var\(--dashboard-mobile-section-bottom-room\) !important/);
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-bars \{[\s\S]*?margin-bottom: var\(--dashboard-mobile-section-bottom-room\) !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?gap: var\(--dashboard-mobile-section-gap\) !important;[\s\S]*?background: #fafafa !important/);

@@ -5808,11 +5808,12 @@ main:has(.home-page-frame) {
   /* Mobile dashboard breathing room: connected sections keep comfortable vertical padding */
   /* Mobile dashboard bottom rhythm: section bottoms end with the same quiet spacing */
   /* Mobile dashboard weak area cards: stack as readable full-width rows on phones */
+  /* Mobile dashboard record flow: summary → recent exams → wrong note → weak areas → weekly activity */
   .figma-shell.dashboard-page {
     --dashboard-mobile-divider: #f1f1f1;
     --dashboard-mobile-section-gap: 12px;
     --dashboard-mobile-section-y: 30px;
-    --dashboard-mobile-summary-y: 22px;
+    --dashboard-mobile-summary-y: 16px;
     --dashboard-mobile-section-bottom-room: 18px;
     width: 100% !important;
     max-width: none !important;
@@ -5823,6 +5824,27 @@ main:has(.home-page-frame) {
   .figma-shell.dashboard-page .dashboard-hero {
     padding: 28px 18px 24px !important;
     border-bottom: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+  }
+  .figma-shell.dashboard-page .dashboard-stat-grid {
+    order: 1 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-live-data {
+    display: none !important;
+  }
+  .figma-shell.dashboard-page .dashboard-live-note {
+    order: 2 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-grid-bottom {
+    order: 3 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-weak-full {
+    order: 4 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-grid-top {
+    order: 5 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-goal-card {
+    display: none !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-grid,
   .figma-shell.dashboard-page .dashboard-grid-top,
@@ -5844,7 +5866,7 @@ main:has(.home-page-frame) {
     border-bottom: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-card {
-    min-height: 118px !important;
+    min-height: 96px !important;
     padding: var(--dashboard-mobile-summary-y) 14px !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-card strong {
@@ -5893,7 +5915,7 @@ main:has(.home-page-frame) {
     box-shadow: none !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-card {
-    min-height: 118px !important;
+    min-height: 96px !important;
     padding: var(--dashboard-mobile-summary-y) 14px !important;
   }
   .figma-shell.dashboard-page .dashboard-stat-card:nth-child(odd) {
@@ -5901,6 +5923,64 @@ main:has(.home-page-frame) {
   }
   .figma-shell.dashboard-page .dashboard-stat-card:nth-child(n + 3) {
     border-top: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-height: 76px !important;
+    padding: 14px 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--dashboard-mobile-divider, #f1f1f1) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row > span {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 999px !important;
+    background: #fff5f5 !important;
+    color: var(--jlpt-primary, #d32f2f) !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row div {
+    min-width: 0 !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row div strong,
+  .figma-shell.dashboard-page .recent-exam-row div small {
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row b {
+    grid-column: 3 / 4 !important;
+    justify-self: end !important;
+    color: var(--jlpt-title, #212121) !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+  }
+  .figma-shell.dashboard-page .recent-exam-row em {
+    grid-column: 2 / 4 !important;
+    justify-self: start !important;
+    min-height: 28px !important;
+    padding: 6px 10px !important;
+    border-radius: 999px !important;
+    background: #fafafa !important;
+    color: var(--jlpt-text, #616161) !important;
+    font-size: 12px !important;
+    font-style: normal !important;
+    font-weight: 850 !important;
+  }
+  .figma-shell.dashboard-page .dashboard-wrong-note-head a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+    background: var(--jlpt-primary, #d32f2f) !important;
+    color: #ffffff !important;
   }
   .figma-shell.dashboard-page .dashboard-weak-grid {
     grid-template-columns: 1fr !important;
