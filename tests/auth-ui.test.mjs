@@ -69,15 +69,16 @@ test("login provider buttons use platform-branded official-style button anatomy"
     "grid-template-columns: 40px minmax(0, 1fr)",
     "place-items: start",
     "width: auto",
-    "background: transparent",
+    "background: #fee500",
     "height: 44px",
-    "max-height: none",
+    "object-fit: contain",
+    "transition: none !important",
     "#747775",
     "#1f1f1f",
     "font-family: Roboto, Arial, sans-serif",
     "grid-template-columns: 40px minmax(0, 1fr) 40px",
     "width: 18px",
-    "#02b350",
+    "#03c75a",
   ]) {
     assert.ok(css.includes(phrase), phrase);
   }
@@ -96,8 +97,11 @@ test("login page uses a compact auth form instead of oversized controls", () => 
   assert.match(css, /\.login-simple-stage \.auth-email-submit,[\s\S]*?height: 44px/);
   assert.match(css, /\.login-page-main \{[\s\S]*?min-height: auto/);
   assert.match(css, /\.login-page-shell \{[\s\S]*?min-height: auto/);
-  assert.match(css, /\.login-simple-stage \{[\s\S]*?min-height: calc\(100vh - 132px\)/);
-  assert.match(css, /\.login-simple-stage \{[\s\S]*?place-items: center/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-button,[\s\S]*?transition: none !important/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-google:hover,[\s\S]*?background: #ffffff/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-kakao:hover,[\s\S]*?background: #fee500/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-naver:hover,[\s\S]*?background: #03c75a/);
+  assert.match(css, /\.login-simple-stage \.auth-provider-official-image \{[\s\S]*?object-fit: contain/);
 });
 
 test("mobile layout uses four bottom tabs and keeps original shorts thumbnail sizing", () => {

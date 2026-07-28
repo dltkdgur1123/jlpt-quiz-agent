@@ -2498,6 +2498,8 @@ main:has(.mock-page-shell) {
   font-weight: 850;
   letter-spacing: -0.035em;
   text-decoration: none;
+  transition: none !important;
+  transform: none !important;
 }
 .login-simple-stage .auth-provider-button {
   display: grid;
@@ -2509,6 +2511,20 @@ main:has(.mock-page-shell) {
   border-width: 1px;
   text-align: left;
   box-shadow: none;
+  transition: none !important;
+  transform: none !important;
+}
+.login-simple-stage .auth-provider-button:hover,
+.login-simple-stage .auth-provider-button:hover:not(:disabled),
+.login-simple-stage .auth-provider-button:active,
+.login-simple-stage .auth-email-submit:hover,
+.login-simple-stage .auth-email-submit:hover:not(:disabled),
+.login-simple-stage .auth-email-submit:active,
+.login-simple-stage .auth-dashboard-link:hover,
+.login-simple-stage .auth-signout-button:hover,
+.login-simple-stage .auth-signout-button:hover:not(:disabled) {
+  transform: none !important;
+  transition: none !important;
 }
 .login-simple-stage .auth-provider-mark {
   display: grid;
@@ -2565,12 +2581,15 @@ main:has(.mock-page-shell) {
   text-align: center;
 }
 .login-simple-stage .auth-provider-google:hover,
-.login-simple-stage .auth-provider-primary[data-provider="google"]:hover {
-  background: #f8fafd;
-}
+.login-simple-stage .auth-provider-google:hover:not(:disabled),
 .login-simple-stage .auth-provider-google:active,
+.login-simple-stage .auth-provider-primary[data-provider="google"]:hover,
+.login-simple-stage .auth-provider-primary[data-provider="google"]:hover:not(:disabled),
 .login-simple-stage .auth-provider-primary[data-provider="google"]:active {
-  background: #f1f3f4;
+  border-color: #747775;
+  background: #ffffff;
+  color: #1f1f1f;
+  transform: none !important;
 }
 .login-simple-stage .auth-provider-google:focus-visible,
 .login-simple-stage .auth-provider-primary[data-provider="google"]:focus-visible {
@@ -2614,12 +2633,13 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage .auth-provider-kakao {
   display: flex;
+  align-items: center;
   justify-content: center;
   height: 44px;
   min-height: 44px;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: #fee500;
   color: #000000;
 }
 .login-simple-stage .auth-provider-kakao .auth-provider-mark {
@@ -2628,10 +2648,11 @@ main:has(.mock-page-shell) {
 }
 .login-simple-stage .auth-provider-official-image {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: 44px;
   max-height: none;
-  object-fit: fill;
+  object-fit: contain;
 }
 .login-simple-stage .auth-provider-naver {
   display: grid;
@@ -2671,9 +2692,13 @@ main:has(.mock-page-shell) {
 .login-simple-stage .auth-provider-naver .auth-provider-subtitle {
   display: none;
 }
-.login-simple-stage .auth-provider-naver:hover {
-  background: #02b350;
-  border-color: #02b350;
+.login-simple-stage .auth-provider-naver:hover,
+.login-simple-stage .auth-provider-naver:hover:not(:disabled),
+.login-simple-stage .auth-provider-naver:active {
+  background: #03c75a;
+  border-color: #03c75a;
+  color: #ffffff;
+  transform: none !important;
 }
 .login-simple-stage .auth-divider {
   margin: 8px 0 0;
@@ -2703,6 +2728,23 @@ main:has(.mock-page-shell) {
   border: 0;
   background: var(--jlpt-primary, #d32f2f);
   color: #fff;
+}
+.login-simple-stage .auth-provider-kakao:hover,
+.login-simple-stage .auth-provider-kakao:hover:not(:disabled),
+.login-simple-stage .auth-provider-kakao:active {
+  border-color: transparent;
+  background: #fee500;
+  color: #000000;
+  transform: none !important;
+}
+.login-simple-stage .auth-email-submit:hover,
+.login-simple-stage .auth-email-submit:hover:not(:disabled),
+.login-simple-stage .auth-email-submit:active,
+.login-simple-stage .auth-dashboard-link:hover {
+  border-color: transparent;
+  background: var(--jlpt-primary, #d32f2f);
+  color: #fff;
+  transform: none !important;
 }
 .login-simple-stage .auth-card--signed-in {
   width: min(520px, 100%);
