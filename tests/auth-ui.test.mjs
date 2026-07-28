@@ -117,6 +117,9 @@ test("mobile layout uses four bottom tabs and keeps original shorts thumbnail si
   assert.match(css, /\.mobile-bottom-nav-item\[data-active="true"\] \{[\s\S]*?color: var\(--jlpt-primary/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \{[\s\S]*?grid-template-columns: auto minmax\(0, 1fr\) !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header > \.auth-header-button,[\s\S]*?justify-self: end !important/);
+  assert.match(css, /--site-content-top-offset: 76px/);
+  assert.match(css, /\.home-redesign-shell \{[\s\S]*?padding-top: var\(--site-content-top-offset, 76px\) !important/);
+  assert.match(css, /\.home-redesign-panel \{[\s\S]*?padding: 12px 0 22px !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?height: 38px !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \.home-login-button,[\s\S]*?min-width: 84px !important/);
   assert.match(css, /\.site-header \.home-login-button \.auth-header-signup-suffix \{[\s\S]*?display: none !important/);
@@ -225,7 +228,7 @@ test("login page is a centered auth-only screen and headers are shared", () => {
   );
   assert.match(
     headerSource,
-    /href="\/">홈<\/Link>[\s\S]*?href="\/guide">수험안내<\/Link>[\s\S]*?href="\/mock-exams\/n5-realistic-001">모의고사<\/Link>[\s\S]*?href="\/dashboard">기록<\/Link>/,
+    /mobile-bottom-nav[\s\S]*?href="\/">홈<\/Link>[\s\S]*?href="\/mock-exams\/n5-realistic-001">모의고사<\/Link>[\s\S]*?href="\/dashboard">기록<\/Link>[\s\S]*?href="\/guide">수험안내<\/Link>/,
   );
   assert.match(headerSource, /mobile-bottom-nav/);
   assert.match(headerSource, /모바일 하단 메뉴/);

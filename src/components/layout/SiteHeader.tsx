@@ -36,9 +36,9 @@ export function SiteHeader({ active = "home" }: SiteHeaderProps) {
       </header>
       <nav aria-label="모바일 하단 메뉴" className="mobile-bottom-nav">
         <Link className="mobile-bottom-nav-item" data-active={active === "home"} href="/">홈</Link>
-        <Link className="mobile-bottom-nav-item" data-active={active === "guide"} href="/guide">수험안내</Link>
         <Link className="mobile-bottom-nav-item" data-active={active === "mock"} href="/mock-exams/n5-realistic-001">모의고사</Link>
         <Link className="mobile-bottom-nav-item" data-active={active === "history"} href="/dashboard">기록</Link>
+        <Link className="mobile-bottom-nav-item" data-active={active === "guide"} href="/guide">수험안내</Link>
       </nav>
     </>
   );
