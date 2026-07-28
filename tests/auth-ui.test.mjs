@@ -114,6 +114,9 @@ test("mobile layout uses four bottom tabs and keeps original shorts thumbnail si
   assert.match(css, /\.mobile-bottom-nav \{/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mobile-bottom-nav \{[\s\S]*?display: grid/);
   assert.match(css, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.mobile-bottom-nav \{[\s\S]*?background: rgba\(255, 255, 255, 0\.88\)/);
+  assert.match(css, /\.mobile-bottom-nav \{[\s\S]*?-webkit-backdrop-filter: blur\(12px\)/);
+  assert.match(css, /\.mobile-bottom-nav \{[\s\S]*?backdrop-filter: blur\(12px\)/);
   assert.match(css, /\.mobile-bottom-nav-item\[data-active="true"\] \{[\s\S]*?color: var\(--jlpt-primary/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header \{[\s\S]*?grid-template-columns: auto minmax\(0, 1fr\) !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.site-header > \.auth-header-button,[\s\S]*?justify-self: end !important/);
