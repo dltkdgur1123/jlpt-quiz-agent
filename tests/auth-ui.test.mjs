@@ -344,11 +344,15 @@ test("naver login uses app-owned callback and Supabase magic-link bridge", () =>
   assert.match(panel, /\/api\/auth\/naver\/start/);
   assert.match(panel, /provider === "custom:naver"\)[\s\S]*?window\.location\.assign\(startUrl\.toString\(\)\);[\s\S]*?return;[\s\S]*?const \{ error \} = await supabase\.auth\.signInWithOAuth/);
   assert.match(start, /NAVER_CLIENT_ID/);
+  assert.match(start, /configuredUrl/);
+  assert.match(start, /request\.nextUrl\.origin/);
   assert.match(start, /buildNaverAuthorizeUrl/);
   assert.match(lib, /https:\/\/nid\.naver\.com\/oauth2\.0\/authorize/);
   assert.match(start, /jlpt_naver_oauth_state/);
   assert.match(start, /authType: "reauthenticate"/);
   assert.match(callback, /NAVER_CLIENT_SECRET/);
+  assert.match(callback, /configuredUrl/);
+  assert.match(callback, /request\.nextUrl\.origin/);
   assert.match(callback, /https:\/\/nid\.naver\.com\/oauth2\.0\/token/);
   assert.match(callback, /https:\/\/openapi\.naver\.com\/v1\/nid\/me/);
   assert.match(callback, /parseNaverUserInfo/);

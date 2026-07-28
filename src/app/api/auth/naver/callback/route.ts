@@ -16,11 +16,18 @@ type NaverTokenResponse = {
 };
 
 function siteUrlFromRequest(request: NextRequest) {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin;
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!configuredUrl) return request.nextUrl.origin;
+
+  try {
+    return new URL(configuredUrl).origin;
+  } catch {
+    return request.nextUrl.origin;
+  }
 }
 
 function redirectToLogin(request: NextRequest, error: string, description?: string) {
-  const loginUrl = new URL("/login", siteUrlFromRequest(request));
+  const loginUrl = new URL("/login", request.nextUrl.origin);
   loginUrl.searchParams.set("error", error);
   if (description) loginUrl.searchParams.set("message", description);
   const response = NextResponse.redirect(loginUrl);
@@ -62,8 +69,8 @@ async function fetchNaverUserInfo(accessToken: string) {
 }
 
 export async function GET(request: NextRequest) {
-  const clientId = process.env.NAVER_CLIENT_ID;
-  const clientSecret = process.env.NAVER_CLIENT_SECRET;
+  const clientId = process.env.NAVER_CLIENT_ID?.trim();
+  const clientSecret = process.env.NAVER_CLIENT_SECRET?.trim();
 
   if (!clientId || !clientSecret) {
     return redirectToLogin(request, "naver_config", "네이버 서버 환경변수가 없습니다.");
