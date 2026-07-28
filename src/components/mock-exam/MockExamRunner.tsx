@@ -281,12 +281,9 @@ function problemQuestions(artifact: MockExamArtifact, problem: ProblemDefinition
   return artifact.questions.filter((question) => problem.questionTypes.includes(question.question_type));
 }
 
-function orderedProblemDefinitions(attemptSeed: string, setCode: string) {
+function orderedProblemDefinitions() {
   return SECTION_ORDER.flatMap((sectionKey) =>
-    seededShuffle(
-      PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === sectionKey),
-      `${attemptSeed}:${setCode}:section:${sectionKey}:problem-order`,
-    ),
+    PROBLEM_DEFINITIONS.filter((problem) => problem.sectionKey === sectionKey),
   );
 }
 
@@ -489,7 +486,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
   const flattenedQuestions = useMemo(
     () =>
-      orderedProblemDefinitions(attemptSeed, artifact.set.set_code).flatMap((problem) =>
+      orderedProblemDefinitions().flatMap((problem) =>
         seededShuffle(
           problemQuestions(artifact, problem),
           `${attemptSeed}:${artifact.set.set_code}:problem:${problem.problemNo}:question-order`,
@@ -520,15 +517,18 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
   const sectionResults = artifact.sections.map((section) => {
     const questions = artifact.questions.filter((question) => question.section_key === section.section_key);
+    const answered = questions.filter((question) => selectedAnswers[question.id]).length;
     const correct = questions.filter((question) => {
       const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
       return selectedAnswers[question.id] === renderedCorrectChoice(question, renderedChoices);
     }).length;
     return {
       ...section,
+      answered,
       correct,
       wrongOrBlank: questions.length - correct,
       rate: questions.length === 0 ? 0 : Math.round((correct / questions.length) * 100),
+      answeredRate: answered === 0 ? 0 : Math.round((correct / answered) * 100),
     };
   });
 
@@ -738,6 +738,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           jlpt_level: artifact.set.jlpt_level,
           time_limit_minutes: artifact.set.time_limit_minutes,
           question_count: artifact.set.question_count,
+          answered_count: answeredCount,
           score_total: totalMockScore,
           score_max: MOCK_TOTAL_SCORE,
           correct_count: score,
@@ -746,8 +747,8 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           section_results: sectionResults.map((section) => ({
             section_key: section.section_key,
             correct: section.correct,
-            question_count: section.question_count,
-            rate: section.rate,
+            question_count: section.answered,
+            rate: section.answeredRate,
           })),
         }),
       });
@@ -796,14 +797,14 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         score_total: totalMockScore,
         score_max: MOCK_TOTAL_SCORE,
         correct_count: score,
-        question_count: artifact.set.question_count,
+        question_count: answeredCount,
         section_results: sectionResults.map((section) => ({
           section_key: section.section_key,
           section_label: localSectionLabel(section.section_key),
           correct_count: section.correct,
-          question_count: section.question_count,
-          correct_rate: section.rate,
-          weakness_label: section.rate < 60 ? "복습 필요" : "유지 권장",
+          question_count: section.answered,
+          correct_rate: section.answeredRate,
+          weakness_label: section.answered === 0 ? "기록 없음" : section.answeredRate < 60 ? "복습 필요" : "유지 권장",
         })),
         wrong_note_items: localWrongNoteItems,
       });

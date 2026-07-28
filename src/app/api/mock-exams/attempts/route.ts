@@ -25,6 +25,7 @@ type MockExamAttemptInput = {
   jlpt_level: string;
   time_limit_minutes: number;
   question_count: number;
+  answered_count?: number;
   score_total: number;
   score_max: number;
   correct_count: number;
@@ -81,6 +82,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as MockExamAttemptInput;
     assertValidBody(body);
+    const answeredAttemptCount = Math.min(
+      body.question_count,
+      Math.max(0, Number(body.answered_count ?? body.answers.filter((answer) => answer.selected_choice).length)),
+    );
 
     const accessToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
     if (!accessToken) throw new Error("login required");
@@ -157,7 +162,7 @@ export async function POST(request: NextRequest) {
         score_total: body.score_total,
         score_max: body.score_max,
         correct_count: body.correct_count,
-        question_count: body.question_count,
+        question_count: answeredAttemptCount,
       })
       .select("id, submitted_at")
       .single();
@@ -228,10 +233,27 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     const attemptRows = attempts ?? [];
-    const totalQuestions = attemptRows.reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
-    const averageRate = attemptRows.length
+    const attemptIds = attemptRows.map((attempt) => attempt.id);
+    const answeredCountMap = new Map<string, number>();
+    if (attemptIds.length > 0) {
+      const { data: answeredRows, error: answeredRowsError } = await client
+        .from("mock_exam_answers")
+        .select("mock_exam_attempt_id, selected_choice")
+        .in("mock_exam_attempt_id", attemptIds)
+        .not("selected_choice", "is", null);
+      if (answeredRowsError) throw answeredRowsError;
+      for (const row of answeredRows ?? []) {
+        answeredCountMap.set(row.mock_exam_attempt_id, (answeredCountMap.get(row.mock_exam_attempt_id) ?? 0) + 1);
+      }
+    }
+    const normalizedAttemptRows = attemptRows.map((attempt) => ({
+      ...attempt,
+      question_count: answeredCountMap.get(attempt.id) ?? Number(attempt.question_count ?? 0),
+    }));
+    const totalQuestions = normalizedAttemptRows.reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
+    const averageRate = normalizedAttemptRows.length
       ? Math.round(
-          (attemptRows.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
+          (normalizedAttemptRows.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
             attemptRows.length) *
             100,
         )
@@ -243,7 +265,7 @@ export async function GET(request: NextRequest) {
       date.setDate(date.getDate() - index);
       weeklyMap.set(date.toISOString().slice(0, 10), 0);
     }
-    for (const attempt of attemptRows) {
+    for (const attempt of normalizedAttemptRows) {
       const submittedDay = attempt.submitted_at ? new Date(attempt.submitted_at).toISOString().slice(0, 10) : null;
       if (submittedDay && weeklyMap.has(submittedDay)) {
         weeklyMap.set(submittedDay, (weeklyMap.get(submittedDay) ?? 0) + Number(attempt.question_count ?? 0));
@@ -251,7 +273,6 @@ export async function GET(request: NextRequest) {
     }
     const weeklyActivity = Array.from(weeklyMap.entries()).map(([date, question_count]) => ({ date, question_count }));
 
-    const attemptIds = attemptRows.map((attempt) => attempt.id);
     let sectionSummary = [
       { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
       { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
@@ -330,8 +351,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      attempts: attemptRows.slice(0, 5),
-      attempt_count: attemptRows.length,
+      attempts: normalizedAttemptRows.slice(0, 5),
+      attempt_count: normalizedAttemptRows.length,
       total_questions: totalQuestions,
       average_rate: averageRate,
       weekly_activity: weeklyActivity,

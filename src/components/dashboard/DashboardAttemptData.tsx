@@ -108,6 +108,13 @@ function emptySectionSummary(): SectionSummary[] {
   ];
 }
 
+function localAnsweredQuestionCount(attempt: LocalMockExamSavedAttempt) {
+  const selectedWrongCount = (attempt.wrong_note_items ?? []).filter((item) => item.status === "wrong").length;
+  const inferredCount = Number(attempt.correct_count ?? 0) + selectedWrongCount;
+  if (inferredCount > 0) return Math.min(Number(attempt.question_count || inferredCount), inferredCount);
+  return Number(attempt.question_count ?? 0);
+}
+
 function buildLocalDashboardResponse(): DashboardResponse | null {
   const localAttempts = readLocalDashboardAttempts();
   if (!localAttempts.length) return null;
@@ -118,13 +125,13 @@ function buildLocalDashboardResponse(): DashboardResponse | null {
     score_total: attempt.score_total,
     score_max: attempt.score_max,
     correct_count: attempt.correct_count,
-    question_count: attempt.question_count,
+    question_count: localAnsweredQuestionCount(attempt),
     mock_exam_sets: { set_title: `${attempt.set_title} · 임시 저장`, jlpt_level: attempt.jlpt_level },
   }));
-  const totalQuestions = localAttempts.reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
+  const totalQuestions = localAttempts.reduce((sum, attempt) => sum + localAnsweredQuestionCount(attempt), 0);
   const averageRate = localAttempts.length
     ? Math.round(
-        (localAttempts.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
+        (localAttempts.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Math.max(localAnsweredQuestionCount(attempt), 1), 0) /
           localAttempts.length) *
           100,
       )
@@ -137,7 +144,7 @@ function buildLocalDashboardResponse(): DashboardResponse | null {
   }
   for (const attempt of localAttempts) {
     const day = new Date(attempt.submitted_at).toISOString().slice(0, 10);
-    if (weeklyMap.has(day)) weeklyMap.set(day, (weeklyMap.get(day) ?? 0) + Number(attempt.question_count ?? 0));
+    if (weeklyMap.has(day)) weeklyMap.set(day, (weeklyMap.get(day) ?? 0) + localAnsweredQuestionCount(attempt));
   }
   const sectionMap = new Map<string, SectionSummary>();
   for (const section of emptySectionSummary()) sectionMap.set(section.section_key, { ...section });
