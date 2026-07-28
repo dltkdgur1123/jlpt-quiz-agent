@@ -395,13 +395,21 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
   const wrongNote = data?.wrong_note;
   const recentItems = wrongNote?.recent_items ?? [];
   const totalCount = wrongNote?.total_count ?? 0;
+  const wrongCount = wrongNote?.wrong_count ?? 0;
+  const unansweredCount = wrongNote?.unanswered_count ?? 0;
+  const priorityLabel = wrongCount > 0 ? "먼저 오답부터" : unansweredCount > 0 ? "미응답부터 채우기" : "복습 대기";
+  const reviewHelp = wrongCount > 0
+    ? "틀린 문제를 먼저 확인하고, 남은 미응답은 다음 회차에서 보완하세요."
+    : unansweredCount > 0
+      ? "아직 풀지 않은 문항이 많습니다. 한 번에 다 풀기보다 영역별로 나눠 보세요."
+      : "최근 모의고사에서 틀렸거나 풀지 않은 문제가 여기에 기록됩니다.";
 
   return (
     <section className="dashboard-panel dashboard-wrong-note dashboard-wrong-note-card" id="wrong-note" aria-label="오답노트">
       <div className="dashboard-wrong-note-head dashboard-action-head">
         <div>
           <p>오답노트</p>
-          <h2>{totalCount ? `복습할 문제 ${totalCount}문항` : "복습할 문제가 없습니다"}</h2>
+          <h2>{totalCount ? `${totalCount}문항 복습 대기` : "복습할 문제가 없습니다"}</h2>
         </div>
         <Link href="#wrong-note">다시 풀기 →</Link>
       </div>
@@ -414,9 +422,13 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
         <span>오답노트 기록을 불러오지 못했습니다.</span>
       ) : totalCount ? (
         <>
-          <div className="dashboard-wrong-note-counts" aria-label="오답노트 요약">
-            <strong>오답 {wrongNote?.wrong_count ?? 0}문항</strong>
-            <strong>미응답 {wrongNote?.unanswered_count ?? 0}문항</strong>
+          <div className="dashboard-wrong-note-priority" aria-label="오답노트 요약">
+            <span>{priorityLabel}</span>
+            <p>{reviewHelp}</p>
+            <div className="dashboard-wrong-note-chips">
+              <em data-tone="wrong">오답 <b>{wrongCount}</b></em>
+              <em data-tone="unanswered">미응답 <b>{unansweredCount}</b></em>
+            </div>
           </div>
           <div className="dashboard-wrong-note-recent">
             <p>최근 복습 대상</p>
@@ -432,7 +444,7 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
           </div>
         </>
       ) : (
-        <span>최근 모의고사에서 틀렸거나 풀지 않은 문제가 여기에 기록됩니다.</span>
+        <span>{reviewHelp}</span>
       )}
     </section>
   );
