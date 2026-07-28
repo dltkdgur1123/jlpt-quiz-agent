@@ -11,7 +11,10 @@ function siteUrlFromRequest(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const clientId = process.env.NAVER_CLIENT_ID;
   if (!clientId) {
-    return NextResponse.redirect(new URL("/login?error=naver_config", request.nextUrl.origin));
+    const loginUrl = new URL("/login", request.nextUrl.origin);
+    loginUrl.searchParams.set("error", "naver_config");
+    loginUrl.searchParams.set("message", "NAVER_CLIENT_ID 서버 환경변수가 없습니다. Vercel Production 환경변수와 재배포 상태를 확인해주세요.");
+    return NextResponse.redirect(loginUrl);
   }
 
   const siteUrl = siteUrlFromRequest(request);
