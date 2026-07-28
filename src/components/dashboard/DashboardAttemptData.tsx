@@ -56,11 +56,108 @@ type DashboardDataState = {
   status: "loading" | "ready" | "login_required" | "error";
 };
 
+const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
+
 const SECTION_NOTES: Record<SectionSummary["section_key"], string> = {
   vocab: "한자읽기·표기·문맥 어휘를 우선 점검합니다.",
   grammar: "문법형식 판단과 문장 만들기를 복습합니다.",
   reading: "단문·중문·정보검색 흐름을 다시 확인합니다.",
 };
+
+type LocalMockExamSavedAttempt = {
+  id: string;
+  submitted_at: string;
+  set_title: string;
+  jlpt_level: string;
+  score_total: number;
+  score_max: number;
+  correct_count: number;
+  question_count: number;
+  section_results?: SectionSummary[];
+  wrong_note_items?: WrongNoteItem[];
+};
+
+function readLocalDashboardAttempts() {
+  if (typeof window === "undefined") return [] as LocalMockExamSavedAttempt[];
+
+  try {
+    const rawAttempts = window.localStorage.getItem(LOCAL_ATTEMPTS_STORAGE_KEY);
+    if (!rawAttempts) return [];
+    const attempts = JSON.parse(rawAttempts) as LocalMockExamSavedAttempt[];
+    return Array.isArray(attempts) ? attempts : [];
+  } catch {
+    return [];
+  }
+}
+
+function emptySectionSummary(): SectionSummary[] {
+  return [
+    { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+    { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+    { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
+  ];
+}
+
+function buildLocalDashboardResponse(): DashboardResponse | null {
+  const localAttempts = readLocalDashboardAttempts();
+  if (!localAttempts.length) return null;
+
+  const attempts = localAttempts.map((attempt) => ({
+    id: attempt.id,
+    submitted_at: attempt.submitted_at,
+    score_total: attempt.score_total,
+    score_max: attempt.score_max,
+    correct_count: attempt.correct_count,
+    question_count: attempt.question_count,
+    mock_exam_sets: { set_title: `${attempt.set_title} · 임시 저장`, jlpt_level: attempt.jlpt_level },
+  }));
+  const totalQuestions = localAttempts.reduce((sum, attempt) => sum + Number(attempt.question_count ?? 0), 0);
+  const averageRate = localAttempts.length
+    ? Math.round(
+        (localAttempts.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Number(attempt.question_count || 1), 0) /
+          localAttempts.length) *
+          100,
+      )
+    : 0;
+  const weeklyMap = new Map<string, number>();
+  for (let index = 6; index >= 0; index -= 1) {
+    const date = new Date();
+    date.setDate(date.getDate() - index);
+    weeklyMap.set(date.toISOString().slice(0, 10), 0);
+  }
+  for (const attempt of localAttempts) {
+    const day = new Date(attempt.submitted_at).toISOString().slice(0, 10);
+    if (weeklyMap.has(day)) weeklyMap.set(day, (weeklyMap.get(day) ?? 0) + Number(attempt.question_count ?? 0));
+  }
+  const sectionMap = new Map<string, SectionSummary>();
+  for (const section of emptySectionSummary()) sectionMap.set(section.section_key, { ...section });
+  for (const attempt of localAttempts) {
+    for (const section of attempt.section_results ?? []) {
+      const current = sectionMap.get(section.section_key) ?? { ...section, correct_count: 0, question_count: 0 };
+      current.correct_count += Number(section.correct_count ?? 0);
+      current.question_count += Number(section.question_count ?? 0);
+      current.correct_rate = current.question_count ? Math.round((current.correct_count / current.question_count) * 100) : 0;
+      current.weakness_label = current.question_count === 0 ? "기록 없음" : current.correct_rate < 60 ? "복습 필요" : "유지 권장";
+      sectionMap.set(section.section_key, current);
+    }
+  }
+  const wrongItems = localAttempts.flatMap((attempt) => attempt.wrong_note_items ?? []);
+
+  return {
+    attempts,
+    attempt_count: localAttempts.length,
+    total_questions: totalQuestions,
+    average_rate: averageRate,
+    weekly_activity: Array.from(weeklyMap.entries()).map(([date, question_count]) => ({ date, question_count })),
+    section_summary: Array.from(sectionMap.values()),
+    wrong_note: {
+      total_count: wrongItems.length,
+      wrong_count: wrongItems.filter((item) => item.status === "wrong").length,
+      unanswered_count: wrongItems.filter((item) => item.status === "unanswered").length,
+      recent_items: wrongItems.slice(0, 6),
+    },
+  };
+}
 
 function useDashboardAttemptData(): DashboardDataState {
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -70,13 +167,22 @@ function useDashboardAttemptData(): DashboardDataState {
     let cancelled = false;
 
     async function loadAttempts() {
+      const localDashboardData = buildLocalDashboardResponse();
+
       try {
         const supabase = getSupabaseBrowserClient();
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData.session?.access_token;
 
         if (!accessToken) {
-          if (!cancelled) setStatus("login_required");
+          if (!cancelled) {
+            if (localDashboardData) {
+              setData(localDashboardData);
+              setStatus("ready");
+            } else {
+              setStatus("login_required");
+            }
+          }
           return;
         }
 
@@ -87,11 +193,18 @@ function useDashboardAttemptData(): DashboardDataState {
         if (!response.ok) throw new Error(result.error ?? "failed to load dashboard attempts");
 
         if (!cancelled) {
-          setData(result);
+          setData(localDashboardData && localDashboardData.attempt_count > 0 && result.attempt_count === 0 ? localDashboardData : result);
           setStatus("ready");
         }
       } catch {
-        if (!cancelled) setStatus("error");
+        if (!cancelled) {
+          if (localDashboardData) {
+            setData(localDashboardData);
+            setStatus("ready");
+          } else {
+            setStatus("error");
+          }
+        }
       }
     }
 

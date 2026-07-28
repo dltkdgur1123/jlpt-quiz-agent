@@ -316,6 +316,9 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(clientSource, /복습할 문제/);
   assert.match(clientSource, /dashboard-wrong-note-card/);
   assert.match(clientSource, /다시 풀기/);
+  assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
+  assert.match(clientSource, /buildLocalDashboardResponse/);
+  assert.match(clientSource, /readLocalDashboardAttempts/);
 });
 
 test("mock exam attempt API validates login and writes attempt answer result rows", () => {
@@ -557,6 +560,10 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-question-nav",
     "문제 목록",
     "모의고사 기록을 저장했습니다",
+    "서버 저장 응답이 지연되어 브라우저에 임시 저장했습니다",
+    "LOCAL_ATTEMPTS_STORAGE_KEY",
+    "writeLocalMockExamAttempt",
+    "readLocalMockExamAttempts",
     "/api/mock-exams/attempts",
   ]) {
     assert.ok(source.includes(phrase), phrase);

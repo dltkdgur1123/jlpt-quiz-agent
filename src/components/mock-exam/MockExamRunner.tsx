@@ -74,6 +74,7 @@ const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
 const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "4" };
 const RECENT_HISTORY_STORAGE_KEY = "jlpt-mock-exam-recent-question-history";
 const IN_PROGRESS_STORAGE_KEY = "jlpt-mock-exam-in-progress";
+const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
 
 type MockExamDraft = {
   set_code: string;
@@ -85,6 +86,36 @@ type MockExamDraft = {
   selected_answers: Record<string, ChoiceKey>;
   current_question_index: number;
   updated_at: string;
+};
+
+type LocalMockExamSectionResult = {
+  section_key: MockExamSectionKey;
+  section_label: string;
+  correct_count: number;
+  question_count: number;
+  correct_rate: number;
+  weakness_label: string;
+};
+
+type LocalMockExamWrongNoteItem = {
+  id: string;
+  attempt_id: string;
+  question_no: number | null;
+  section_label: string;
+  status: "wrong" | "unanswered";
+};
+
+type LocalMockExamSavedAttempt = {
+  id: string;
+  submitted_at: string;
+  set_title: string;
+  jlpt_level: string;
+  score_total: number;
+  score_max: number;
+  correct_count: number;
+  question_count: number;
+  section_results: LocalMockExamSectionResult[];
+  wrong_note_items: LocalMockExamWrongNoteItem[];
 };
 
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
@@ -325,6 +356,32 @@ function clearInProgressDraft(setCode: string) {
   if (typeof window === "undefined") return;
   const draft = readInProgressDraft(setCode);
   if (draft?.set_code === setCode) window.localStorage.removeItem(IN_PROGRESS_STORAGE_KEY);
+}
+
+function readLocalMockExamAttempts() {
+  if (typeof window === "undefined") return [] as LocalMockExamSavedAttempt[];
+
+  try {
+    const rawAttempts = window.localStorage.getItem(LOCAL_ATTEMPTS_STORAGE_KEY);
+    if (!rawAttempts) return [];
+    const attempts = JSON.parse(rawAttempts) as LocalMockExamSavedAttempt[];
+    return Array.isArray(attempts) ? attempts : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalMockExamAttempt(attempt: LocalMockExamSavedAttempt) {
+  if (typeof window === "undefined") return;
+  const attempts = readLocalMockExamAttempts().filter((saved) => saved.id !== attempt.id);
+  const nextAttempts = [attempt, ...attempts].slice(0, 30);
+  window.localStorage.setItem(LOCAL_ATTEMPTS_STORAGE_KEY, JSON.stringify(nextAttempts));
+}
+
+function localSectionLabel(sectionKey: MockExamSectionKey) {
+  if (sectionKey === "vocab") return "문자·어휘";
+  if (sectionKey === "grammar") return "문법";
+  return "읽기";
 }
 
 export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
@@ -683,8 +740,46 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
       setSaveStatus("saved");
       setSaveMessage("모의고사 기록을 저장했습니다. 대시보드에서 최근 성적을 확인할 수 있습니다.");
     } catch (error) {
-      setSaveStatus("error");
-      setSaveMessage(error instanceof Error ? error.message : "모의고사 기록 저장에 실패했습니다.");
+      const submittedAt = new Date().toISOString();
+      const localAttemptId = `local:${attemptSeed}:${submittedAt}`;
+      const localWrongNoteItems = artifact.questions.flatMap((question, index) => {
+        const renderedChoices = renderedChoiceMap[question.id] ?? buildRenderedChoices(question, attemptSeed);
+        const selectedChoice = selectedAnswers[question.id] ?? null;
+        const correctChoice = renderedCorrectChoice(question, renderedChoices);
+        if (selectedChoice === correctChoice) return [];
+        return [
+          {
+            id: `${localAttemptId}:${question.id}`,
+            attempt_id: localAttemptId,
+            question_no: index + 1,
+            section_label: localSectionLabel(question.section_key),
+            status: selectedChoice ? "wrong" as const : "unanswered" as const,
+          },
+        ];
+      });
+
+      writeLocalMockExamAttempt({
+        id: localAttemptId,
+        submitted_at: submittedAt,
+        set_title: artifact.set.set_title,
+        jlpt_level: artifact.set.jlpt_level,
+        score_total: totalMockScore,
+        score_max: MOCK_TOTAL_SCORE,
+        correct_count: score,
+        question_count: artifact.set.question_count,
+        section_results: sectionResults.map((section) => ({
+          section_key: section.section_key,
+          section_label: localSectionLabel(section.section_key),
+          correct_count: section.correct,
+          question_count: section.question_count,
+          correct_rate: section.rate,
+          weakness_label: section.rate < 60 ? "복습 필요" : "유지 권장",
+        })),
+        wrong_note_items: localWrongNoteItems,
+      });
+      setSaveStatus("saved");
+      setSaveMessage("서버 저장 응답이 지연되어 브라우저에 임시 저장했습니다. 학습기록에서 확인할 수 있습니다.");
+      console.warn("mock exam server save failed; stored local fallback", error);
     }
   }
 
