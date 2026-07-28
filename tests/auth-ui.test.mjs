@@ -11,7 +11,12 @@ const guidePage = () => readFileSync(new URL("../src/app/guide/page.tsx", import
 const siteHeader = () => readFileSync(new URL("../src/components/layout/SiteHeader.tsx", import.meta.url), "utf8");
 const authHeaderButton = () => readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8");
 const callbackPage = () => readFileSync(new URL("../src/app/auth/callback/page.tsx", import.meta.url), "utf8");
+const naverStartRoute = () => readFileSync(new URL("../src/app/api/auth/naver/start/route.ts", import.meta.url), "utf8");
+const naverCallbackRoute = () => readFileSync(new URL("../src/app/api/auth/naver/callback/route.ts", import.meta.url), "utf8");
+const naverAuthLib = () => readFileSync(new URL("../src/lib/auth/naver.ts", import.meta.url), "utf8");
+const serverSupabase = () => readFileSync(new URL("../src/lib/supabase/server.ts", import.meta.url), "utf8");
 const setupDoc = () => readFileSync(new URL("../docs/architecture/auth-provider-dashboard-setup.md", import.meta.url), "utf8");
+const envExample = () => readFileSync(new URL("../.env.example", import.meta.url), "utf8");
 const globalCss = () => readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 const kakaoLoginPng = () => readFileSync(new URL("../public/auth/kakao_login_large_wide.png", import.meta.url));
 
@@ -141,6 +146,9 @@ test("auth panel guards duplicate login actions and preserves a safe next path",
   assert.match(source, /emailRedirectTo: redirectTo/);
   assert.match(source, /searchParams\.set\("next", nextPath\)/);
   assert.match(source, /queryParams: providerQueryParams\(provider\)/);
+  assert.match(source, /provider === "custom:naver"/);
+  assert.match(source, /\/api\/auth\/naver\/start/);
+  assert.match(source, /window\.location\.assign\(startUrl\.toString\(\)\)/);
   assert.match(source, /providerQueryParams/);
   assert.match(source, /provider === "google"\) return \{ prompt: "select_account" \}/);
   assert.match(source, /provider === "custom:naver"\) return \{ auth_type: "reauthenticate" \}/);
@@ -302,6 +310,7 @@ test("auth callback page handles OAuth code and magic link hash sessions", () =>
 
 test("dashboard setup doc lists all selected providers and no secrets", () => {
   const source = setupDoc();
+  const env = envExample();
   for (const label of ["Google", "Kakao", "Naver", "Email"]) {
     assert.match(source, new RegExp(label));
   }
@@ -310,12 +319,45 @@ test("dashboard setup doc lists all selected providers and no secrets", () => {
   assert.match(source, /Naver 로그인 실제 연결 절차/);
   assert.match(source, /Unsupported provider: provider is not enabled/);
   assert.match(source, /provider=kakao/);
-  assert.match(source, /provider=custom%3Anaver/);
+  assert.match(source, /\/api\/auth\/naver\/start/);
+  assert.match(source, /\/api\/auth\/naver\/callback/);
   assert.match(source, /Authorization URL:\nhttps:\/\/nid\.naver\.com\/oauth2\.0\/authorize/);
   assert.match(source, /Token URL:\nhttps:\/\/nid\.naver\.com\/oauth2\.0\/token/);
   assert.match(source, /User Info URL:\nhttps:\/\/openapi\.naver\.com\/v1\/nid\/me/);
-  assert.match(source, /provider id를 `naver`로 설정/);
+  assert.match(source, /response\.id/);
+  assert.match(source, /response\.email/);
   assert.match(source, /Supabase Dashboard → Authentication → Providers → Kakao 활성화/);
   assert.match(source, /https:\/\/<supabase-project-ref>\.supabase\.co\/auth\/v1\/callback/);
   assert.match(source, /http:\/\/127\.0\.0\.1:3010\/auth\/callback/);
+  assert.match(env, /NAVER_CLIENT_ID/);
+  assert.match(env, /NAVER_CLIENT_SECRET/);
+  assert.match(env, /SUPABASE_SERVICE_ROLE_KEY/);
+});
+
+test("naver login uses app-owned callback and Supabase magic-link bridge", () => {
+  const panel = authPanel();
+  const start = naverStartRoute();
+  const callback = naverCallbackRoute();
+  const lib = naverAuthLib();
+  const supabaseServer = serverSupabase();
+
+  assert.match(panel, /\/api\/auth\/naver\/start/);
+  assert.match(panel, /provider === "custom:naver"\)[\s\S]*?window\.location\.assign\(startUrl\.toString\(\)\);[\s\S]*?return;[\s\S]*?const \{ error \} = await supabase\.auth\.signInWithOAuth/);
+  assert.match(start, /NAVER_CLIENT_ID/);
+  assert.match(start, /buildNaverAuthorizeUrl/);
+  assert.match(lib, /https:\/\/nid\.naver\.com\/oauth2\.0\/authorize/);
+  assert.match(start, /jlpt_naver_oauth_state/);
+  assert.match(start, /authType: "reauthenticate"/);
+  assert.match(callback, /NAVER_CLIENT_SECRET/);
+  assert.match(callback, /https:\/\/nid\.naver\.com\/oauth2\.0\/token/);
+  assert.match(callback, /https:\/\/openapi\.naver\.com\/v1\/nid\/me/);
+  assert.match(callback, /parseNaverUserInfo/);
+  assert.match(callback, /createUser/);
+  assert.match(callback, /email_confirm: true/);
+  assert.match(callback, /generateLink/);
+  assert.match(callback, /type: "magiclink"/);
+  assert.match(callback, /action_link/);
+  assert.match(lib, /fields\.id/);
+  assert.match(lib, /fields\.email/);
+  assert.match(supabaseServer, /getSupabaseServiceRoleClient/);
 });

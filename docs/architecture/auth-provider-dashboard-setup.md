@@ -130,54 +130,58 @@ https://<vercel-domain>/auth/callback
 
 ## Naver 로그인 실제 연결 절차
 
-Supabase 기본 Social Provider 목록에는 Naver가 없으므로 Custom OAuth/OIDC provider로 연결한다. 현재 프론트엔드는 네이버 버튼 클릭 시 다음 Supabase authorize endpoint를 사용한다.
+Supabase 기본 Social Provider 목록에는 Naver가 없고, Supabase Custom OAuth/OIDC provider는 Naver userinfo의 `response.id` / `response.email` 매핑 필드를 제공하지 않는다. 따라서 Naver는 앱 소유 서버 callback으로 처리한 뒤 Supabase magic-link bridge로 기존 Supabase 세션 체계에 연결한다.
 
 ```text
-Supabase authorize endpoint:
-/auth/v1/authorize?provider=custom%3Anaver&redirect_to=<site>/auth/callback&auth_type=reauthenticate
-```
-
-로컬 smoke에서 `custom:naver` authorize URL 생성은 성공해야 한다. 현재 프론트 클릭은 Supabase authorize endpoint까지 이동하며, Supabase Custom provider가 아직 생성되지 않았으면 다음 응답이 나온다.
-
-```text
-Unsupported provider: custom provider custom:naver not found
-```
-
-이 메시지가 나오면 프론트 코드 문제가 아니라 Supabase Dashboard에서 Custom OAuth/OIDC provider id `naver`가 아직 생성되지 않은 상태다.
-
-```bash
-set -a; . ./.env.local; set +a
-node - <<'NODE'
-const { createClient } = require('@supabase/supabase-js')
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-;(async()=>{
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'custom:naver',
-    options: {
-      redirectTo: 'http://localhost:3010/auth/callback?next=%2Fdashboard',
-      skipBrowserRedirect: true,
-      queryParams: { auth_type: 'reauthenticate' },
-    },
-  })
-  console.log({ ok: !error, hasUrl: Boolean(data?.url), error: error?.message })
-})()
-NODE
+/login
+→ /api/auth/naver/start
+→ https://nid.naver.com/oauth2.0/authorize
+→ /api/auth/naver/callback
+→ https://nid.naver.com/oauth2.0/token
+→ https://openapi.naver.com/v1/nid/me
+→ response.id / response.email 직접 추출
+→ Supabase admin generateLink(type=magiclink)
+→ /auth/callback
 ```
 
 실제 Naver consent 화면까지 동작하려면 외부 대시보드 설정이 필요하다.
 
 1. Naver Developers에서 애플리케이션 생성
 2. 로그인 오픈 API 사용 설정
-3. Callback URL에 Supabase Auth callback URL 등록
+3. Callback URL에 앱 서버 callback URL 등록
 
 ```text
-https://<supabase-project-ref>.supabase.co/auth/v1/callback
+Production callback:
+https://<vercel-domain>/api/auth/naver/callback
+
+Local callback, 로컬 테스트 시에만:
+http://127.0.0.1:3010/api/auth/naver/callback
+http://localhost:3010/api/auth/naver/callback
 ```
 
 4. Naver Developers의 Client ID / Client Secret 확인
-5. Supabase Dashboard → Authentication → Providers → Custom OAuth/OIDC provider 추가
-6. provider id를 `naver`로 설정하여 프론트 provider 값 `custom:naver`와 맞춘다
-7. Custom OAuth endpoint 입력
+5. Vercel 환경변수에 서버 전용 값 등록
+
+```text
+NAVER_CLIENT_ID=<naver-client-id>
+NAVER_CLIENT_SECRET=<naver-client-secret>
+NEXT_PUBLIC_SITE_URL=https://<vercel-domain>
+SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>
+```
+
+6. Supabase Authentication URL Configuration에 magic-link bridge가 돌아올 사이트 URL과 redirect URL 등록
+
+```text
+Site URL:
+https://<vercel-domain>
+
+Redirect URLs:
+https://<vercel-domain>/auth/callback
+http://127.0.0.1:3010/auth/callback
+http://localhost:3010/auth/callback
+```
+
+Naver OAuth endpoint는 앱 서버 route에서 사용한다.
 
 ```text
 Authorization URL:
@@ -193,34 +197,9 @@ Scopes:
 name email
 ```
 
-8. Supabase Authentication URL Configuration에 사이트 URL과 허용 redirect URL 등록
+주의: Naver 사용자 정보는 `response.id`, `response.email`, `response.name`처럼 감싸져 반환된다. Supabase Dashboard provider로는 이 매핑을 할 수 없으므로 Custom OAuth provider를 다시 켜지 않는다. Client Secret / service role key 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
 
-```text
-Local redirect:
-http://127.0.0.1:3010/auth/callback
-http://localhost:3010/auth/callback
-
-Production redirect:
-https://<vercel-domain>/auth/callback
-```
-
-주의: Naver 사용자 정보는 `response.id`, `response.email`, `response.name`처럼 감싸져 반환될 수 있으므로 Supabase Custom OAuth 매핑/응답 파싱이 지원되는지 실제 consent 후 반드시 확인한다. Client Secret 값은 코드, 문서, 채팅, Notion에 기록하지 않는다.
-
-승인/2단계 인증까지 성공했는데 앱의 `/auth/callback`에서 실패하면 callback 진단 정보를 본다.
-
-```text
-OAuth code 수신 = 예, 세션 교환 실패
-```
-
-이면 네이버 인증은 성공했지만 Supabase가 네이버 token/userinfo 응답을 Supabase 세션으로 변환하지 못한 것이다. 이 경우 Supabase Custom OAuth/OIDC provider가 네이버의 `response.*` userinfo 또는 ID token/JWKS 요구조건과 맞지 않는지 확인해야 한다.
-
-```text
-OAuth code 수신 = 아니요, 세션 토큰 수신 = 아니요
-```
-
-이면 redirect URL 또는 OAuth error 파라미터 문제다. 화면의 OAuth error 내용을 우선 확인한다.
-
-다른 네이버 계정으로 테스트해야 할 때는 프론트에서 `auth_type=reauthenticate`를 함께 보낸다. 그래도 네이버가 기존 세션을 유지하면 브라우저에서 `naver.com` 로그아웃 또는 시크릿 창으로 다시 테스트한다.
+다른 네이버 계정으로 테스트해야 할 때는 `/api/auth/naver/start`에서 `auth_type=reauthenticate`를 함께 보낸다. 그래도 네이버가 기존 세션을 유지하면 브라우저에서 `naver.com` 로그아웃 또는 시크릿 창으로 다시 테스트한다.
 
 ## Email 방식
 

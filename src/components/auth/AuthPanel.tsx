@@ -115,17 +115,26 @@ export function AuthPanel({ variant = "compact" }: { variant?: AuthPanelVariant 
   async function signInWithProvider(provider: OAuthProvider) {
     if (isSignedIn || isLoginBusy) return;
 
+    setMessage(providerLoadingMessage(provider));
+    setPendingAction(provider);
+
+    if (provider === "custom:naver") {
+      const startUrl = new URL("/api/auth/naver/start", window.location.origin);
+      if (nextPath !== "/") startUrl.searchParams.set("next", nextPath);
+      window.location.assign(startUrl.toString());
+      return;
+    }
+
     let supabase;
     try {
       supabase = getSupabaseBrowserClient();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "로그인 설정을 확인할 수 없습니다.");
+      setPendingAction(null);
       return;
     }
 
     const redirectTo = buildRedirectTo();
-    setMessage(providerLoadingMessage(provider));
-    setPendingAction(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
