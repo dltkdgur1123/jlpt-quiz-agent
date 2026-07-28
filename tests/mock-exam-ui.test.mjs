@@ -85,6 +85,7 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   }
   assert.ok(readFileSync(new URL("../src/components/auth/AuthHeaderButton.tsx", import.meta.url), "utf8").includes("home-login-button"));
   const levelSwitchSource = readFileSync(new URL("../src/components/home/LevelSwitch.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   for (const phrase of [
     "use client",
     "useState",
@@ -102,6 +103,11 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   ]) {
     assert.ok(levelSwitchSource.includes(phrase), phrase);
   }
+  assert.match(css, /--home-level-switch-duration: \.36s/);
+  assert.match(css, /--home-level-switch-ease: cubic-bezier\(\.16, 1, \.3, 1\)/);
+  assert.match(css, /\.home-level-switch-indicator \{[\s\S]*?transition: transform var\(--home-level-switch-duration\) var\(--home-level-switch-ease\), background-color \.24s ease/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-level-switch \{[\s\S]*?--home-level-switch-duration: \.46s/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.home-level-switch-indicator,[\s\S]*?transition: none/);
   assert.match(source, /\/mock-exams\/n5-realistic-001/);
   for (const route of ["n4-realistic-001", "n3-realistic-001", "n2-realistic-001", "n1-realistic-001"]) {
     assert.match(source, new RegExp(`/mock-exams/${route}`));
