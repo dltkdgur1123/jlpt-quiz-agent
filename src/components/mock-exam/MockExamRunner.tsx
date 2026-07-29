@@ -323,18 +323,6 @@ function scaledScore(correct: number, total: number, maxScore: number) {
   return Math.round((correct / total) * maxScore);
 }
 
-function radarPolygonPoints(rates: number[], maxRadius = 38, center = 50) {
-  return rates
-    .map((rate, index) => {
-      const angle = -Math.PI / 2 + (index * 2 * Math.PI) / rates.length;
-      const radius = Math.max(0, Math.min(100, rate)) / 100 * maxRadius;
-      const x = center + Math.cos(angle) * radius;
-      const y = center + Math.sin(angle) * radius;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-}
-
 function sectionBalanceStatus(rate: number, goalRate: number) {
   if (rate >= goalRate) return "목표 이상";
   if (rate >= Math.max(0, goalRate - 15)) return "조금 부족";
@@ -584,13 +572,9 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
       : { section_key: "reading" as const, label: "읽기", correct: 0, wrongOrBlank: 0, rate: 0, question_count: 0 },
   ];
   const goalRate = 70;
-  const radarGoalPoints = radarPolygonPoints(balanceSections.map(() => goalRate));
-  const radarScorePoints = radarPolygonPoints(balanceSections.map((section) => section.rate));
   const sortedBalanceSections = [...balanceSections].sort((a, b) => a.rate - b.rate || b.wrongOrBlank - a.wrongOrBlank);
   const weakestBalanceSection = sortedBalanceSections[0];
   const strongestBalanceSection = [...balanceSections].sort((a, b) => b.rate - a.rate || a.wrongOrBlank - b.wrongOrBlank)[0];
-  const averageBalanceRate = Math.round(balanceSections.reduce((sum, section) => sum + section.rate, 0) / balanceSections.length);
-  const balanceSpread = Math.max(...balanceSections.map((section) => section.rate)) - Math.min(...balanceSections.map((section) => section.rate));
   const lowestSectionRate = Math.min(...sectionResults.map((section) => section.rate));
   const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
   const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
@@ -1094,20 +1078,6 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
                       <p>{sectionBalanceStatus(section.rate, goalRate)} · 오답/미응답 {section.wrongOrBlank}문항</p>
                     </div>
                   ))}
-                </div>
-                <div className="mock-balance-mini-chart">
-                  <div className="mock-radar-chart mock-radar-chart--tri" aria-label="문자·어휘, 문법, 읽기 영역별 균형 그래프" role="img">
-                    <svg viewBox="0 0 100 100" aria-hidden="true">
-                      <polygon className="mock-radar-grid" points="50,12 82.9,69 17.1,69" />
-                      <polygon className="mock-radar-grid mock-radar-grid--mid" points="50,31 66.5,59.5 33.5,59.5" />
-                      <line x1="50" y1="50" x2="50" y2="12" />
-                      <line x1="50" y1="50" x2="82.9" y2="69" />
-                      <line x1="50" y1="50" x2="17.1" y2="69" />
-                      <polygon className="mock-radar-goal-shape" points={radarGoalPoints} />
-                      <polygon className="mock-radar-score-shape" points={radarScorePoints} />
-                    </svg>
-                  </div>
-                  <p><strong>평균 {averageBalanceRate}%</strong><span>영역 편차 {balanceSpread}%p</span></p>
                 </div>
               </div>
               <p className="mock-detail-hint">청해 제외 세트이므로 문자·어휘, 문법, 읽기 3개 영역만 표시합니다.</p>

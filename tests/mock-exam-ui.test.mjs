@@ -29,6 +29,7 @@ const levelSwitch = () => readFileSync(new URL("../src/components/home/LevelSwit
 const homeRecentMockExam = () =>
   readFileSync(new URL("../src/components/home/HomeRecentMockExam.tsx", import.meta.url), "utf8");
 const jlptExamSchedule = () => readFileSync(new URL("../src/lib/jlpt/exam-schedule.ts", import.meta.url), "utf8");
+const globalStyles = () => readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 test("home page uses premium start cockpit and keeps learning/Shorts entries", () => {
   const source = `${homePage()}\n${levelSwitch()}\n${homeRecentMockExam()}\n${jlptExamSchedule()}`;
@@ -528,6 +529,7 @@ test("mock exam start screen is optimized for mobile before the exam begins", ()
 
 test("mock exam client keeps answers hidden until full submit and shows section results", () => {
   const source = mockExamClient();
+  const css = globalStyles();
   for (const phrase of [
     "전체 제출",
     "시험 시작",
@@ -577,11 +579,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-balance-row",
     "mock-balance-track",
     "sectionBalanceStatus",
-    "평균 {averageBalanceRate}%",
-    "영역 편차 {balanceSpread}%p",
     "청해 제외 세트이므로",
-    "radarPolygonPoints",
-    "mock-radar-score-shape",
     "선생님의 평가",
     "teacherHeadline",
     "teacherActionItems",
@@ -671,6 +669,8 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
+  assert.doesNotMatch(source, /mock-balance-mini-chart|mock-radar|radarPolygonPoints|averageBalanceRate|balanceSpread/);
+  assert.doesNotMatch(css, /mock-balance-mini-chart|mock-radar|mock-radar-score-shape/);
   assert.match(source, /submitted \? \(/);
   assert.match(source, /orderedProblemDefinitions\(\)\.flatMap/);
   assert.match(source, /SECTION_ORDER\.flatMap\(\(sectionKey\) =>[\s\S]*?PROBLEM_DEFINITIONS\.filter\(\(problem\) => problem\.sectionKey === sectionKey\)/);
