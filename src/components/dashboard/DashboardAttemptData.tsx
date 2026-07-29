@@ -425,28 +425,42 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
 
 export function DashboardLiveData() {
   const state = useDashboardAttemptData();
+  const isLocked = state.status === "login_required";
 
   return (
-    <div className="dashboard-live-sections">
-      <DashboardStatGrid {...state} />
-      <DashboardAttemptSummary {...state} />
-      <DashboardBrowserOnlyNotice {...state} />
-      <div className="dashboard-desktop-flow">
-        <DashboardActivityAndGoal {...state} />
-        <section className="dashboard-grid-bottom" id="history">
-          <DashboardRecentExamList {...state} />
-          <DashboardWrongNoteCard {...state} />
-        </section>
-        <DashboardWeakAreaPanel {...state} />
+    <div className={`dashboard-live-sections${isLocked ? " dashboard-live-sections-locked" : ""}`}>
+      <div className="dashboard-locked-content" aria-hidden={isLocked ? "true" : undefined}>
+        <DashboardStatGrid {...state} />
+        <DashboardAttemptSummary {...state} />
+        <DashboardBrowserOnlyNotice {...state} />
+        <div className="dashboard-desktop-flow">
+          <DashboardActivityAndGoal {...state} />
+          <section className="dashboard-grid-bottom" id="history">
+            <DashboardRecentExamList {...state} />
+            <DashboardWrongNoteCard {...state} />
+          </section>
+          <DashboardWeakAreaPanel {...state} />
+        </div>
+        <div className="dashboard-mobile-record-flow" aria-label="모바일 학습 기록">
+          <section className="dashboard-grid-bottom" id="history-mobile">
+            <DashboardRecentExamList {...state} />
+            <DashboardWrongNoteCard {...state} />
+          </section>
+          <DashboardWeakAreaPanel {...state} />
+          <DashboardActivityAndGoal {...state} />
+        </div>
       </div>
-      <div className="dashboard-mobile-record-flow" aria-label="모바일 학습 기록">
-        <section className="dashboard-grid-bottom" id="history-mobile">
-          <DashboardRecentExamList {...state} />
-          <DashboardWrongNoteCard {...state} />
+      {isLocked ? (
+        <section className="dashboard-login-lock" aria-label="학습 기록 로그인 안내">
+          <span>LOGIN REQUIRED</span>
+          <h2>로그인하면 학습 기록을 볼 수 있습니다</h2>
+          <p>모의고사 제출 기록, 오답노트, 취약 영역 분석은 로그인 후 저장됩니다.</p>
+          <div>
+            <Link className="figma-primary" href="/login?next=/dashboard">로그인하기</Link>
+            <Link className="dashboard-lock-secondary" href="/mock-exams/n5">모의고사 체험하기</Link>
+          </div>
         </section>
-        <DashboardWeakAreaPanel {...state} />
-        <DashboardActivityAndGoal {...state} />
-      </div>
+      ) : null}
     </div>
   );
 }
