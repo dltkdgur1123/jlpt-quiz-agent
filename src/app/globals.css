@@ -4586,108 +4586,130 @@ button:hover:not(:disabled),
   transform: none !important;
 }
 
-/* Settings page vertical compactness v1: reduce above-the-fold height without removing content */
+/* Settings page vertical compactness v2: fit the full settings flow closer to one viewport */
 .figma-shell.settings-page {
-  gap: 18px !important;
+  gap: 12px !important;
 }
 .figma-shell.settings-page .settings-layout {
-  gap: 16px !important;
+  gap: 12px !important;
 }
 .figma-shell.settings-page .settings-hero {
-  gap: 8px !important;
-  padding: clamp(20px, 3vw, 32px) clamp(26px, 4vw, 42px) !important;
-  border-radius: 20px !important;
+  gap: 6px !important;
+  padding: clamp(16px, 2.4vw, 24px) clamp(22px, 3.4vw, 34px) !important;
+  border-radius: 18px !important;
 }
 .figma-shell.settings-page .settings-hero h1 {
-  font-size: clamp(2rem, 4vw, 3.15rem) !important;
-  line-height: .98 !important;
+  font-size: clamp(1.85rem, 3.5vw, 2.6rem) !important;
+  line-height: .96 !important;
 }
 .figma-shell.settings-page .settings-hero > p:not(.section-eyebrow) {
-  font-size: 14px !important;
-  line-height: 1.45 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
 }
 .figma-shell.settings-page .settings-grid {
-  gap: 14px !important;
+  gap: 10px !important;
 }
 .figma-shell.settings-page .settings-card {
-  gap: 14px !important;
-  min-height: 210px !important;
-  padding: 22px 24px !important;
+  gap: 10px !important;
+  min-height: 166px !important;
+  padding: 16px 18px !important;
+  border-radius: 18px !important;
 }
 .figma-shell.settings-page .settings-wide-card {
   min-height: auto !important;
 }
 .figma-shell.settings-page .settings-wrongnote-embedded {
-  gap: 10px !important;
-  margin-top: 18px !important;
-  padding-top: 16px !important;
+  gap: 7px !important;
+  margin-top: 8px !important;
+  padding-top: 10px !important;
 }
 .figma-shell.settings-page .settings-card-head {
-  gap: 9px !important;
+  gap: 7px !important;
 }
 .figma-shell.settings-page .settings-card-head > span {
-  font-size: 12px !important;
-  line-height: 1.65 !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
 }
 .figma-shell.settings-page .settings-card-head h2 {
-  margin-bottom: 3px !important;
-  font-size: 1.35rem !important;
+  margin-bottom: 2px !important;
+  font-size: 1.22rem !important;
 }
 .figma-shell.settings-page .settings-card-head p {
-  font-size: 13px !important;
-  line-height: 1.35 !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
 }
 .figma-shell.settings-page .settings-account-box {
-  gap: 5px !important;
-  padding: 12px 14px !important;
-  border-radius: 14px !important;
+  gap: 4px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
 }
 .figma-shell.settings-page .settings-account-box strong {
-  font-size: 15px !important;
+  font-size: 14px !important;
 }
 .figma-shell.settings-page .settings-account-box span {
-  font-size: 12.5px !important;
-  line-height: 1.4 !important;
+  font-size: 12px !important;
+  line-height: 1.32 !important;
 }
 .figma-shell.settings-page .settings-actions,
 .figma-shell.settings-page .settings-nickname-form > div {
-  gap: 8px !important;
+  gap: 7px !important;
 }
 .figma-shell.settings-page .settings-nickname-form {
-  gap: 6px !important;
+  gap: 5px !important;
+}
+.figma-shell.settings-page .settings-nickname-form label {
+  font-size: 12px !important;
 }
 .figma-shell.settings-page .settings-nickname-form input,
 .figma-shell.settings-page .settings-nickname-form button,
 .figma-shell.settings-page .settings-secondary-button,
 .figma-shell.settings-page .settings-danger-button,
 .figma-shell.settings-page .settings-level-button {
-  min-height: 40px !important;
-  border-radius: 12px !important;
+  min-height: 36px !important;
+  border-radius: 11px !important;
 }
 .figma-shell.settings-page .settings-nickname-form input {
-  padding: 0 12px !important;
-  font-size: 14px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
 }
 .figma-shell.settings-page .settings-nickname-form button,
 .figma-shell.settings-page .settings-secondary-button,
 .figma-shell.settings-page .settings-danger-button {
-  padding: 0 14px !important;
+  padding: 0 12px !important;
 }
 .figma-shell.settings-page .settings-level-list {
-  gap: 8px !important;
+  gap: 7px !important;
 }
 .figma-shell.settings-page .settings-level-button {
-  font-size: 14px !important;
+  font-size: 13px !important;
 }
 .figma-shell.settings-page .settings-inline-note,
 .figma-shell.settings-page .settings-toggle-row em {
-  font-size: 12.5px !important;
+  font-size: 12px !important;
+}
+.figma-shell.settings-page .settings-inline-note {
+  margin: 0 !important;
 }
 .figma-shell.settings-page .settings-toggle-row strong {
-  font-size: 14px !important;
+  font-size: 13px !important;
 }
 .figma-shell.settings-page .settings-toggle-row em {
-  line-height: 1.35 !important;
+  line-height: 1.3 !important;
+}
+.figma-shell.settings-page .settings-option-grid {
+  gap: 8px !important;
+}
+.figma-shell.settings-page .settings-option-card {
+  min-height: 66px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+}
+.figma-shell.settings-page .settings-option-card strong {
+  font-size: 13px !important;
+}
+.figma-shell.settings-page .settings-option-card span {
+  font-size: 11.5px !important;
+  line-height: 1.32 !important;
 }
 
 /* Mobile homepage responsive v1: single-column start flow and compact fixed header */
