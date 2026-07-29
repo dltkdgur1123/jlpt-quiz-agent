@@ -294,7 +294,6 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".figma-shell.dashboard-page .dashboard-panel",
     "border-radius: 0 !important",
     ".dashboard-recent-list",
-    ".dashboard-recent-more",
   ]) {
     assert.ok(css.includes(style), style);
   }
@@ -306,10 +305,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "최근 모의고사",
     "visibleAttempts",
     "attempts.slice(0, 5)",
-    "hiddenAttemptCount",
-    "외 {hiddenAttemptCount}건",
     "dashboard-recent-list",
-    "dashboard-recent-more",
     "DashboardWrongNoteCard",
     "취약 영역 분석",
     "오답노트와 최근 모의고사 기준",
@@ -362,6 +358,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(css, /\.figma-shell\.dashboard-page \.dashboard-desktop-flow \{[\s\S]*?display: none !important/);
   assert.match(css, /--dashboard-mobile-section-gap: 12px/);
   assert.match(css, /--dashboard-mobile-section-bottom-room: 18px/);
+  assert.doesNotMatch(clientSource, /hiddenAttemptCount|dashboard-recent-more|외 \{hiddenAttemptCount\}건/);
   assert.match(css, /--dashboard-mobile-section-y: 30px/);
   assert.match(css, /--dashboard-mobile-summary-y: 16px/);
   assert.match(css, /--dashboard-mobile-divider: #f1f1f1/);

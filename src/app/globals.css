@@ -4037,13 +4037,6 @@ main,
   display: grid !important;
   gap: 8px !important;
 }
-.dashboard-recent-more {
-  margin: -4px 0 0 !important;
-  color: var(--jlpt-muted) !important;
-  font-size: 13px !important;
-  font-weight: 850 !important;
-  text-align: right !important;
-}
 .recent-exam-row {
   min-height: 92px !important;
   padding: 18px 16px !important;

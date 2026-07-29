@@ -385,7 +385,6 @@ function DashboardActivityAndGoal({ data, status }: DashboardDataState) {
 function DashboardRecentExamList({ data, status }: DashboardDataState) {
   const attempts = data?.attempts ?? [];
   const visibleAttempts = attempts.slice(0, 5);
-  const hiddenAttemptCount = Math.max(0, attempts.length - visibleAttempts.length);
 
   return (
     <article className="dashboard-panel dashboard-recent">
@@ -412,9 +411,6 @@ function DashboardRecentExamList({ data, status }: DashboardDataState) {
               );
             })}
           </div>
-          {hiddenAttemptCount ? (
-            <p className="dashboard-recent-more">외 {hiddenAttemptCount}건</p>
-          ) : null}
         </>
       ) : (
         <p>아직 저장된 모의고사 기록이 없습니다.</p>
