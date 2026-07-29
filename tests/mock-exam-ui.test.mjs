@@ -389,6 +389,12 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.doesNotMatch(css, /dashboard-wrong-note-chips/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts/);
   assert.match(clientSource, /getSession/);
+  assert.match(clientSource, /localFallbackCount/);
+  assert.match(clientSource, /DashboardBrowserOnlyNotice/);
+  assert.match(clientSource, /이 브라우저에만 남은 제출 기록/);
+  assert.match(clientSource, /서버에 저장된 기록만 반영됩니다/);
+  assert.doesNotMatch(clientSource, /buildLocalDashboardResponse/);
+  assert.doesNotMatch(clientSource, /임시 저장`| · 임시 저장/);
   assert.match(clientSource, /저장된 최근 기록/);
   assert.match(clientSource, /오답노트/);
   assert.match(clientSource, /wrong_note/);
@@ -402,8 +408,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.match(clientSource, /다시 풀기/);
   assert.match(clientSource, /href="\/wrong-note"/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
-  assert.match(clientSource, /buildLocalDashboardResponse/);
   assert.match(clientSource, /readLocalDashboardAttempts/);
+  assert.match(css, /dashboard-local-fallback-note/);
 });
 
 test("mock exam attempt API validates login and writes attempt answer result rows", () => {

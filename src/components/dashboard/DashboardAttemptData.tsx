@@ -64,6 +64,7 @@ type DashboardResponse = {
 type DashboardDataState = {
   data: DashboardResponse | null;
   status: "loading" | "ready" | "login_required" | "error";
+  localFallbackCount: number;
 };
 
 const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
@@ -100,91 +101,17 @@ function readLocalDashboardAttempts() {
   }
 }
 
-function emptySectionSummary(): SectionSummary[] {
-  return [
-    { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-    { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-    { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-  ];
-}
-
-function localAnsweredQuestionCount(attempt: LocalMockExamSavedAttempt) {
-  const selectedWrongCount = (attempt.wrong_note_items ?? []).filter((item) => item.status === "wrong").length;
-  const inferredCount = Number(attempt.correct_count ?? 0) + selectedWrongCount;
-  if (inferredCount > 0) return Math.min(Number(attempt.question_count || inferredCount), inferredCount);
-  return Number(attempt.question_count ?? 0);
-}
-
-function buildLocalDashboardResponse(): DashboardResponse | null {
-  const localAttempts = readLocalDashboardAttempts();
-  if (!localAttempts.length) return null;
-
-  const attempts = localAttempts.map((attempt) => ({
-    id: attempt.id,
-    submitted_at: attempt.submitted_at,
-    score_total: attempt.score_total,
-    score_max: attempt.score_max,
-    correct_count: attempt.correct_count,
-    question_count: localAnsweredQuestionCount(attempt),
-    mock_exam_sets: { set_title: `${attempt.set_title} · 임시 저장`, jlpt_level: attempt.jlpt_level },
-  }));
-  const totalQuestions = localAttempts.reduce((sum, attempt) => sum + localAnsweredQuestionCount(attempt), 0);
-  const averageRate = localAttempts.length
-    ? Math.round(
-        (localAttempts.reduce((sum, attempt) => sum + Number(attempt.correct_count ?? 0) / Math.max(localAnsweredQuestionCount(attempt), 1), 0) /
-          localAttempts.length) *
-          100,
-      )
-    : 0;
-  const weeklyMap = new Map<string, number>();
-  for (let index = 6; index >= 0; index -= 1) {
-    const date = new Date();
-    date.setDate(date.getDate() - index);
-    weeklyMap.set(date.toISOString().slice(0, 10), 0);
-  }
-  for (const attempt of localAttempts) {
-    const day = new Date(attempt.submitted_at).toISOString().slice(0, 10);
-    if (weeklyMap.has(day)) weeklyMap.set(day, (weeklyMap.get(day) ?? 0) + localAnsweredQuestionCount(attempt));
-  }
-  const sectionMap = new Map<string, SectionSummary>();
-  for (const section of emptySectionSummary()) sectionMap.set(section.section_key, { ...section });
-  for (const attempt of localAttempts) {
-    for (const section of attempt.section_results ?? []) {
-      const current = sectionMap.get(section.section_key) ?? { ...section, correct_count: 0, question_count: 0 };
-      current.correct_count += Number(section.correct_count ?? 0);
-      current.question_count += Number(section.question_count ?? 0);
-      current.correct_rate = current.question_count ? Math.round((current.correct_count / current.question_count) * 100) : 0;
-      current.weakness_label = current.question_count === 0 ? "기록 없음" : current.correct_rate < 60 ? "복습 필요" : "유지 권장";
-      sectionMap.set(section.section_key, current);
-    }
-  }
-  const wrongItems = localAttempts.flatMap((attempt) => attempt.wrong_note_items ?? []).filter((item) => item.status === "wrong");
-
-  return {
-    attempts,
-    attempt_count: localAttempts.length,
-    total_questions: totalQuestions,
-    average_rate: averageRate,
-    weekly_activity: Array.from(weeklyMap.entries()).map(([date, question_count]) => ({ date, question_count })),
-    section_summary: Array.from(sectionMap.values()),
-    wrong_note: {
-      total_count: wrongItems.length,
-      wrong_count: wrongItems.length,
-      unanswered_count: 0,
-      recent_items: wrongItems.slice(0, 6),
-    },
-  };
-}
-
 function useDashboardAttemptData(): DashboardDataState {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [status, setStatus] = useState<DashboardDataState["status"]>("loading");
+  const [localFallbackCount, setLocalFallbackCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadAttempts() {
-      const localDashboardData = buildLocalDashboardResponse();
+      const localAttemptCount = readLocalDashboardAttempts().length;
+      if (!cancelled) setLocalFallbackCount(localAttemptCount);
 
       try {
         const supabase = getSupabaseBrowserClient();
@@ -193,12 +120,8 @@ function useDashboardAttemptData(): DashboardDataState {
 
         if (!accessToken) {
           if (!cancelled) {
-            if (localDashboardData) {
-              setData(localDashboardData);
-              setStatus("ready");
-            } else {
-              setStatus("login_required");
-            }
+            setData(null);
+            setStatus("login_required");
           }
           return;
         }
@@ -210,17 +133,13 @@ function useDashboardAttemptData(): DashboardDataState {
         if (!response.ok) throw new Error(result.error ?? "failed to load dashboard attempts");
 
         if (!cancelled) {
-          setData(localDashboardData && localDashboardData.attempt_count > 0 && result.attempt_count === 0 ? localDashboardData : result);
+          setData(result);
           setStatus("ready");
         }
       } catch {
         if (!cancelled) {
-          if (localDashboardData) {
-            setData(localDashboardData);
-            setStatus("ready");
-          } else {
-            setStatus("error");
-          }
+          setData(null);
+          setStatus("error");
         }
       }
     }
@@ -231,7 +150,7 @@ function useDashboardAttemptData(): DashboardDataState {
     };
   }, []);
 
-  return { data, status };
+  return { data, status, localFallbackCount };
 }
 
 function formatDate(value: string | null) {
@@ -325,6 +244,16 @@ function DashboardAttemptSummary({ data, status }: DashboardDataState) {
       <strong>{latest.score_total ?? latest.correct_count} / {latest.score_max ?? latest.question_count}</strong>
       <span>평균 정답률 {data?.average_rate ?? 0}% · 누적 풀이 {data?.total_questions ?? 0}문항</span>
     </div>
+  );
+}
+
+function DashboardBrowserOnlyNotice({ localFallbackCount }: DashboardDataState) {
+  if (!localFallbackCount) return null;
+
+  return (
+    <p className="dashboard-local-fallback-note">
+      이 브라우저에만 남은 제출 기록 {localFallbackCount}건이 있습니다. 대시보드 통계에는 서버에 저장된 기록만 반영됩니다.
+    </p>
   );
 }
 
@@ -501,6 +430,7 @@ export function DashboardLiveData() {
     <div className="dashboard-live-sections">
       <DashboardStatGrid {...state} />
       <DashboardAttemptSummary {...state} />
+      <DashboardBrowserOnlyNotice {...state} />
       <div className="dashboard-desktop-flow">
         <DashboardActivityAndGoal {...state} />
         <section className="dashboard-grid-bottom" id="history">

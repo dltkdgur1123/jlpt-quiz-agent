@@ -804,6 +804,7 @@ dd { margin: 0; color: var(--muted); }
 .mock-save-status[data-status="login_required"] { background: #fff7ed; color: #c2410c; }
 .mock-save-status[data-status="error"] { background: #fef2f2; color: #b91c1c; }
 .dashboard-live-note, .dashboard-live-data, .dashboard-wrong-note { margin: 0; padding: 18px 22px; border: 1px solid #eceef5; border-radius: 22px; background: #fff; color: #73798a; font-weight: 900; box-shadow: 0 16px 38px rgba(28,34,58,.05); }
+.dashboard-local-fallback-note { margin: 0; padding: 14px 18px; border: 1px solid #ffe1b8; border-radius: 18px; background: #fffaf2; color: #9a5b12; font-size: 14px; font-weight: 850; }
 .dashboard-live-stack { display: grid; gap: 14px; }
 .dashboard-live-data { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
 .dashboard-live-data p { margin: 0; color: #73798a; }
