@@ -269,6 +269,10 @@ test("guide page is available from header and keeps safe exam-guide wording", ()
   assert.match(source, /성적·주소 관련 유의사항/);
   assert.match(source, /information_02\.html/);
   assert.match(source, /guide-id-row/);
+  const css = globalCss();
+  assert.match(css, /Guide caution bullets: align red dots and multiline text on a fixed grid/);
+  assert.match(css, /\.guide-check-panel li \{[\s\S]*?grid-template-columns:\s*10px minmax\(0, 1fr\)/);
+  assert.match(css, /\.guide-check-panel li::before \{[\s\S]*?margin:\s*\.78em auto 0/);
   assert.doesNotMatch(source, /guide-source-panel/);
   assert.doesNotMatch(source, /공식 안내 출처/);
   assert.doesNotMatch(source, /N5 모의고사 시작/);

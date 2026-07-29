@@ -2426,20 +2426,21 @@ main:has(.mock-page-shell) {
   padding: 0;
   list-style: none;
 }
+/* Guide caution bullets: align red dots and multiline text on a fixed grid. */
 .guide-check-panel li {
-  position: relative;
-  padding-left: 24px;
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
   color: var(--jlpt-title, #212121);
   font-weight: 750;
   line-height: 1.65;
 }
 .guide-check-panel li::before {
   content: "";
-  position: absolute;
-  top: .75em;
-  left: 4px;
   width: 7px;
   height: 7px;
+  margin: .78em auto 0;
   border-radius: 999px;
   background: var(--jlpt-primary, #d32f2f);
 }
