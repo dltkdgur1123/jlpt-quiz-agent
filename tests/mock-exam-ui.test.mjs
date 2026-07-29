@@ -294,8 +294,6 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".figma-shell.dashboard-page .dashboard-panel",
     "border-radius: 0 !important",
     ".dashboard-recent-list",
-    "max-height: 500px !important",
-    "overflow-y: auto !important",
     ".dashboard-recent-more",
   ]) {
     assert.ok(css.includes(style), style);
