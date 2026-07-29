@@ -144,12 +144,12 @@
     "source_meaning": "머리",
     "source_day": "DAY 007",
     "question_text": "きのうから（　　　）が痛いです。",
-    "choice_a": "足",
-    "choice_b": "手",
-    "choice_c": "耳",
+    "choice_a": "机",
+    "choice_b": "新聞",
+    "choice_c": "切手",
     "choice_d": "頭",
     "correct_choice": "D",
-    "explanation": "아프다는 신체 부위가 들어가는 문장입니다. 「頭」は 머리라는 뜻입니다.",
+    "explanation": "「痛いです」は体の不調を表します。この選択肢の中で体の部位として自然に入るのは「頭」です。",
     "review_status": "draft"
   },
   {

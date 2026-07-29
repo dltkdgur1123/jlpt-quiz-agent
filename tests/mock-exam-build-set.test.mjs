@@ -149,6 +149,57 @@ test("N4 through N1 realistic mock exams match the 50-question production draft 
   }
 });
 
+test("realistic mock exam sentence-build and context blanks avoid known answer-quality regressions", () => {
+  const artifactPaths = [
+    "n5-realistic-mock-exam-001",
+    "n5-realistic-mock-exam-002",
+    "n5-realistic-mock-exam-003",
+    "n4-realistic-mock-exam-001",
+    "n3-realistic-mock-exam-001",
+    "n2-realistic-mock-exam-001",
+    "n1-realistic-mock-exam-001",
+  ];
+
+  for (const setCode of artifactPaths) {
+    const artifact = JSON.parse(
+      readFileSync(new URL(`../data/generated/${setCode}.json`, import.meta.url), "utf8"),
+    );
+    for (const question of artifact.questions) {
+      assert.match(question.correct_choice, /^[ABCD]$/, `${setCode} ${question.sort_order} correct_choice must be A-D`);
+    }
+  }
+
+  const n5Set001 = JSON.parse(
+    readFileSync(new URL("../data/generated/n5-realistic-mock-exam-001.json", import.meta.url), "utf8"),
+  );
+  const headacheQuestion = n5Set001.questions.find((question) => question.source_item === "頭");
+  assert.ok(headacheQuestion, "headache vocabulary question exists");
+  assert.deepEqual(
+    [headacheQuestion.choice_a, headacheQuestion.choice_b, headacheQuestion.choice_c, headacheQuestion.choice_d],
+    ["机", "新聞", "切手", "頭"],
+  );
+  assert.equal(headacheQuestion.correct_choice, "D");
+
+  const expectedSentenceBuildAnswers = new Map([
+    ["n5-realistic-mock-exam-001:26", "B"],
+    ["n5-realistic-mock-exam-001:27", "B"],
+    ["n5-realistic-mock-exam-001:29", "B"],
+    ["n5-realistic-mock-exam-002:31", "B"],
+    ["n5-realistic-mock-exam-002:32", "C"],
+    ["n5-realistic-mock-exam-003:31", "D"],
+    ["n5-realistic-mock-exam-003:35", "D"],
+  ]);
+
+  for (const [key, expectedChoice] of expectedSentenceBuildAnswers) {
+    const [setCode, sortOrder] = key.split(":");
+    const artifact = JSON.parse(
+      readFileSync(new URL(`../data/generated/${setCode}.json`, import.meta.url), "utf8"),
+    );
+    const question = artifact.questions.find((candidate) => candidate.sort_order === Number(sortOrder));
+    assert.equal(question?.correct_choice, expectedChoice, key);
+  }
+});
+
 function assertRealisticDraftArtifact(artifact, expectedSetCode, expectedLevel) {
   const preAnswerFields = ["question_text", "choice_a", "choice_b", "choice_c", "choice_d"];
   const hasKorean = /[가-힣]/;
