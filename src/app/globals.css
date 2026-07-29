@@ -629,10 +629,12 @@ dd { margin: 0; color: var(--muted); }
 .mock-teacher-profile p { margin: 0; display: grid; line-height: 1.4; }
 .mock-teacher-profile span { color: var(--muted); }
 .mock-teacher-summary { margin: 14px 0 0; color: #111827; font-weight: 850; line-height: 1.65; }
+.mock-teacher-ai-summary { margin: 8px 0 0; color: #374151; font-weight: 700; line-height: 1.7; }
 .mock-teacher-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
 .mock-teacher-metrics span { display: grid; gap: 4px; padding: 12px; border: 1px solid #eeeeee; border-radius: 16px; background: #fafafa; color: #111827; font-weight: 850; }
 .mock-teacher-metrics b { color: var(--muted); font-size: 0.78rem; }
 .mock-teacher-actions { margin: 14px 0 0; padding-left: 20px; color: #374151; font-weight: 750; line-height: 1.75; }
+.mock-teacher-caution { display: block; margin-top: 12px; color: var(--muted); font-weight: 650; line-height: 1.55; }
 .mock-history-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
 .mock-history-tabs button { min-height: 42px; border-radius: 999px; border-color: transparent; color: var(--muted); font-weight: 900; }
 .mock-history-tabs button:first-child { background: #14b8a6; color: #fff; }

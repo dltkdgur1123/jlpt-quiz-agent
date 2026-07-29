@@ -20,6 +20,8 @@ const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
 const mockExamAttemptRoute = () =>
   readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
+const mockExamCoachFeedbackRoute = () =>
+  readFileSync(new URL("../src/app/api/mock-exams/coach-feedback/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamRunner.tsx", import.meta.url), "utf8");
 const wrongNotePage = () => readFileSync(new URL("../src/app/wrong-note/page.tsx", import.meta.url), "utf8");
@@ -585,6 +587,12 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "선생님의 평가",
     "teacherHeadline",
     "teacherActionItems",
+    "coachFeedbackRequestKey",
+    "/api/mock-exams/coach-feedback",
+    "coachFeedbackStatus === \"ready\" ? \"AI 평가\"",
+    "자체 LLM 자동 생성",
+    "mock-teacher-ai-summary",
+    "mock-teacher-caution",
     "mock-teacher-metrics",
     "mock-teacher-actions",
     "sectionResults",
@@ -746,4 +754,32 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(css, /-webkit-text-fill-color: #ffffff !important/);
   assert.match(css, /\.wrong-note-complete-actions \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.wrong-note-choice\[data-correct="true"\]/);
+});
+
+
+test("mock exam coach feedback uses optional self-hosted OpenAI-compatible LLM with safe fallback", () => {
+  const routeSource = mockExamCoachFeedbackRoute();
+  const envExample = readFileSync(new URL("../.env.example", import.meta.url), "utf8");
+
+  for (const phrase of [
+    "LOCAL_LLM_BASE_URL",
+    "LOCAL_LLM_MODEL",
+    "LOCAL_LLM_API_KEY",
+    "LOCAL_LLM_TIMEOUT_MS",
+    "/v1/chat/completions",
+    "response_format: { type: \"json_object\" }",
+    "sanitizeCoachFeedback",
+    "현재 모의고사 세트 기준의 학습 참고용 평가",
+    "공식 JLPT 합격 예측이나 보장이 아닙니다",
+    "generated: false",
+    "source: \"fallback\"",
+  ]) {
+    assert.ok(routeSource.includes(phrase), phrase);
+  }
+
+  assert.match(routeSource, /temperature: 0\.25/);
+  assert.match(routeSource, /max_tokens: 420/);
+  assert.match(routeSource, /AbortSignal\.timeout/);
+  assert.match(envExample, /LOCAL_LLM_BASE_URL=http:\/\/127\.0\.0\.1:8080/);
+  assert.match(envExample, /If unset\/unavailable, the result screen silently keeps the built-in rules-based teacher feedback/);
 });

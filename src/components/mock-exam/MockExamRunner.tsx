@@ -129,6 +129,14 @@ type LocalMockExamSavedAttempt = {
   wrong_note_items: LocalMockExamWrongNoteItem[];
 };
 
+type CoachFeedback = {
+  headline: string;
+  summary: string;
+  priority_area: string;
+  actions: string[];
+  caution: string;
+};
+
 const FEEDBACK_LABELS: Record<FeedbackValue, string> = {
   yes: "그렇게 느껴짐",
   no: "그렇지 않음",
@@ -421,6 +429,8 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const [authStatus, setAuthStatus] = useState<"loading" | "signed_in" | "signed_out">("loading");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [coachFeedback, setCoachFeedback] = useState<CoachFeedback | null>(null);
+  const [coachFeedbackStatus, setCoachFeedbackStatus] = useState<"idle" | "loading" | "ready" | "fallback">("idle");
   const [mobileQuestionSheetOpen, setMobileQuestionSheetOpen] = useState(false);
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -603,6 +613,34 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         "틀린 문제와 미응답 문제를 먼저 다시 풀기",
         "전체 재응시보다 약한 영역 확인 후 다음 세트 진행",
       ];
+  const fallbackCoachFeedback: CoachFeedback = {
+    headline: teacherHeadline,
+    summary: passAdvice,
+    priority_area: weakestBalanceSection.label,
+    actions: teacherActionItems,
+    caution: "현재 모의고사 세트 기준의 학습 참고용 평가이며, 공식 JLPT 합격 예측이나 보장이 아닙니다.",
+  };
+  const activeCoachFeedback = coachFeedback ?? fallbackCoachFeedback;
+  const coachFeedbackRequestKey = submitted
+    ? JSON.stringify({
+        jlpt_level: artifact.set.jlpt_level,
+        set_code: artifact.set.set_code,
+        score,
+        question_count: artifact.set.question_count,
+        score_total: totalMockScore,
+        score_max: MOCK_TOTAL_SCORE,
+        mock_passed: mockPassed,
+        goal_rate: goalRate,
+        sections: balanceSections.map((section) => ({
+          section_key: section.section_key,
+          label: section.label,
+          correct: section.correct,
+          question_count: section.question_count,
+          rate: section.rate,
+          wrong_or_blank: section.wrongOrBlank,
+        })),
+      })
+    : "";
   const examDate = formatMockExamDate();
   const isAuthenticatedForWrongNote = authStatus === "signed_in" || saveStatus === "saved";
   const wrongNoteTitle =
@@ -623,6 +661,43 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다.";
   const wrongNoteHref = isAuthenticatedForWrongNote ? "/dashboard#wrong-note" : "/login";
   const wrongNoteCta = isAuthenticatedForWrongNote ? "학습기록에서 보기" : "로그인하기";
+
+  useEffect(() => {
+    if (!coachFeedbackRequestKey) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 5200);
+
+    queueMicrotask(() => {
+      setCoachFeedback(null);
+      setCoachFeedbackStatus("loading");
+    });
+
+    async function loadCoachFeedback() {
+      try {
+        const response = await fetch("/api/mock-exams/coach-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: coachFeedbackRequestKey,
+        });
+        const result = await response.json() as { generated?: boolean; feedback?: CoachFeedback };
+        if (!response.ok || !result.generated || !result.feedback) throw new Error("coach feedback fallback");
+        setCoachFeedback(result.feedback);
+        setCoachFeedbackStatus("ready");
+      } catch {
+        setCoachFeedback(null);
+        setCoachFeedbackStatus("fallback");
+      } finally {
+        window.clearTimeout(timer);
+      }
+    }
+
+    void loadCoachFeedback();
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [coachFeedbackRequestKey]);
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
@@ -667,6 +742,8 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     setSubmitted(false);
     setSaveStatus("idle");
     setSaveMessage(null);
+    setCoachFeedback(null);
+    setCoachFeedbackStatus("idle");
     setMobileQuestionSheetOpen(false);
     setExamStarted(true);
     writeInProgressDraft({
@@ -1097,20 +1174,22 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             <section className="mock-teacher-card" aria-label="선생님의 평가">
               <div className="mock-teacher-head">
                 <h3>선생님의 평가</h3>
-                <span>{mockPassed ? "합격권 유지" : "복습 우선"}</span>
+                <span>{coachFeedbackStatus === "ready" ? "AI 평가" : coachFeedbackStatus === "loading" ? "AI 생성 중" : mockPassed ? "합격권 유지" : "복습 우선"}</span>
               </div>
               <div className="mock-teacher-profile">
                 <div aria-hidden="true">先</div>
-                <p><strong>{artifact.set.jlpt_level} 모의고사 코치</strong><span>영역별 결과 기반 학습 진단</span></p>
+                <p><strong>{artifact.set.jlpt_level} 자체 AI 코치</strong><span>영역별 결과 기반 학습 진단</span></p>
               </div>
-              <p className="mock-teacher-summary">{teacherHeadline}</p>
+              <p className="mock-teacher-summary">{activeCoachFeedback.headline}</p>
+              <p className="mock-teacher-ai-summary">{activeCoachFeedback.summary}</p>
               <div className="mock-teacher-metrics">
-                <span><b>우선 복습</b>{weakestBalanceSection.label} · {weakestBalanceSection.rate}%</span>
-                <span><b>안정 영역</b>{strongestBalanceSection.label} · {strongestBalanceSection.rate}%</span>
+                <span><b>우선 복습</b>{activeCoachFeedback.priority_area}</span>
+                <span><b>평가 방식</b>{coachFeedbackStatus === "ready" ? "자체 LLM 자동 생성" : "기본 규칙 평가"}</span>
               </div>
               <ol className="mock-teacher-actions">
-                {teacherActionItems.map((item) => <li key={item}>{item}</li>)}
+                {activeCoachFeedback.actions.map((item) => <li key={item}>{item}</li>)}
               </ol>
+              <small className="mock-teacher-caution">{activeCoachFeedback.caution}</small>
             </section>
             <div className="mock-result-actions">
               <a className="secondary-link" href={`/mock-exams/${artifact.set.jlpt_level.toLowerCase()}`}>다른 시험 보기</a>
