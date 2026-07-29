@@ -412,6 +412,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const [examStarted, setExamStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [submitWarning, setSubmitWarning] = useState<string | null>(null);
+  const [loginSubmitPromptOpen, setLoginSubmitPromptOpen] = useState(false);
   const [restartWarning, setRestartWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [authStatus, setAuthStatus] = useState<"loading" | "signed_in" | "signed_out">("loading");
@@ -628,6 +629,12 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
+    if (authStatus === "signed_out" && !loginSubmitPromptOpen) {
+      setSubmitWarning(null);
+      setLoginSubmitPromptOpen(true);
+      setMobileQuestionSheetOpen(true);
+      return;
+    }
     if (unansweredCount > 0 && !submitWarning) {
       setSubmitWarning(`미응답 ${unansweredCount}문항이 있습니다. 그래도 제출하시겠습니까?`);
       setMobileQuestionSheetOpen(true);
@@ -641,6 +648,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   function forceSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
     setSubmitWarning(null);
+    setLoginSubmitPromptOpen(false);
     setMobileQuestionSheetOpen(false);
     void submitMockExam();
   }
@@ -648,6 +656,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   function requestRestartMockExam() {
     if (saveStatus === "saving") return;
     setSubmitWarning(null);
+    setLoginSubmitPromptOpen(false);
     setMobileQuestionSheetOpen(true);
     setRestartWarning("현재 답안과 결과를 지우고 1번 문제부터 다시 시작할까요?");
   }
@@ -665,6 +674,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     setSeenFeedbacks({});
     setCurrentQuestionIndex(0);
     setSubmitWarning(null);
+    setLoginSubmitPromptOpen(false);
     setRestartWarning(null);
     setSubmitted(false);
     setSaveStatus("idle");
@@ -880,6 +890,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           </div>
           <ul className="mock-exam-start-checklist">
             <li className="mock-exam-order-line">한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해</li>
+            <li className="mock-exam-save-guide">로그인하면 제출 기록과 오답노트가 대시보드에 저장됩니다. 비로그인 상태에서는 체험 결과만 확인할 수 있습니다.</li>
             <li>미응답 문항은 제출 전 한 번 더 확인</li>
             <li>
               본 모의고사는 공식 JLPT 기출문제가 아니며, JLPT 시험 형식을 참고해 제작한 학습용 연습 문제입니다.
@@ -1145,6 +1156,19 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           </>
         ) : (
           <>
+            {authStatus === "signed_out" ? (
+              <p className="mock-auth-save-note">로그인하면 이번 모의고사 결과가 대시보드와 오답노트에 저장됩니다.</p>
+            ) : null}
+            {loginSubmitPromptOpen ? (
+              <div className="mock-submit-warning mock-login-submit-prompt" role="alert">
+                <strong>로그인하면 이번 결과가 저장됩니다</strong>
+                <p>비로그인 상태로 계속하면 결과 화면만 확인되고, 최근 모의고사·오답노트에는 저장되지 않습니다.</p>
+                <div>
+                  <a className="secondary-action" href="/login">로그인하고 저장하기</a>
+                  <button className="primary-action" onClick={forceSubmitMockExam} type="button">그냥 결과 보기</button>
+                </div>
+              </div>
+            ) : null}
             {submitWarning ? (
               <div className="mock-submit-warning" role="alert">
                 <strong>{submitWarning}</strong>
@@ -1245,6 +1269,15 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
                 <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
               </div>
             </div>
+          ) : loginSubmitPromptOpen ? (
+            <div className="mock-submit-confirm-panel mock-login-submit-prompt" role="alert">
+              <strong>로그인하면 결과 저장</strong>
+              <p>비로그인 상태에서는 최근 모의고사·오답노트에 저장되지 않습니다.</p>
+              <div>
+                <a href="/login">로그인</a>
+                <button onClick={forceSubmitMockExam} type="button">그냥 보기</button>
+              </div>
+            </div>
           ) : (
             <button className="mock-question-nav-submit" onClick={requestSubmitMockExam} type="button" disabled={submitted || saveStatus === "saving"}>
               제출하기
@@ -1342,6 +1375,15 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
                   <div>
                     <button onClick={() => setSubmitWarning(null)} type="button">계속 풀기</button>
                     <button onClick={forceSubmitMockExam} type="button">그래도 제출</button>
+                  </div>
+                </div>
+              ) : loginSubmitPromptOpen ? (
+                <div className="mock-submit-confirm-panel mock-login-submit-prompt" role="alert">
+                  <strong>로그인하면 결과 저장</strong>
+                  <p>비로그인 상태에서는 최근 모의고사·오답노트에 저장되지 않습니다.</p>
+                  <div>
+                    <a href="/login">로그인</a>
+                    <button onClick={forceSubmitMockExam} type="button">그냥 보기</button>
                   </div>
                 </div>
               ) : (

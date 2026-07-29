@@ -678,6 +678,14 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "mock-exam-hero",
     "mock-question-nav",
     "문제 목록",
+    "로그인하면 제출 기록과 오답노트가 대시보드에 저장됩니다",
+    "비로그인 상태에서는 체험 결과만 확인할 수 있습니다",
+    "loginSubmitPromptOpen",
+    "로그인하면 이번 결과가 저장됩니다",
+    "비로그인 상태로 계속하면 결과 화면만 확인되고",
+    "최근 모의고사·오답노트에는 저장되지 않습니다",
+    "로그인하고 저장하기",
+    "그냥 결과 보기",
     "모의고사 기록을 저장했습니다",
     "서버 저장을 완료하지 못해 브라우저에 임시 저장했습니다",
     "LOCAL_ATTEMPTS_STORAGE_KEY",
@@ -707,6 +715,9 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.doesNotMatch(source, /본 적 있음 \{feedbackSummary\.yes\}/);
   assert.match(source, /청해 없이/);
   const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.mock-exam-save-guide,/);
+  assert.match(styles, /\.mock-auth-save-note/);
+  assert.match(styles, /\.mock-login-submit-prompt a/);
   assert.match(styles, /\.mock-question-nav[\s\S]*position: fixed/);
   assert.match(styles, /max-height: calc\(100dvh - 140px\)/);
   assert.match(styles, /data-result="correct"/);

@@ -1067,6 +1067,19 @@ main:has(.mock-exam-shell) {
 .mock-exam-start-checklist li {
   line-height: 1.58;
 }
+.mock-exam-save-guide,
+.mock-auth-save-note {
+  border: 1px solid #ffe1b8 !important;
+  background: #fffaf2 !important;
+  color: #9a5b12 !important;
+}
+.mock-auth-save-note {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 850;
+  line-height: 1.5;
+}
 .mock-exam-order-line {
   letter-spacing: .025em;
   word-spacing: .08em;
@@ -1383,7 +1396,9 @@ main:has(.home-shell) { padding: 0 0 80px; }
   font-size: 13px;
   font-weight: 800;
 }
-.mock-question-nav-confirm button {
+.mock-question-nav-confirm button,
+.mock-submit-confirm-panel a,
+.mock-login-submit-prompt a {
   height: 36px;
   border-radius: 10px;
   border: 1px solid #fed7aa;
@@ -1392,9 +1407,16 @@ main:has(.home-shell) { padding: 0 0 80px; }
   font-weight: 900;
   cursor: pointer;
 }
-.mock-question-nav-confirm button:last-child {
+.mock-question-nav-confirm button:last-child,
+.mock-submit-confirm-panel a,
+.mock-login-submit-prompt a {
   border-color: #dc2626;
   color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  text-decoration: none;
 }
 .mock-question-nav-submit {
   margin-top: 0;
