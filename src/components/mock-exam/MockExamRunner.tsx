@@ -416,7 +416,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const [restartWarning, setRestartWarning] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [authStatus, setAuthStatus] = useState<"loading" | "signed_in" | "signed_out">("loading");
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "login_required" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "local_saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [mobileQuestionSheetOpen, setMobileQuestionSheetOpen] = useState(false);
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
@@ -607,25 +607,31 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     caution: "현재 모의고사 세트 기준의 학습 참고용 평가이며, 공식 JLPT 합격 예측이나 보장이 아닙니다.",
   };
   const examDate = formatMockExamDate();
-  const isAuthenticatedForWrongNote = authStatus === "signed_in" || saveStatus === "saved";
+  const isServerSaved = authStatus === "signed_in" && saveStatus === "saved";
+  const isLocalFallbackSaved = saveStatus === "local_saved";
+  const isAuthenticatedForWrongNote = authStatus === "signed_in";
   const wrongNoteTitle =
-    saveStatus === "saved"
+    isServerSaved
       ? "오답노트에 기록했습니다"
-      : saveStatus === "saving" || authStatus === "loading"
-        ? "오답노트 기록을 확인 중입니다"
-        : isAuthenticatedForWrongNote
-          ? "오답노트 기록을 완료하지 못했습니다"
-          : "오답노트에 저장하려면 로그인이 필요합니다";
+      : isLocalFallbackSaved
+        ? "브라우저에만 임시 저장했습니다"
+        : saveStatus === "saving" || authStatus === "loading"
+          ? "오답노트 기록을 확인 중입니다"
+          : isAuthenticatedForWrongNote
+            ? "오답노트 기록을 완료하지 못했습니다"
+            : "오답노트에 저장하려면 로그인이 필요합니다";
   const wrongNoteHelp =
-    saveStatus === "saved"
+    isServerSaved
       ? "틀렸거나 풀지 않은 문제는 학습기록에서 다시 확인할 수 있습니다."
-      : saveStatus === "saving" || authStatus === "loading"
-        ? "로그인 상태와 저장 결과를 확인하고 있습니다."
-        : isAuthenticatedForWrongNote
-          ? "로그인은 확인됐지만 저장 응답을 완료하지 못했습니다. 학습기록에서 저장 여부를 확인해 주세요."
-          : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다.";
-  const wrongNoteHref = isAuthenticatedForWrongNote ? "/dashboard#wrong-note" : "/login";
-  const wrongNoteCta = isAuthenticatedForWrongNote ? "학습기록에서 보기" : "로그인하기";
+      : isLocalFallbackSaved
+        ? "서버 저장을 완료하지 못해 대시보드와 오답노트에는 아직 반영되지 않았습니다."
+        : saveStatus === "saving" || authStatus === "loading"
+          ? "로그인 상태와 저장 결과를 확인하고 있습니다."
+          : isAuthenticatedForWrongNote
+            ? "로그인은 확인됐지만 저장 응답을 완료하지 못했습니다. 학습기록에서 저장 여부를 확인해 주세요."
+            : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다.";
+  const wrongNoteHref = isServerSaved ? "/dashboard#wrong-note" : "/login";
+  const wrongNoteCta = isServerSaved ? "학습기록에서 보기" : "로그인하기";
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;
@@ -849,8 +855,8 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
         })),
         wrong_note_items: localWrongNoteItems,
       });
-      setSaveStatus("saved");
-      setSaveMessage("서버 저장을 완료하지 못해 브라우저에 임시 저장했습니다. 학습기록에서 확인할 수 있습니다.");
+      setSaveStatus("local_saved");
+      setSaveMessage("서버 저장을 완료하지 못했습니다. 이 결과는 이 브라우저에만 남아 있으며 대시보드 통계에는 반영되지 않습니다.");
       console.warn("mock exam server save failed; stored local fallback", error);
     }
   }
@@ -1132,7 +1138,11 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               ) : (
                 <p>전 문항 정답입니다. 다음 세트로 넘어가도 좋습니다.</p>
               )}
-              <p>복습할 문제 {reviewTargets.length}문항은 오답노트 흐름으로 관리합니다.</p>
+              <p>
+                {isServerSaved
+                  ? `복습할 문제 ${reviewTargets.length}문항은 오답노트 흐름으로 관리합니다.`
+                  : `복습할 문제 ${reviewTargets.length}문항은 결과 화면에서만 확인됩니다. 로그인 제출 시 오답노트에 저장됩니다.`}
+              </p>
             </div>
             {reviewTargets.length > 0 ? (
               <div className="mock-exam-feedback-summary mock-wrong-note-card">
@@ -1148,11 +1158,13 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               </div>
             ) : null}
             <p>점수 환산은 모의 세트 기준이며, 실제 JLPT 공식 성적과는 다를 수 있습니다.</p>
-            <div className="mock-exam-feedback-summary">
-              <h3>최근 출제 문항 기록</h3>
-              <p>이번 세트의 {artifact.set.question_count}문항을 최근 풀이 기록에 저장했습니다.</p>
-              <p>다음 랜덤 세트부터 같은 사용자에게 최근 7일 내 문항을 뒤로 미루는 회피 기준으로 사용합니다.</p>
-            </div>
+            {isServerSaved ? (
+              <div className="mock-exam-feedback-summary">
+                <h3>최근 출제 문항 기록</h3>
+                <p>이번 세트의 {artifact.set.question_count}문항을 최근 풀이 기록에 저장했습니다.</p>
+                <p>다음 랜덤 세트부터 같은 사용자에게 최근 7일 내 문항을 뒤로 미루는 회피 기준으로 사용합니다.</p>
+              </div>
+            ) : null}
           </>
         ) : (
           <>

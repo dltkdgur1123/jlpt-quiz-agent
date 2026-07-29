@@ -686,8 +686,14 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "최근 모의고사·오답노트에는 저장되지 않습니다",
     "로그인하고 저장하기",
     "그냥 결과 보기",
+    "isServerSaved",
+    "local_saved",
+    "브라우저에만 임시 저장했습니다",
+    "대시보드와 오답노트에는 아직 반영되지 않았습니다",
+    "결과 화면에서만 확인됩니다",
+    "로그인 제출 시 오답노트에 저장됩니다",
     "모의고사 기록을 저장했습니다",
-    "서버 저장을 완료하지 못해 브라우저에 임시 저장했습니다",
+    "서버 저장을 완료하지 못했습니다. 이 결과는 이 브라우저에만 남아 있으며 대시보드 통계에는 반영되지 않습니다",
     "LOCAL_ATTEMPTS_STORAGE_KEY",
     "writeLocalMockExamAttempt",
     "readLocalMockExamAttempts",
@@ -715,6 +721,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
   assert.doesNotMatch(source, /본 적 있음 \{feedbackSummary\.yes\}/);
   assert.match(source, /청해 없이/);
   const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  assert.match(styles, /\.mock-save-status\[data-status="local_saved"\]/);
   assert.match(styles, /\.mock-exam-save-guide,/);
   assert.match(styles, /\.mock-auth-save-note/);
   assert.match(styles, /\.mock-login-submit-prompt a/);
