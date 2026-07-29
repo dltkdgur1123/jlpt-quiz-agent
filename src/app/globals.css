@@ -2269,15 +2269,15 @@ main:has(.mock-page-shell) {
 .settings-option-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 .settings-option-card {
   display: grid;
-  gap: 8px;
-  min-height: 118px;
-  padding: 18px;
+  gap: 5px;
+  min-height: 82px;
+  padding: 13px 14px;
   border: 1px solid var(--jlpt-border, #e5e5e5);
-  border-radius: 18px;
+  border-radius: 14px;
   background: #fff;
   text-align: left;
   cursor: pointer;
@@ -2286,14 +2286,14 @@ main:has(.mock-page-shell) {
 }
 .settings-option-card[data-selected="true"] {
   border-color: var(--jlpt-primary, #d32f2f);
-  background: var(--jlpt-primary, #d32f2f);
-  color: #fff;
+  background: #fff;
+  color: var(--jlpt-primary, #d32f2f);
   transition: none !important;
   transform: none !important;
 }
 .settings-option-card[data-selected="true"] strong,
 .settings-option-card[data-selected="true"] span {
-  color: #fff;
+  color: var(--jlpt-primary, #d32f2f);
 }
 .settings-option-card:hover:not([data-selected="true"]) {
   background: #fff;
@@ -2309,14 +2309,14 @@ main:has(.mock-page-shell) {
 }
 .settings-option-card strong {
   color: var(--jlpt-title, #212121);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
 }
 .settings-option-card span {
   color: var(--jlpt-text, #616161);
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 700;
-  line-height: 1.55;
+  line-height: 1.45;
   word-break: keep-all;
 }
 .settings-save-state {
@@ -4540,13 +4540,19 @@ button:hover:not(:disabled),
 }
 .settings-level-button[data-selected="true"],
 .settings-level-button[data-selected="true"]:hover,
-.settings-level-button[data-selected="true"]:hover:not(:disabled),
-.settings-option-card[data-selected="true"],
-.settings-option-card[data-selected="true"]:hover,
-.settings-option-card[data-selected="true"]:hover:not(:disabled) {
+.settings-level-button[data-selected="true"]:hover:not(:disabled) {
   background: var(--jlpt-primary) !important;
   border-color: var(--jlpt-primary) !important;
   color: #ffffff !important;
+  transition: none !important;
+  transform: none !important;
+}
+.settings-option-card[data-selected="true"],
+.settings-option-card[data-selected="true"]:hover,
+.settings-option-card[data-selected="true"]:hover:not(:disabled) {
+  background: #ffffff !important;
+  border-color: var(--jlpt-primary) !important;
+  color: var(--jlpt-primary) !important;
   transition: none !important;
   transform: none !important;
 }
@@ -4554,7 +4560,7 @@ button:hover:not(:disabled),
 .settings-option-card[data-selected="true"] span,
 .settings-option-card[data-selected="true"]:hover strong,
 .settings-option-card[data-selected="true"]:hover span {
-  color: #ffffff !important;
+  color: var(--jlpt-primary) !important;
 }
 .settings-toggle-row:hover i[data-on="true"],
 .settings-toggle-row i[data-on="true"],
