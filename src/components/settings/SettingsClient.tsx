@@ -20,6 +20,13 @@ type AccountState = {
   nickname: string;
 };
 
+type SettingsAuthSession = {
+  user?: {
+    email?: string | null;
+    user_metadata?: Record<string, unknown>;
+  };
+} | null;
+
 const SETTINGS_STORAGE_KEY = "jlpt-quiz-user-settings";
 const levels: JlptLevel[] = ["N5", "N4", "N3", "N2", "N1"];
 
@@ -47,7 +54,7 @@ const weaknessOptions: Array<{ value: WeaknessBasis; label: string; helper: stri
   },
 ];
 
-function nicknameFromSession(session: { user?: { email?: string | null; user_metadata?: Record<string, unknown> } } | null): string {
+function nicknameFromSession(session: SettingsAuthSession): string {
   const metadata = session?.user?.user_metadata ?? {};
   const rawName = metadata.nickname ?? metadata.full_name ?? metadata.name ?? metadata.user_name;
   const email = session?.user?.email ?? null;
@@ -57,6 +64,31 @@ function nicknameFromSession(session: { user?: { email?: string | null; user_met
     : email?.split("@")[0] || "";
 }
 
+function normalizeSettings(raw: Partial<SettingsState>): SettingsState {
+  return {
+    defaultLevel: levels.includes(raw.defaultLevel as JlptLevel) ? raw.defaultLevel as JlptLevel : defaultSettings.defaultLevel,
+    includeUnansweredInWrongNote: typeof raw.includeUnansweredInWrongNote === "boolean"
+      ? raw.includeUnansweredInWrongNote
+      : defaultSettings.includeUnansweredInWrongNote,
+    weaknessBasis: weaknessOptions.some((option) => option.value === raw.weaknessBasis)
+      ? raw.weaknessBasis as WeaknessBasis
+      : defaultSettings.weaknessBasis,
+  };
+}
+
+function settingsFromSession(session: SettingsAuthSession): SettingsState | null {
+  const metadata = session?.user?.user_metadata ?? {};
+  if (!metadata.jlpt_quiz_settings && !metadata.default_jlpt_level && !metadata.weakness_basis) return null;
+  const saved = typeof metadata.jlpt_quiz_settings === "object" && metadata.jlpt_quiz_settings !== null
+    ? metadata.jlpt_quiz_settings as Partial<SettingsState>
+    : {};
+  return normalizeSettings({
+    ...saved,
+    defaultLevel: (metadata.default_jlpt_level as JlptLevel | undefined) ?? saved.defaultLevel,
+    weaknessBasis: (metadata.weakness_basis as WeaknessBasis | undefined) ?? saved.weaknessBasis,
+  });
+}
+
 function readSettings(): SettingsState {
   if (typeof window === "undefined") return defaultSettings;
 
@@ -64,15 +96,7 @@ function readSettings(): SettingsState {
     const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
     if (!raw) return defaultSettings;
     const parsed = JSON.parse(raw) as Partial<SettingsState>;
-    return {
-      defaultLevel: levels.includes(parsed.defaultLevel as JlptLevel) ? parsed.defaultLevel as JlptLevel : defaultSettings.defaultLevel,
-      includeUnansweredInWrongNote: typeof parsed.includeUnansweredInWrongNote === "boolean"
-        ? parsed.includeUnansweredInWrongNote
-        : defaultSettings.includeUnansweredInWrongNote,
-      weaknessBasis: weaknessOptions.some((option) => option.value === parsed.weaknessBasis)
-        ? parsed.weaknessBasis as WeaknessBasis
-        : defaultSettings.weaknessBasis,
-    };
+    return normalizeSettings(parsed);
   } catch {
     return defaultSettings;
   }
@@ -80,14 +104,18 @@ function readSettings(): SettingsState {
 
 export function SettingsClient() {
   const [settings, setSettings] = useState<SettingsState>(defaultSettings);
-  const [saveState, setSaveState] = useState<"idle" | "saved">("idle");
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [account, setAccount] = useState<AccountState>({ status: "loading", email: null, nickname: "" });
   const [nicknameInput, setNicknameInput] = useState("");
   const [nicknameSaveState, setNicknameSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    queueMicrotask(() => setSettings(readSettings()));
+    queueMicrotask(() => {
+      setSettings(readSettings());
+      setSettingsLoaded(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -95,11 +123,15 @@ export function SettingsClient() {
       const supabase = getSupabaseBrowserClient();
       supabase.auth.getSession().then(({ data }) => {
         const nickname = nicknameFromSession(data.session);
+        const remoteSettings = settingsFromSession(data.session);
+        if (remoteSettings) setSettings(remoteSettings);
         setAccount({ status: data.session ? "signed-in" : "signed-out", email: data.session?.user.email ?? null, nickname });
         setNicknameInput(nickname);
       });
       const { data } = supabase.auth.onAuthStateChange((_event, session) => {
         const nickname = nicknameFromSession(session);
+        const remoteSettings = settingsFromSession(session);
+        if (remoteSettings) setSettings(remoteSettings);
         setAccount({ status: session ? "signed-in" : "signed-out", email: session?.user.email ?? null, nickname });
         setNicknameInput(nickname);
       });
@@ -110,21 +142,41 @@ export function SettingsClient() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !settingsLoaded) return;
     window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
     if (saveState === "idle") return;
     const timer = window.setTimeout(() => setSaveState("idle"), 1600);
     return () => window.clearTimeout(timer);
-  }, [settings, saveState]);
+  }, [settings, saveState, settingsLoaded]);
 
   const selectedWeakness = useMemo(
     () => weaknessOptions.find((option) => option.value === settings.weaknessBasis) ?? weaknessOptions[0],
     [settings.weaknessBasis],
   );
 
+  async function persistAccountSettings(nextSettings: SettingsState) {
+    if (account.status !== "signed-in") {
+      setSaveState("saved");
+      return;
+    }
+
+    setSaveState("saving");
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        jlpt_quiz_settings: nextSettings,
+        default_jlpt_level: nextSettings.defaultLevel,
+        weakness_basis: nextSettings.weaknessBasis,
+      },
+    });
+
+    setSaveState(error ? "error" : "saved");
+  }
+
   function updateSettings(next: Partial<SettingsState>) {
-    setSettings((current) => ({ ...current, ...next }));
-    setSaveState("saved");
+    const nextSettings = { ...settings, ...next };
+    setSettings(nextSettings);
+    void persistAccountSettings(nextSettings);
   }
 
   async function saveNickname() {
@@ -297,7 +349,13 @@ export function SettingsClient() {
       </section>
 
       <p className="settings-save-state" aria-live="polite">
-        {saveState === "saved" ? "설정이 이 브라우저에 저장되었습니다." : "변경 사항은 이 브라우저에 자동 저장됩니다."}
+        {saveState === "saving"
+          ? "계정 설정을 저장하는 중입니다."
+          : saveState === "saved"
+            ? account.status === "signed-in" ? "설정이 계정에 저장되었습니다." : "설정이 이 브라우저에 저장되었습니다."
+            : saveState === "error"
+              ? "계정 저장에 실패했습니다. 다시 시도해주세요."
+              : account.status === "signed-in" ? "변경 사항은 계정에 자동 저장됩니다." : "변경 사항은 이 브라우저에 자동 저장됩니다."}
       </p>
     </div>
   );

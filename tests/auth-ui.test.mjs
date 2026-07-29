@@ -287,6 +287,14 @@ test("settings page provides account learning defaults without extra service not
   assert.match(pageSource, /<SettingsClient \/>/);
   assert.match(clientSource, /SETTINGS_STORAGE_KEY/);
   assert.match(clientSource, /jlpt-quiz-user-settings/);
+  assert.match(clientSource, /jlpt_quiz_settings/);
+  assert.match(clientSource, /default_jlpt_level/);
+  assert.match(clientSource, /weakness_basis/);
+  assert.match(clientSource, /settingsFromSession/);
+  assert.match(clientSource, /persistAccountSettings/);
+  assert.match(clientSource, /settingsLoaded/);
+  assert.match(clientSource, /!settingsLoaded/);
+  assert.match(clientSource, /설정이 계정에 저장되었습니다/);
   assert.match(clientSource, /<span>01<\/span>/);
   assert.match(clientSource, /<span>04<\/span>/);
   assert.match(clientSource, /기본 JLPT 레벨/);
