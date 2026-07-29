@@ -874,7 +874,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           </div>
           <div className="mock-exam-start-summary" aria-label="시작 전 요약">
             <strong><span>문항</span>{artifact.set.question_count}문항</strong>
-            <strong><span>문제 순서</span>한자읽기 → 문법 → 독해</strong>
+            <strong><span>시간</span>{artifact.set.time_limit_minutes}분</strong>
             <strong><span>범위</span>청해 제외</strong>
             <strong><span>해설</span>제출 후 공개</strong>
           </div>
