@@ -13,7 +13,7 @@ export default function DashboardPage() {
             <h1>안녕하세요, 효쿠님</h1>
             <p>모의고사 기록과 복습할 문제를 한 곳에서 확인합니다.</p>
           </div>
-          <Link className="figma-primary" href="/mock-exams/n5-realistic-001">새 모의고사 시작 →</Link>
+          <Link className="figma-primary" href="/mock-exams/n5">새 모의고사 시작 →</Link>
         </section>
 
         <DashboardLiveData />

@@ -376,7 +376,7 @@ function DashboardActivityAndGoal({ data, status }: DashboardDataState) {
         <strong>{monthlySubmitted} / {monthlyGoal}회</strong>
         <div className="figma-progress"><i style={{ width: `${monthlyProgress}%` }} /></div>
         <p>{nextGoalCount ? `다음 목표까지 ${nextGoalCount}회 남음` : "이번 달 목표를 달성했습니다"}</p>
-        <Link className="figma-primary" href="/mock-exams/n5-realistic-001">계속 학습하기</Link>
+        <Link className="figma-primary" href="/mock-exams/n5">계속 학습하기</Link>
       </article>
     </section>
   );
@@ -474,7 +474,7 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
           <h2>취약 영역 분석</h2>
           <p>오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다.</p>
         </div>
-        <Link href="/mock-exams/n5-realistic-001">약한 영역 다시 풀기 →</Link>
+        <Link href="/mock-exams/n5">약한 영역 다시 풀기 →</Link>
       </div>
       <div className="dashboard-weak-grid">
         {weakAreas.map((area, index) => (

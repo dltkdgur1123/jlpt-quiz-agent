@@ -4,11 +4,11 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getNextJlptExam } from "@/lib/jlpt/exam-schedule";
 
 const levels = [
-  { level: "N5", time: "60분", href: "/mock-exams/n5-realistic-001" },
-  { level: "N4", time: "70분", href: "/mock-exams/n4-realistic-001" },
-  { level: "N3", time: "90분", href: "/mock-exams/n3-realistic-001" },
-  { level: "N2", time: "105분", href: "/mock-exams/n2-realistic-001" },
-  { level: "N1", time: "110분", href: "/mock-exams/n1-realistic-001" },
+  { level: "N5", time: "60분", href: "/mock-exams/n5" },
+  { level: "N4", time: "70분", href: "/mock-exams/n4" },
+  { level: "N3", time: "90분", href: "/mock-exams/n3" },
+  { level: "N2", time: "105분", href: "/mock-exams/n2" },
+  { level: "N1", time: "110분", href: "/mock-exams/n1" },
 ];
 
 const youtubeShortsUrl = "https://www.youtube.com/@hyokujlpt/shorts";

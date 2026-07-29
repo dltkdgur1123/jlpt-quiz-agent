@@ -9,6 +9,10 @@ const realisticMockExam002Page = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-002/page.tsx", import.meta.url), "utf8");
 const realisticMockExam003Page = () =>
   readFileSync(new URL("../src/app/mock-exams/n5-realistic-003/page.tsx", import.meta.url), "utf8");
+const autoLevelMockExamPage = () =>
+  readFileSync(new URL("../src/app/mock-exams/[level]/page.tsx", import.meta.url), "utf8");
+const autoMockExamRunner = () =>
+  readFileSync(new URL("../src/components/mock-exam/AutoMockExamRunner.tsx", import.meta.url), "utf8");
 const levelRealisticMockExamPage = (level) =>
   readFileSync(new URL(`../src/app/mock-exams/${level.toLowerCase()}-realistic-001/page.tsx`, import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
@@ -108,10 +112,47 @@ test("home page uses premium start cockpit and keeps learning/Shorts entries", (
   assert.match(css, /\.home-level-switch-indicator \{[\s\S]*?transition: transform var\(--home-level-switch-duration\) var\(--home-level-switch-ease\), background-color \.24s ease/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.home-level-switch \{[\s\S]*?--home-level-switch-duration: \.46s/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.home-level-switch-indicator,[\s\S]*?transition: none/);
-  assert.match(source, /\/mock-exams\/n5-realistic-001/);
-  for (const route of ["n4-realistic-001", "n3-realistic-001", "n2-realistic-001", "n1-realistic-001"]) {
+  assert.match(source, /\/mock-exams\/n5/);
+  for (const route of ["n4", "n3", "n2", "n1"]) {
     assert.match(source, new RegExp(`/mock-exams/${route}`));
   }
+  assert.doesNotMatch(homePage(), /\/mock-exams\/n[1-5]-realistic-001/);
+});
+
+test("level mock exam entry auto-assigns a set without exposing set selection UI", () => {
+  const pageSource = autoLevelMockExamPage();
+  const clientSource = autoMockExamRunner();
+  const mockClient = mockExamClient();
+
+  for (const phrase of [
+    "generateStaticParams",
+    "loadLevelArtifacts",
+    "AutoMockExamRunner",
+    "data/generated",
+    "n5",
+    "n4",
+    "n3",
+    "n2",
+    "n1",
+  ]) {
+    assert.ok(pageSource.includes(phrase), phrase);
+  }
+
+  for (const phrase of [
+    "pickAutoMockExamArtifact",
+    "jlpt-mock-exam-local-attempts",
+    "jlpt-mock-exam-in-progress",
+    "unattempted",
+    "oldestArtifact",
+    "<MockExamRunner artifact={artifact} />",
+  ]) {
+    assert.ok(clientSource.includes(phrase), phrase);
+  }
+
+  assert.match(mockClient, /set_code\?: string/);
+  assert.match(mockClient, /set_code: artifact\.set\.set_code/);
+  assert.match(mockClient, /href=\{`\/mock-exams\/\$\{artifact\.set\.jlpt_level\.toLowerCase\(\)\}`\}/);
+  assert.doesNotMatch(clientSource, /001|002|003 중 선택|세트 선택/);
 });
 
 test("dashboard page matches Figma learning dashboard sections", () => {

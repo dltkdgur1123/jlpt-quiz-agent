@@ -117,6 +117,7 @@ type LocalMockExamWrongNoteItem = {
 
 type LocalMockExamSavedAttempt = {
   id: string;
+  set_code?: string;
   submitted_at: string;
   set_title: string;
   jlpt_level: string;
@@ -793,6 +794,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
 
       writeLocalMockExamAttempt({
         id: localAttemptId,
+        set_code: artifact.set.set_code,
         submitted_at: submittedAt,
         set_title: artifact.set.set_title,
         jlpt_level: artifact.set.jlpt_level,
@@ -1070,7 +1072,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               <p>{passAdvice}</p>
             </section>
             <div className="mock-result-actions">
-              <a className="secondary-link" href="/mock-exams/n5-realistic-001">다른 시험 보기</a>
+              <a className="secondary-link" href={`/mock-exams/${artifact.set.jlpt_level.toLowerCase()}`}>다른 시험 보기</a>
               <a className="primary-link" href="#question-${reviewTargets[0]?.question.id ?? artifact.questions[0]?.id}">정답 보기</a>
             </div>
             <div className="mock-exam-status-grid">

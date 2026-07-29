@@ -86,7 +86,7 @@ export function HomeRecentMockExamGrid() {
             ? `${draft.jlpt_level} · ${answeredCount}/${draft.question_count}문항 진행 중인 모의고사를 이어서 풉니다.`
             : "모의고사를 시작하면 답변 상태와 현재 문항이 이 브라우저에 임시 저장됩니다."}
         </p>
-        <Link href={draft?.href ?? "/mock-exams/n5-realistic-001"}>
+        <Link href={draft?.href ?? "/mock-exams/n5"}>
           {draft ? "지난 문제 이어서 풀기 →" : "새 모의고사 시작 →"}
         </Link>
       </article>

@@ -118,7 +118,7 @@ export function WrongNoteClient() {
         <div className="wrong-note-empty">
           <h2>아직 다시 풀 오답이 없습니다</h2>
           <p>모의고사를 제출한 뒤 틀린 문제가 생기면 이 화면에서 다시 풀 수 있습니다.</p>
-          <Link className="primary-link" href="/mock-exams/n5-realistic-001">모의고사 풀기</Link>
+          <Link className="primary-link" href="/mock-exams/n5">모의고사 풀기</Link>
         </div>
       ) : (
         <div className="wrong-note-review-card">
@@ -167,7 +167,7 @@ export function WrongNoteClient() {
               <div className="wrong-note-complete-actions">
                 <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
                 <Link href="/dashboard">학습 기록 보기</Link>
-                <Link className="wrong-note-primary-cta" href="/mock-exams/n5-realistic-001">새 모의고사 풀기</Link>
+                <Link className="wrong-note-primary-cta" href="/mock-exams/n5">새 모의고사 풀기</Link>
               </div>
             </div>
           ) : (
