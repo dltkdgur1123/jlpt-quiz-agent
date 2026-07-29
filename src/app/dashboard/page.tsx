@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardLiveData } from "@/components/dashboard/DashboardAttemptData";
+import { DashboardGreeting } from "@/components/dashboard/DashboardGreeting";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
 export default function DashboardPage() {
@@ -10,7 +11,7 @@ export default function DashboardPage() {
 
         <section className="dashboard-hero">
           <div>
-            <h1>안녕하세요, 효쿠님</h1>
+            <DashboardGreeting />
             <p>모의고사 기록과 복습할 문제를 한 곳에서 확인합니다.</p>
           </div>
           <Link className="figma-primary" href="/mock-exams/n5">새 모의고사 시작 →</Link>

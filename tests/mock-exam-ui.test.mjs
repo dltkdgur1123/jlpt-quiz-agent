@@ -16,6 +16,8 @@ const autoMockExamRunner = () =>
 const levelRealisticMockExamPage = (level) =>
   readFileSync(new URL(`../src/app/mock-exams/${level.toLowerCase()}-realistic-001/page.tsx`, import.meta.url), "utf8");
 const dashboardPage = () => readFileSync(new URL("../src/app/dashboard/page.tsx", import.meta.url), "utf8");
+const dashboardGreeting = () =>
+  readFileSync(new URL("../src/components/dashboard/DashboardGreeting.tsx", import.meta.url), "utf8");
 const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
 const mockExamAttemptRoute = () =>
@@ -159,7 +161,8 @@ test("level mock exam entry auto-assigns a set without exposing set selection UI
 test("dashboard page matches Figma learning dashboard sections", () => {
   const source = dashboardPage();
   const clientSource = dashboardAttemptData();
-  const dashboardSource = `${source}\n${clientSource}`;
+  const greetingSource = dashboardGreeting();
+  const dashboardSource = `${source}\n${clientSource}\n${greetingSource}`;
   assert.match(source, /<SiteHeader active="history"/);
   const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
   for (const style of [
@@ -327,7 +330,10 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     assert.ok(css.includes(style), style);
   }
   for (const phrase of [
-    "안녕하세요, 효쿠님",
+    "DashboardGreeting",
+    "displayNameFromSession",
+    "안녕하세요",
+    "data.session ? displayNameFromSession(data.session) : \"\"",
     "학습 요약",
     "주간 학습 활동",
     "이번 달 목표",
@@ -376,6 +382,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   ]) {
     assert.ok(dashboardSource.includes(phrase), phrase);
   }
+  assert.doesNotMatch(source, /안녕하세요, 효쿠님/);
+  assert.match(greetingSource, /displayName \? `안녕하세요, \$\{displayName\}님` : "안녕하세요"/);
   assert.match(css, /Mobile dashboard page should not look like narrow centered cards/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.dashboard-page\) \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.figma-shell\.dashboard-page \{[\s\S]*?width: 100% !important;[\s\S]*?max-width: none !important/);
