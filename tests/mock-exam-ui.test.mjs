@@ -307,7 +307,7 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "visibleAttempts",
     "attempts.slice(0, 5)",
     "hiddenAttemptCount",
-    "최근 5개만 표시 중",
+    "외 {hiddenAttemptCount}건",
     "dashboard-recent-list",
     "dashboard-recent-more",
     "DashboardWrongNoteCard",

@@ -413,7 +413,7 @@ function DashboardRecentExamList({ data, status }: DashboardDataState) {
             })}
           </div>
           {hiddenAttemptCount ? (
-            <p className="dashboard-recent-more">최근 5개만 표시 중 · {hiddenAttemptCount}개 더 있음</p>
+            <p className="dashboard-recent-more">외 {hiddenAttemptCount}건</p>
           ) : null}
         </>
       ) : (
