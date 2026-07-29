@@ -591,6 +591,7 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "/api/mock-exams/coach-feedback",
     "coachFeedbackStatus === \"ready\" ? \"AI 평가\"",
     "자체 LLM 자동 생성",
+    "window.setTimeout(() => controller.abort(), 22000)",
     "mock-teacher-ai-summary",
     "mock-teacher-caution",
     "mock-teacher-metrics",
@@ -778,7 +779,9 @@ test("mock exam coach feedback uses optional self-hosted OpenAI-compatible LLM w
   }
 
   assert.match(routeSource, /temperature: 0\.25/);
-  assert.match(routeSource, /max_tokens: 420/);
+  assert.match(routeSource, /export const maxDuration = 30/);
+  assert.match(routeSource, /const DEFAULT_TIMEOUT_MS = 20000/);
+  assert.match(routeSource, /max_tokens: 220/);
   assert.match(routeSource, /AbortSignal\.timeout/);
   assert.match(envExample, /LOCAL_LLM_BASE_URL=http:\/\/127\.0\.0\.1:8080/);
   assert.match(envExample, /If unset\/unavailable, the result screen silently keeps the built-in rules-based teacher feedback/);

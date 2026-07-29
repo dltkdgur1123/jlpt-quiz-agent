@@ -665,7 +665,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   useEffect(() => {
     if (!coachFeedbackRequestKey) return;
     const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 5200);
+    const timer = window.setTimeout(() => controller.abort(), 22000);
 
     queueMicrotask(() => {
       setCoachFeedback(null);

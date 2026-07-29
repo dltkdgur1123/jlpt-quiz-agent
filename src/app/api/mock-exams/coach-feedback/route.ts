@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+export const maxDuration = 30;
+
 type CoachSectionInput = {
   section_key: "vocab" | "grammar" | "reading";
   label: string;
@@ -30,7 +32,7 @@ type CoachFeedback = {
 };
 
 const ALLOWED_SECTION_LABELS = new Set(["문자·어휘", "문법", "읽기"]);
-const DEFAULT_TIMEOUT_MS = 4500;
+const DEFAULT_TIMEOUT_MS = 20000;
 const MAX_ACTIONS = 3;
 
 function assertValidBody(body: CoachFeedbackInput) {
@@ -154,7 +156,7 @@ async function callLocalLlm(body: CoachFeedbackInput) {
     body: JSON.stringify({
       model,
       temperature: 0.25,
-      max_tokens: 420,
+      max_tokens: 220,
       response_format: { type: "json_object" },
       messages: [
         {
