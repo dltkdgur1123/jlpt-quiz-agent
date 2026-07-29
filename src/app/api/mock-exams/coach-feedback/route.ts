@@ -77,7 +77,8 @@ function clampActions(value: unknown) {
 function sanitizeCoachFeedback(raw: unknown, body: CoachFeedbackInput): CoachFeedback {
   const payload = raw && typeof raw === "object" ? raw as Partial<CoachFeedback> : {};
   const weakest = [...body.sections].sort((a, b) => a.rate - b.rate || b.wrong_or_blank - a.wrong_or_blank)[0];
-  const actions = clampActions(payload.actions);
+  const otherSectionLabels = body.sections.map((section) => section.label).filter((label) => label !== weakest.label);
+  const actions = clampActions(payload.actions).filter((action) => !otherSectionLabels.some((label) => action.includes(label)));
 
   while (actions.length < MAX_ACTIONS) {
     const fallbackActions = [
@@ -91,7 +92,7 @@ function sanitizeCoachFeedback(raw: unknown, body: CoachFeedbackInput): CoachFee
   return {
     headline: clampText(
       typeof payload.headline === "string" && payload.headline.includes(weakest.label) ? payload.headline : undefined,
-      `${weakest.label}을 먼저 복습하면 다음 점수 상승폭이 큽니다.`,
+      `${weakest.label} 복습을 먼저 하면 다음 점수 상승폭이 큽니다.`,
     ),
     summary: clampText(
       typeof payload.summary === "string" && payload.summary.includes(weakest.label) ? payload.summary : undefined,
