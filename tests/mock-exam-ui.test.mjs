@@ -293,6 +293,10 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     ".figma-shell.dashboard-page",
     ".figma-shell.dashboard-page .dashboard-panel",
     "border-radius: 0 !important",
+    ".dashboard-recent-list",
+    "max-height: 500px !important",
+    "overflow-y: auto !important",
+    ".dashboard-recent-more",
   ]) {
     assert.ok(css.includes(style), style);
   }
@@ -302,6 +306,12 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "주간 학습 활동",
     "이번 달 목표",
     "최근 모의고사",
+    "visibleAttempts",
+    "attempts.slice(0, 5)",
+    "hiddenAttemptCount",
+    "최근 5개만 표시 중",
+    "dashboard-recent-list",
+    "dashboard-recent-more",
     "DashboardWrongNoteCard",
     "취약 영역 분석",
     "오답노트와 최근 모의고사 기준",

@@ -384,6 +384,8 @@ function DashboardActivityAndGoal({ data, status }: DashboardDataState) {
 
 function DashboardRecentExamList({ data, status }: DashboardDataState) {
   const attempts = data?.attempts ?? [];
+  const visibleAttempts = attempts.slice(0, 5);
+  const hiddenAttemptCount = Math.max(0, attempts.length - visibleAttempts.length);
 
   return (
     <article className="dashboard-panel dashboard-recent">
@@ -395,18 +397,25 @@ function DashboardRecentExamList({ data, status }: DashboardDataState) {
       ) : status === "error" ? (
         <p>최근 모의고사 기록을 불러오지 못했습니다.</p>
       ) : attempts.length ? (
-        attempts.map((exam) => {
-          const set = exam.mock_exam_sets;
-          const rate = Math.round((Number(exam.correct_count ?? 0) / Number(exam.question_count || 1)) * 100);
-          return (
-            <div className="recent-exam-row" key={exam.id}>
-              <span>{set?.jlpt_level ?? "JLPT"}</span>
-              <div><strong>{set?.set_title ?? "실전 모의고사"}</strong><small>{formatDate(exam.submitted_at)}</small></div>
-              <b>{exam.score_total ?? exam.correct_count} / {exam.score_max ?? exam.question_count}</b>
-              <em data-good={rate >= 60}>{rate >= 60 ? "유지 권장" : "보완 필요"}</em>
-            </div>
-          );
-        })
+        <>
+          <div className="dashboard-recent-list" aria-label="최근 모의고사 최근 5개">
+            {visibleAttempts.map((exam) => {
+              const set = exam.mock_exam_sets;
+              const rate = Math.round((Number(exam.correct_count ?? 0) / Number(exam.question_count || 1)) * 100);
+              return (
+                <div className="recent-exam-row" key={exam.id}>
+                  <span>{set?.jlpt_level ?? "JLPT"}</span>
+                  <div><strong>{set?.set_title ?? "실전 모의고사"}</strong><small>{formatDate(exam.submitted_at)}</small></div>
+                  <b>{exam.score_total ?? exam.correct_count} / {exam.score_max ?? exam.question_count}</b>
+                  <em data-good={rate >= 60}>{rate >= 60 ? "유지 권장" : "보완 필요"}</em>
+                </div>
+              );
+            })}
+          </div>
+          {hiddenAttemptCount ? (
+            <p className="dashboard-recent-more">최근 5개만 표시 중 · {hiddenAttemptCount}개 더 있음</p>
+          ) : null}
+        </>
       ) : (
         <p>아직 저장된 모의고사 기록이 없습니다.</p>
       )}
