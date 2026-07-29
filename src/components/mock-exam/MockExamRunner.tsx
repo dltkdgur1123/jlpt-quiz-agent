@@ -327,6 +327,12 @@ function radarPolygonPoints(rates: number[], maxRadius = 38, center = 50) {
     .join(" ");
 }
 
+function sectionBalanceStatus(rate: number, goalRate: number) {
+  if (rate >= goalRate) return "목표 이상";
+  if (rate >= Math.max(0, goalRate - 15)) return "조금 부족";
+  return "우선 복습";
+}
+
 function readRecentQuestionHistory() {
   if (typeof window === "undefined") return [];
 
@@ -572,12 +578,31 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const goalRate = 70;
   const radarGoalPoints = radarPolygonPoints(balanceSections.map(() => goalRate));
   const radarScorePoints = radarPolygonPoints(balanceSections.map((section) => section.rate));
+  const sortedBalanceSections = [...balanceSections].sort((a, b) => a.rate - b.rate || b.wrongOrBlank - a.wrongOrBlank);
+  const weakestBalanceSection = sortedBalanceSections[0];
+  const strongestBalanceSection = [...balanceSections].sort((a, b) => b.rate - a.rate || a.wrongOrBlank - b.wrongOrBlank)[0];
+  const averageBalanceRate = Math.round(balanceSections.reduce((sum, section) => sum + section.rate, 0) / balanceSections.length);
+  const balanceSpread = Math.max(...balanceSections.map((section) => section.rate)) - Math.min(...balanceSections.map((section) => section.rate));
   const lowestSectionRate = Math.min(...sectionResults.map((section) => section.rate));
   const mockPassed = totalMockScore >= MOCK_PASS_TOTAL_THRESHOLD && lowestSectionRate >= MOCK_SECTION_RATE_THRESHOLD;
   const passStatusLabel = mockPassed ? "合格 Passed" : "不合格 Not Passed";
   const passAdvice = mockPassed
     ? "현재 세트 기준으로는 합격권입니다. 오답노트로 약한 영역만 정리하세요."
     : "약한 영역을 먼저 복습한 뒤 같은 형식으로 다시 풀어보세요.";
+  const teacherHeadline = mockPassed
+    ? `${strongestBalanceSection.label}는 안정적이고, ${weakestBalanceSection.label}만 가볍게 보완하면 좋습니다.`
+    : `${weakestBalanceSection.label}이 가장 약합니다. 다음 회차 전 이 영역을 먼저 복습하세요.`;
+  const teacherActionItems = mockPassed
+    ? [
+        `${weakestBalanceSection.label} 오답 ${weakestBalanceSection.wrongOrBlank}개만 먼저 정리`,
+        "맞힌 문제는 오래 끌지 말고 해설 확인 위주로 복습",
+        "다음 모의고사는 같은 레벨에서 새 세트로 감각 유지",
+      ]
+    : [
+        `${weakestBalanceSection.label} 기본 유형을 15분 복습`,
+        "틀린 문제와 미응답 문제를 먼저 다시 풀기",
+        "전체 재응시보다 약한 영역 확인 후 다음 세트 진행",
+      ];
   const examDate = formatMockExamDate();
   const isAuthenticatedForWrongNote = authStatus === "signed_in" || saveStatus === "saved";
   const wrongNoteTitle =
@@ -1029,47 +1054,63 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               <div className="mock-balance-head">
                 <div>
                   <h3>영역별 균형</h3>
-                  <p>목표 기준 {goalRate}%와 비교해 이번 시험의 약한 영역을 확인하세요.</p>
+                  <p>목표 {goalRate}% 대비 약한 영역과 다음 복습 순서를 먼저 보여드립니다.</p>
                 </div>
                 <div className="mock-detail-legend" aria-label="그래프 범례">
                   <span><i />내 점수</span>
                   <span><i />목표</span>
                 </div>
               </div>
-              <div className="mock-radar-panel mock-radar-panel--tri">
-                <div className="mock-radar-card mock-radar-card--top">
-                  <strong>{balanceSections[0].label}</strong>
-                  <span>{balanceSections[0].correct}/{balanceSections[0].question_count} · {balanceSections[0].rate}%</span>
+              <div className="mock-balance-dashboard">
+                <div className="mock-balance-bars">
+                  {balanceSections.map((section) => (
+                    <div className="mock-balance-row" key={section.section_key} data-status={section.rate >= goalRate ? "strong" : section.rate >= goalRate - 15 ? "watch" : "weak"}>
+                      <div className="mock-balance-row-head">
+                        <strong>{section.label}</strong>
+                        <span>{section.correct}/{section.question_count} · {section.rate}%</span>
+                      </div>
+                      <div className="mock-balance-track" aria-hidden="true">
+                        <i className="mock-balance-goal" style={{ left: `${goalRate}%` }} />
+                        <b style={{ width: `${section.rate}%` }} />
+                      </div>
+                      <p>{sectionBalanceStatus(section.rate, goalRate)} · 오답/미응답 {section.wrongOrBlank}문항</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="mock-radar-card mock-radar-card--left">
-                  <strong>{balanceSections[1].label}</strong>
-                  <span>{balanceSections[1].correct}/{balanceSections[1].question_count} · {balanceSections[1].rate}%</span>
-                </div>
-                <div className="mock-radar-chart mock-radar-chart--tri" aria-label="문자·어휘, 문법, 읽기 영역별 균형 그래프" role="img">
-                  <svg viewBox="0 0 100 100" aria-hidden="true">
-                    <polygon className="mock-radar-grid" points="50,12 82.9,69 17.1,69" />
-                    <polygon className="mock-radar-grid mock-radar-grid--mid" points="50,31 66.5,59.5 33.5,59.5" />
-                    <line x1="50" y1="50" x2="50" y2="12" />
-                    <line x1="50" y1="50" x2="82.9" y2="69" />
-                    <line x1="50" y1="50" x2="17.1" y2="69" />
-                    <polygon className="mock-radar-goal-shape" points={radarGoalPoints} />
-                    <polygon className="mock-radar-score-shape" points={radarScorePoints} />
-                  </svg>
-                </div>
-                <div className="mock-radar-card mock-radar-card--right">
-                  <strong>{balanceSections[2].label}</strong>
-                  <span>{balanceSections[2].correct}/{balanceSections[2].question_count} · {balanceSections[2].rate}%</span>
+                <div className="mock-balance-mini-chart">
+                  <div className="mock-radar-chart mock-radar-chart--tri" aria-label="문자·어휘, 문법, 읽기 영역별 균형 그래프" role="img">
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                      <polygon className="mock-radar-grid" points="50,12 82.9,69 17.1,69" />
+                      <polygon className="mock-radar-grid mock-radar-grid--mid" points="50,31 66.5,59.5 33.5,59.5" />
+                      <line x1="50" y1="50" x2="50" y2="12" />
+                      <line x1="50" y1="50" x2="82.9" y2="69" />
+                      <line x1="50" y1="50" x2="17.1" y2="69" />
+                      <polygon className="mock-radar-goal-shape" points={radarGoalPoints} />
+                      <polygon className="mock-radar-score-shape" points={radarScorePoints} />
+                    </svg>
+                  </div>
+                  <p><strong>평균 {averageBalanceRate}%</strong><span>영역 편차 {balanceSpread}%p</span></p>
                 </div>
               </div>
               <p className="mock-detail-hint">청해 제외 세트이므로 문자·어휘, 문법, 읽기 3개 영역만 표시합니다.</p>
             </section>
             <section className="mock-teacher-card" aria-label="선생님의 평가">
-              <h3>선생님의 평가</h3>
-              <div className="mock-teacher-profile">
-                <div aria-hidden="true">忍</div>
-                <p><strong>JLPT Coach · {artifact.set.jlpt_level}</strong><span>모의고사 분석 선생님</span></p>
+              <div className="mock-teacher-head">
+                <h3>선생님의 평가</h3>
+                <span>{mockPassed ? "합격권 유지" : "복습 우선"}</span>
               </div>
-              <p>{passAdvice}</p>
+              <div className="mock-teacher-profile">
+                <div aria-hidden="true">先</div>
+                <p><strong>{artifact.set.jlpt_level} 모의고사 코치</strong><span>영역별 결과 기반 학습 진단</span></p>
+              </div>
+              <p className="mock-teacher-summary">{teacherHeadline}</p>
+              <div className="mock-teacher-metrics">
+                <span><b>우선 복습</b>{weakestBalanceSection.label} · {weakestBalanceSection.rate}%</span>
+                <span><b>안정 영역</b>{strongestBalanceSection.label} · {strongestBalanceSection.rate}%</span>
+              </div>
+              <ol className="mock-teacher-actions">
+                {teacherActionItems.map((item) => <li key={item}>{item}</li>)}
+              </ol>
             </section>
             <div className="mock-result-actions">
               <a className="secondary-link" href={`/mock-exams/${artifact.set.jlpt_level.toLowerCase()}`}>다른 시험 보기</a>
