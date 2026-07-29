@@ -523,7 +523,10 @@ test("mock exam start screen is optimized for mobile before the exam begins", ()
   assert.match(clientSource, /mock-exam-start-summary/);
   assert.match(clientSource, /mock-exam-start-checklist/);
   assert.match(clientSource, /<span>시간<\/span>\{artifact\.set\.time_limit_minutes\}분/);
-  assert.match(clientSource, /문제 순서: 한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해/);
+  assert.match(clientSource, /className="mock-exam-order-line">한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해/);
+  assert.doesNotMatch(clientSource, /문제 순서: 한자읽기/);
+  assert.match(css, /\.mock-exam-order-line \{[\s\S]*?letter-spacing:\s*\.025em/);
+  assert.match(css, /\.mock-exam-order-line \{[\s\S]*?word-spacing:\s*\.08em/);
   assert.doesNotMatch(clientSource, /<span>문제 순서<\/span>한자읽기/);
   assert.doesNotMatch(clientSource, /<li>제한 시간 \{artifact\.set\.time_limit_minutes\}분<\/li>/);
   assert.match(clientSource, /시험 시작/);

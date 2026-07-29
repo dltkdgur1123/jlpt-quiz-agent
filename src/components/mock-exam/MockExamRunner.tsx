@@ -879,7 +879,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             <strong><span>해설</span>제출 후 공개</strong>
           </div>
           <ul className="mock-exam-start-checklist">
-            <li>문제 순서: 한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해</li>
+            <li className="mock-exam-order-line">한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해</li>
             <li>미응답 문항은 제출 전 한 번 더 확인</li>
             <li>
               본 모의고사는 공식 JLPT 기출문제가 아니며, JLPT 시험 형식을 참고해 제작한 학습용 연습 문제입니다.

@@ -1066,6 +1066,10 @@ main:has(.mock-exam-shell) {
 .mock-exam-start-checklist li {
   line-height: 1.58;
 }
+.mock-exam-order-line {
+  letter-spacing: .025em;
+  word-spacing: .08em;
+}
 .mock-exam-sticky-status {
   min-height: 76px;
   top: 0;
