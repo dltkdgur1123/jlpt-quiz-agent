@@ -17,7 +17,7 @@ const PUBLIC_PAGE_CHECKS = [
   { path: "/wrong-note", expect: ["JLPT 오답노트", "wrong-note-shell"] },
   { path: "/about", expect: ["서비스 소개", "HYOKU JLPT", "공식 JLPT 주관기관과 무관"] },
   { path: "/privacy", expect: ["개인정보처리방침", "Google AdSense", "쿠키"] },
-  { path: "/terms", expect: ["이용약관", "학습 참고용", "Google AdSense"] },
+  { path: "/terms", expect: ["이용약관", "참고용 정보", "Google AdSense"] },
   { path: "/contact", expect: ["문의", "GitHub Issues", "개인정보처리방침"] },
 ];
 
