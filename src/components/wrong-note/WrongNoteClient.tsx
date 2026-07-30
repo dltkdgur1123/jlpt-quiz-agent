@@ -273,6 +273,10 @@ export function WrongNoteClient() {
         <div className="wrong-note-progress" aria-label="오답 재풀이 진행률">
           <i style={{ width: `${reviewProgress}%` }} />
         </div>
+        <div className="wrong-note-mobile-status" aria-label="모바일 오답 복습 상태">
+          <strong>{currentItem ? `${currentIndex + 1}/${items.length}` : `0/${items.length}`}</strong>
+          <span>확인 {reviewedCount} · 반복 {repeatWrongCount}</span>
+        </div>
       </div>
 
       {items.length === 0 || !currentItem || !currentQuestion ? (
@@ -339,7 +343,7 @@ export function WrongNoteClient() {
               </div>
             </div>
           ) : (
-            <div className="wrong-note-actions">
+            <div className="wrong-note-actions wrong-note-actions-sticky">
               <button type="button" onClick={() => move(-1)} disabled={currentIndex === 0}>이전</button>
               <button type="button" onClick={revealAnswer} disabled={!selectedAnswer || isRevealed}>정답 확인</button>
               <button type="button" onClick={() => move(1)} disabled={!isRevealed || isLastItem}>다음 문제</button>

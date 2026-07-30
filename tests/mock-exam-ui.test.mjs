@@ -856,6 +856,50 @@ test("mock exam client keeps answers hidden until full submit and shows section 
 });
 
 
+test("mock exam active and result screens have mobile thumb-friendly controls", () => {
+  const source = mockExamClient();
+  const css = globalStyles();
+
+  for (const phrase of [
+    "mock-mobile-action-bar",
+    "문제 목록 보기",
+    "mock-mobile-action-bar__submit",
+    "mock-result-mobile-summary",
+    "mock-result-primary-actions",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+
+  assert.match(css, /Mobile mock exam thumb action bar: fixed primary controls above safe area/);
+  assert.match(css, /\.mock-mobile-action-bar \{[\s\S]*?display: none/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-mobile-action-bar \{[\s\S]*?position: fixed !important;[\s\S]*?bottom: calc\(10px \+ env\(safe-area-inset-bottom\)\) !important/);
+  assert.match(css, /\.mock-exam-shell--active \.mock-mobile-action-bar button \{[\s\S]*?min-height: 48px !important/);
+  assert.match(css, /\.mock-mobile-action-bar__submit \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important;[\s\S]*?color: #ffffff !important/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.mock-exam-shell--active\) \{[\s\S]*?padding-bottom: calc\(112px \+ env\(safe-area-inset-bottom\)\) !important/);
+  assert.match(css, /Mobile mock exam result screen: compact score sheet and full-width next actions/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--submitted \.result-card \{[\s\S]*?border-left: 0 !important;[\s\S]*?border-right: 0 !important;[\s\S]*?border-radius: 0 !important/);
+  assert.match(css, /\.mock-result-mobile-summary \{[\s\S]*?display: grid/);
+  assert.match(css, /\.mock-result-primary-actions \{[\s\S]*?grid-template-columns: 1fr !important/);
+});
+
+
+test("wrong-note retry page is mobile readable with thumb-sized review controls", () => {
+  const clientSource = wrongNoteClient();
+  const css = globalStyles();
+
+  assert.match(clientSource, /wrong-note-mobile-status/);
+  assert.match(clientSource, /wrong-note-actions-sticky/);
+  assert.match(css, /Mobile wrong-note retry: single-column study sheet with thumb controls/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.wrong-note-shell \{[\s\S]*?padding-left: 0 !important;[\s\S]*?padding-right: 0 !important/);
+  assert.match(css, /\.wrong-note-page \{[\s\S]*?grid-template-columns: 1fr !important/);
+  assert.match(css, /\.wrong-note-hero \{[\s\S]*?position: static !important/);
+  assert.match(css, /\.wrong-note-choice \{[\s\S]*?min-height: 54px !important/);
+  assert.match(css, /\.wrong-note-actions-sticky \{[\s\S]*?position: sticky !important;[\s\S]*?bottom: calc\(8px \+ env\(safe-area-inset-bottom\)\) !important/);
+  assert.match(css, /\.wrong-note-filter-tabs \{[\s\S]*?overflow-x: auto !important/);
+  assert.match(css, /\.wrong-note-mobile-status \{[\s\S]*?display: flex !important/);
+});
+
+
 test("wrong-note retry page replays only attempted wrong local fallback questions", () => {
   const pageSource = wrongNotePage();
   const clientSource = wrongNoteClient();

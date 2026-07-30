@@ -866,7 +866,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   }
 
   return (
-    <div className={`mock-exam-shell ${examStarted ? "mock-exam-shell--active" : "mock-exam-shell--start"}`}>
+    <div className={`mock-exam-shell ${examStarted ? "mock-exam-shell--active" : "mock-exam-shell--start"} ${submitted ? "mock-exam-shell--submitted" : ""}`}>
       <section className="hero-copy mock-exam-hero">
         <p className="section-eyebrow">JLPT Realistic Mock Exam</p>
         <h1>{artifact.set.set_title}</h1>
@@ -1034,6 +1034,10 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               {score} / {artifact.set.question_count}
             </h2>
             {saveMessage ? <p className="mock-save-status" data-status={saveStatus}>{saveMessage}</p> : null}
+            <div className="mock-result-mobile-summary" aria-label="모바일 결과 요약">
+              <strong>{score}/{artifact.set.question_count}</strong>
+              <span>체감 점수 {totalMockScore}/{MOCK_TOTAL_SCORE} · {passStatusLabel}</span>
+            </div>
             <div className="mock-result-certificate" data-passed={mockPassed}>
               <div className="mock-result-certificate-head">
                 <div>
@@ -1122,7 +1126,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               </ol>
               <small className="mock-teacher-caution">{teacherFeedback.caution}</small>
             </section>
-            <div className="mock-result-actions">
+            <div className="mock-result-actions mock-result-primary-actions">
               <a className="secondary-link" href={`/mock-exams/${artifact.set.jlpt_level.toLowerCase()}`}>다른 시험 보기</a>
               <a className="primary-link" href="#question-${reviewTargets[0]?.question.id ?? artifact.questions[0]?.id}">정답 보기</a>
             </div>
@@ -1300,6 +1304,27 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             </button>
           )}
         </aside>
+        {!submitted ? (
+          <div className="mock-mobile-action-bar" aria-label="모바일 시험 빠른 조작">
+            <button
+              aria-controls="mock-mobile-question-sheet"
+              aria-expanded={mobileQuestionSheetOpen}
+              className="secondary-action"
+              onClick={() => setMobileQuestionSheetOpen(true)}
+              type="button"
+            >
+              문제 목록 보기
+            </button>
+            <button
+              className="mock-mobile-action-bar__submit"
+              disabled={saveStatus === "saving"}
+              onClick={requestSubmitMockExam}
+              type="button"
+            >
+              제출하기
+            </button>
+          </div>
+        ) : null}
         <div
           aria-hidden={!mobileQuestionSheetOpen}
           className="mock-mobile-question-sheet"
