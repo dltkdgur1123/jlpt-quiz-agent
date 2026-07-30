@@ -494,6 +494,9 @@ export async function GET(request: NextRequest) {
       total_count: 0,
       wrong_count: 0,
       unanswered_count: 0,
+      unresolved_count: 0,
+      resolved_count: 0,
+      repeat_wrong_count: 0,
       recent_items: [] as Array<{
         id: string;
         attempt_id: string;
@@ -590,10 +593,17 @@ export async function GET(request: NextRequest) {
           return leftRank - rightRank || (right.review?.repeat_wrong_count ?? 0) - (left.review?.repeat_wrong_count ?? 0);
         });
 
+      const resolvedCount = rows.filter((row) => row.review?.result === "resolved").length;
+      const repeatWrongCount = rows.filter((row) => row.review?.result === "repeat_wrong").length;
+      const unresolvedCount = rows.length - resolvedCount;
+
       wrongNote = {
         total_count: rows.length,
         wrong_count: rows.length,
         unanswered_count: 0,
+        unresolved_count: unresolvedCount,
+        resolved_count: resolvedCount,
+        repeat_wrong_count: repeatWrongCount,
         recent_items: rows.slice(0, 20),
       };
     }

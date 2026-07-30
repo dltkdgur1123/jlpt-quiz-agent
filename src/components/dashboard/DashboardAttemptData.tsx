@@ -31,6 +31,12 @@ type WrongNoteItem = {
     correct_choice: "A" | "B" | "C" | "D";
     explanation: string;
   };
+  review?: {
+    result: "resolved" | "repeat_wrong";
+    review_count: number;
+    repeat_wrong_count: number;
+    last_reviewed_at: string | null;
+  };
 };
 
 type WeeklyActivity = {
@@ -62,6 +68,9 @@ type DashboardResponse = {
     total_count: number;
     wrong_count: number;
     unanswered_count: number;
+    unresolved_count: number;
+    resolved_count: number;
+    repeat_wrong_count: number;
     recent_items: WrongNoteItem[];
   };
 };
@@ -230,9 +239,9 @@ function DashboardStatGrid({ data, status }: DashboardDataState) {
       tone: "orange",
     },
     {
-      label: "오답",
-      value: status === "ready" ? `${data?.wrong_note?.wrong_count ?? 0}문제` : "-",
-      note: "오답노트 기준",
+      label: "남은 오답",
+      value: status === "ready" ? `${data?.wrong_note?.unresolved_count ?? data?.wrong_note?.wrong_count ?? 0}문제` : "-",
+      note: status === "ready" ? `반복 오답 ${data?.wrong_note?.repeat_wrong_count ?? 0}문제` : "오답노트 기준",
       tone: "mint",
     },
     {
@@ -386,19 +395,33 @@ function DashboardRecentExamList({ data, status }: DashboardDataState) {
   );
 }
 
+function reviewStatusLabel(item: WrongNoteItem) {
+  if (item.review?.result === "resolved") return "복습 완료";
+  if (item.review?.result === "repeat_wrong") return "반복 오답";
+  return "남은 오답";
+}
+
 function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
   const wrongNote = data?.wrong_note;
   const recentItems = (wrongNote?.recent_items ?? []).filter((item) => item.status === "wrong");
   const wrongCount = wrongNote?.wrong_count ?? 0;
+  const unresolvedCount = wrongNote?.unresolved_count ?? wrongCount;
+  const resolvedCount = wrongNote?.resolved_count ?? 0;
+  const repeatWrongCount = wrongNote?.repeat_wrong_count ?? 0;
+  const nextReviewItem = recentItems.find((item) => item.review?.result === "repeat_wrong") ?? recentItems.find((item) => item.review?.result !== "resolved") ?? recentItems[0];
+  const nextReviewSection = nextReviewItem?.section_key;
+  const nextReviewHref = nextReviewSection
+    ? `/wrong-note?section=${nextReviewSection}&basis=${data?.weakness_basis ?? DEFAULT_WEAKNESS_BASIS}`
+    : "/wrong-note";
 
   return (
     <section className="dashboard-panel dashboard-wrong-note dashboard-wrong-note-card" id="wrong-note" aria-label="오답노트">
       <div className="dashboard-wrong-note-head dashboard-action-head">
         <div>
           <p>오답노트</p>
-          <h2>{wrongCount ? `틀린 문제 ${wrongCount}개` : "틀린 문제가 없습니다"}</h2>
+          <h2>{unresolvedCount ? `남은 오답 ${unresolvedCount}개` : resolvedCount ? "복습할 오답이 없습니다" : "틀린 문제가 없습니다"}</h2>
         </div>
-        <Link href="/wrong-note">다시 풀기 →</Link>
+        <Link href={nextReviewHref}>다음 복습 →</Link>
       </div>
 
       {status === "loading" ? (
@@ -410,7 +433,14 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
       ) : wrongCount ? (
         <>
           <div className="dashboard-wrong-note-summary" aria-label="오답노트 요약">
-            <em>오답 <b>{wrongCount}</b></em>
+            <em>남은 오답 <b>{unresolvedCount}</b></em>
+            <em data-kind="repeat">반복 오답 <b>{repeatWrongCount}</b></em>
+            <em data-kind="resolved">복습 완료 <b>{resolvedCount}</b></em>
+          </div>
+          <div className="dashboard-next-review-card" aria-label="다음 복습 제안">
+            <strong>{repeatWrongCount ? "반복 오답부터 다시 확인하세요" : unresolvedCount ? "남은 오답을 이어서 풀어보세요" : "오늘 오답 복습은 정리되었습니다"}</strong>
+            <p>{nextReviewItem?.section_label ? `${nextReviewItem.section_label} 영역부터 이어갑니다.` : "새 모의고사를 풀면 복습할 문제가 자동으로 모입니다."}</p>
+            <Link href={nextReviewHref}>{unresolvedCount ? "오답노트로 이동" : "오답노트 보기"}</Link>
           </div>
           <div className="dashboard-wrong-note-recent">
             <p>최근 오답</p>
@@ -419,7 +449,7 @@ function DashboardWrongNoteCard({ data, status }: DashboardDataState) {
                 <li key={item.id}>
                   <strong>{item.question_no ? `${item.question_no}번` : "문항"}</strong>
                   <span>{item.section_label}</span>
-                  <em data-status="wrong">오답</em>
+                  <em data-status={item.review?.result ?? "wrong"}>{reviewStatusLabel(item)}</em>
                 </li>
               ))}
             </ul>
@@ -447,7 +477,7 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
     <section className="dashboard-panel dashboard-weak dashboard-weak-full" aria-label="취약 영역 분석">
       <div className="dashboard-weak-head dashboard-action-head">
         <div>
-          <h2>취약 영역 분석</h2>
+          <h2>최근 취약영역</h2>
           <p>{status === "ready" ? `${data?.weakness_basis_label ?? WEAKNESS_BASIS_LABELS[DEFAULT_WEAKNESS_BASIS]} 기준으로 보완이 필요한 영역을 정리합니다.` : "오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다."}</p>
         </div>
         <Link href={weakReviewHref}>약한 영역 다시 풀기 →</Link>

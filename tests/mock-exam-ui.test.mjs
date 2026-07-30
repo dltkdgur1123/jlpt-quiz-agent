@@ -230,6 +230,11 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "min-height: 92px !important",
     "border-radius: 18px !important",
     "dashboard-wrong-note-card",
+    "dashboard-next-review-card",
+    "dashboard-wrong-note-summary em[data-kind=\"repeat\"]",
+    "dashboard-wrong-note-summary em[data-kind=\"resolved\"]",
+    "dashboard-wrong-note-recent li em[data-status=\"repeat_wrong\"]",
+    "dashboard-wrong-note-recent li em[data-status=\"resolved\"]",
     "dashboard-weak-full",
     "dashboard-weak-grid",
     "dashboard-action-head",
@@ -332,6 +337,17 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "attempts.slice(0, 5)",
     "dashboard-recent-list",
     "DashboardWrongNoteCard",
+    "남은 오답",
+    "반복 오답",
+    "복습 완료",
+    "다음 복습",
+    "다음 복습 제안",
+    "dashboard-next-review-card",
+    "reviewStatusLabel",
+    "unresolved_count",
+    "resolved_count",
+    "repeat_wrong_count",
+    "최근 취약영역",
     "취약 영역 분석",
     "오답노트와 최근 모의고사 기준",
     "weaknessBasisFromSession",
@@ -448,8 +464,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
   assert.doesNotMatch(clientSource, /먼저 오답부터/);
   assert.doesNotMatch(clientSource, /미응답부터 채우기/);
   assert.doesNotMatch(clientSource, /남은 미응답은 다음 회차/);
-  assert.match(clientSource, /다시 풀기/);
-  assert.match(clientSource, /href="\/wrong-note"/);
+  assert.match(clientSource, /다음 복습/);
+  assert.match(clientSource, /nextReviewHref/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
   assert.match(clientSource, /readLocalDashboardAttempts/);
   assert.match(css, /dashboard-local-fallback-note/);
@@ -474,6 +490,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "mock_exam_wrong_reviews",
     "reviewMap",
     "review_result, review_count, repeat_wrong_count, last_reviewed_at",
+    "unresolved_count",
+    "resolved_count",
+    "repeat_wrong_count",
     "selected_choice, is_correct, mock_exam_questions(mock_exam_sections(section_key))",
     "attemptOrder",
     "recent-miss",

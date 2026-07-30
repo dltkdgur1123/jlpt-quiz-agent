@@ -918,6 +918,7 @@ dd { margin: 0; color: var(--muted); }
 .dashboard-wrong-note-summary {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .dashboard-wrong-note-summary em {
@@ -937,6 +938,52 @@ dd { margin: 0; color: var(--muted); }
 .dashboard-wrong-note-summary b {
   color: inherit;
   font-size: 13px;
+}
+.dashboard-wrong-note-summary em[data-kind="repeat"] {
+  border-color: #fecaca;
+  background: #fff5f5;
+  color: #d32f2f;
+}
+.dashboard-wrong-note-summary em[data-kind="resolved"] {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.dashboard-wrong-note-recent li em[data-status="repeat_wrong"] {
+  border-color: #fecaca;
+  background: #fff5f5;
+  color: #d32f2f;
+}
+.dashboard-wrong-note-recent li em[data-status="resolved"] {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.dashboard-next-review-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #eceef5;
+  border-radius: 18px;
+  background: #fbfcff;
+}
+.dashboard-next-review-card strong {
+  color: #151827;
+  font-size: 15px;
+  font-weight: 900;
+}
+.dashboard-next-review-card p {
+  margin: 0;
+  color: #73798a;
+  font-size: 13px;
+  font-weight: 800;
+}
+.dashboard-next-review-card a {
+  justify-self: start;
+  color: var(--jlpt-primary, #d32f2f);
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
 }
 .dashboard-wrong-note-recent {
   display: grid;
