@@ -7,7 +7,7 @@ const skipLogs = process.argv.includes("--skip-logs");
 const timeoutMs = Number(process.env.JLPT_OPS_TIMEOUT_MS ?? 20_000);
 
 const PUBLIC_PAGE_CHECKS = [
-  { path: "/", expect: ["JLPT D-Day", "레벨별 JLPT 모의고사", "JLPT 오답노트"] },
+  { path: "/", expect: ["JLPT D-Day", "레벨별 JLPT 모의고사", "JLPT 오답노트", "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", "client=ca-pub-4905997338755428"] },
   { path: "/guide", expect: ["JLPT 수험안내", "공식 안내 원문 보기"] },
   { path: "/mock-exams/n5", expect: ["N5 모의고사", "시험 시작", "공식 기출문제를 복제하거나 변형하지 않습니다"] },
   { path: "/mock-exams/n4", expect: ["N4 모의고사", "시험 시작"] },

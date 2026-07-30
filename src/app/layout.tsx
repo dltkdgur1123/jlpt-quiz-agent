@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import "./globals.css";
 
@@ -47,6 +48,13 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <Script
+          async
+          crossOrigin="anonymous"
+          id="google-adsense-account-script"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4905997338755428"
+          strategy="beforeInteractive"
+        />
         {children}
         <SiteFooter />
       </body>
