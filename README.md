@@ -76,7 +76,10 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
+npm run ops:health
 ```
+
+운영 배포 직후에는 `docs/operations/post-deploy-health-check.md` 기준으로 공개 페이지, sitemap/robots, API guard, 최근 Vercel 로그를 확인합니다.
 
 Current local verification before GitHub handoff:
 
