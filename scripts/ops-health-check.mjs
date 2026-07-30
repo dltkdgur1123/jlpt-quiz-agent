@@ -24,6 +24,7 @@ const PUBLIC_PAGE_CHECKS = [
 const SEO_FILE_CHECKS = [
   { path: "/sitemap.xml", expect: ["/mock-exams/n5", "/mock-exams/n1", "/wrong-note"] },
   { path: "/robots.txt", expect: ["Sitemap: https://jlpt-quiz-agent.vercel.app/sitemap.xml", "Disallow: /api/"] },
+  { path: "/ads.txt", expect: ["google.com, pub-4905997338755428, DIRECT, f08c47fec0942fa0"] },
 ];
 
 const API_GUARD_CHECKS = [
