@@ -46,6 +46,8 @@ type SectionSummary = {
   weakness_label: string;
 };
 
+type WeaknessBasis = "wrong-rate" | "unanswered" | "recent-miss";
+
 type DashboardResponse = {
   attempts: DashboardAttempt[];
   attempt_count: number;
@@ -53,6 +55,8 @@ type DashboardResponse = {
   average_rate: number;
   weekly_activity: WeeklyActivity[];
   section_summary: SectionSummary[];
+  weakness_basis: WeaknessBasis;
+  weakness_basis_label: string;
   wrong_note?: {
     total_count: number;
     wrong_count: number;
@@ -68,6 +72,39 @@ type DashboardDataState = {
 };
 
 const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
+const SETTINGS_STORAGE_KEY = "jlpt-quiz-user-settings";
+const DEFAULT_WEAKNESS_BASIS: WeaknessBasis = "wrong-rate";
+
+const WEAKNESS_BASIS_LABELS: Record<WeaknessBasis, string> = {
+  "wrong-rate": "오답률 우선",
+  unanswered: "미응답 포함",
+  "recent-miss": "최근 실수 우선",
+};
+
+function normalizeWeaknessBasis(value: unknown): WeaknessBasis {
+  return value === "unanswered" || value === "recent-miss" || value === "wrong-rate" ? value : DEFAULT_WEAKNESS_BASIS;
+}
+
+function readLocalWeaknessBasis() {
+  if (typeof window === "undefined") return DEFAULT_WEAKNESS_BASIS;
+
+  try {
+    const rawSettings = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (!rawSettings) return DEFAULT_WEAKNESS_BASIS;
+    const settings = JSON.parse(rawSettings) as { weaknessBasis?: unknown };
+    return normalizeWeaknessBasis(settings.weaknessBasis);
+  } catch {
+    return DEFAULT_WEAKNESS_BASIS;
+  }
+}
+
+function weaknessBasisFromSession(session: Awaited<ReturnType<ReturnType<typeof getSupabaseBrowserClient>["auth"]["getSession"]>>["data"]["session"]) {
+  const metadata = session?.user?.user_metadata ?? {};
+  const saved = typeof metadata.jlpt_quiz_settings === "object" && metadata.jlpt_quiz_settings !== null
+    ? metadata.jlpt_quiz_settings as { weaknessBasis?: unknown }
+    : {};
+  return normalizeWeaknessBasis(metadata.weakness_basis ?? saved.weaknessBasis ?? readLocalWeaknessBasis());
+}
 
 const SECTION_NOTES: Record<SectionSummary["section_key"], string> = {
   vocab: "한자읽기·표기·문맥 어휘를 우선 점검합니다.",
@@ -126,7 +163,8 @@ function useDashboardAttemptData(): DashboardDataState {
           return;
         }
 
-        const response = await fetch("/api/mock-exams/attempts", {
+        const weaknessBasis = weaknessBasisFromSession(sessionData.session);
+        const response = await fetch(`/api/mock-exams/attempts?weakness_basis=${encodeURIComponent(weaknessBasis)}`, {
           headers: { authorization: `Bearer ${accessToken}` },
         });
         const result = await response.json();
@@ -173,8 +211,7 @@ function sectionTone(index: number) {
 
 function weakestSectionLabel(data: DashboardResponse | null) {
   const sections = data?.section_summary?.filter((section) => section.question_count > 0) ?? [];
-  if (!sections.length) return "-";
-  return sections.reduce((weakest, section) => (section.correct_rate < weakest.correct_rate ? section : weakest), sections[0]).section_label;
+  return sections[0]?.section_label ?? "-";
 }
 
 function DashboardStatGrid({ data, status }: DashboardDataState) {
@@ -200,7 +237,7 @@ function DashboardStatGrid({ data, status }: DashboardDataState) {
     {
       label: "취약 영역",
       value: status === "ready" ? weakestSectionLabel(data) : "-",
-      note: "최근 기록 기준",
+      note: status === "ready" ? `${data?.weakness_basis_label ?? WEAKNESS_BASIS_LABELS[DEFAULT_WEAKNESS_BASIS]} 기준` : "설정 기준 반영",
       tone: "blue",
     },
   ];
@@ -406,7 +443,7 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
       <div className="dashboard-weak-head dashboard-action-head">
         <div>
           <h2>취약 영역 분석</h2>
-          <p>오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다.</p>
+          <p>{status === "ready" ? `${data?.weakness_basis_label ?? WEAKNESS_BASIS_LABELS[DEFAULT_WEAKNESS_BASIS]} 기준으로 보완이 필요한 영역을 정리합니다.` : "오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다."}</p>
         </div>
         <Link href="/mock-exams/n5">약한 영역 다시 풀기 →</Link>
       </div>

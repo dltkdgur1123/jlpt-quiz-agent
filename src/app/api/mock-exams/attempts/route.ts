@@ -48,6 +48,78 @@ const SECTION_TITLES_KO: Record<ActiveMockExamSectionKey, string> = {
   reading: "읽기",
 };
 
+type WeaknessBasis = "wrong-rate" | "unanswered" | "recent-miss";
+
+type SectionAggregate = {
+  section_key: ActiveMockExamSectionKey;
+  section_label: string;
+  correct_count: number;
+  question_count: number;
+  weakness_score: number;
+  latest_miss_order: number;
+};
+
+const WEAKNESS_BASIS_LABELS: Record<WeaknessBasis, string> = {
+  "wrong-rate": "오답률 우선",
+  unanswered: "미응답 포함",
+  "recent-miss": "최근 실수 우선",
+};
+
+function normalizeWeaknessBasis(value: unknown): WeaknessBasis {
+  return value === "unanswered" || value === "recent-miss" || value === "wrong-rate" ? value : "wrong-rate";
+}
+
+function baseSectionAggregates(): SectionAggregate[] {
+  return (["vocab", "grammar", "reading"] as ActiveMockExamSectionKey[]).map((sectionKey) => ({
+    section_key: sectionKey,
+    section_label: SECTION_TITLES_KO[sectionKey],
+    correct_count: 0,
+    question_count: 0,
+    weakness_score: 0,
+    latest_miss_order: Number.MAX_SAFE_INTEGER,
+  }));
+}
+
+function summarizeWeaknessSections(sections: SectionAggregate[], basis: WeaknessBasis) {
+  return [...sections]
+    .map((section) => {
+      const correctRate = section.question_count ? Math.round((section.correct_count / section.question_count) * 100) : 0;
+      const weaknessLabel = section.question_count === 0
+        ? "기록 없음"
+        : basis === "recent-miss" && section.weakness_score > 0
+          ? "최근 실수"
+          : basis === "unanswered" && section.weakness_score > 0
+            ? "오답·미응답"
+            : correctRate < 60
+              ? "복습 필요"
+              : "유지 권장";
+      return {
+        section_key: section.section_key,
+        section_label: section.section_label,
+        correct_count: section.correct_count,
+        question_count: section.question_count,
+        correct_rate: correctRate,
+        weakness_label: weaknessLabel,
+        weakness_score: section.weakness_score,
+        latest_miss_order: section.latest_miss_order,
+      };
+    })
+    .sort((left, right) => {
+      if (basis === "recent-miss") {
+        return right.weakness_score - left.weakness_score || left.latest_miss_order - right.latest_miss_order || left.correct_rate - right.correct_rate;
+      }
+      return right.weakness_score - left.weakness_score || left.correct_rate - right.correct_rate;
+    })
+    .map((section) => ({
+      section_key: section.section_key,
+      section_label: section.section_label,
+      correct_count: section.correct_count,
+      question_count: section.question_count,
+      correct_rate: section.correct_rate,
+      weakness_label: section.weakness_label,
+    }));
+}
+
 function deterministicUuid(namespace: string, value: string) {
   const hash = createHash("sha256").update(`${namespace}:${value}`).digest("hex");
   return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
@@ -78,6 +150,10 @@ function sectionTitleKo(sectionKey: unknown) {
     return SECTION_TITLES_KO[sectionKey];
   }
   return "모의고사";
+}
+
+function normalizeSectionKey(sectionKey: unknown): ActiveMockExamSectionKey | null {
+  return sectionKey === "vocab" || sectionKey === "grammar" || sectionKey === "reading" ? sectionKey : null;
 }
 
 async function syncUserProfileForMockExam(
@@ -257,6 +333,7 @@ export async function GET(request: NextRequest) {
     const client = getSupabasePrivilegedClient(accessToken);
 
     const userProfile = await syncUserProfileForMockExam(client, authData.user);
+    const weaknessBasis = normalizeWeaknessBasis(request.nextUrl.searchParams.get("weakness_basis"));
 
     const { data: attempts, error } = await client
       .from("mock_exam_attempts")
@@ -308,36 +385,60 @@ export async function GET(request: NextRequest) {
     }
     const weeklyActivity = Array.from(weeklyMap.entries()).map(([date, question_count]) => ({ date, question_count }));
 
-    let sectionSummary = [
-      { section_key: "vocab", section_label: "문자·어휘", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-      { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-      { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
-    ];
+    let sectionSummary = summarizeWeaknessSections(baseSectionAggregates(), weaknessBasis);
     if (attemptIds.length > 0) {
-      const { data: sectionRows, error: sectionSummaryError } = await client
-        .from("mock_exam_section_results")
-        .select("section_key, correct_count, question_count")
-        .in("mock_exam_attempt_id", attemptIds);
-      if (sectionSummaryError) throw sectionSummaryError;
+      const sectionMap = new Map<ActiveMockExamSectionKey, SectionAggregate>(
+        baseSectionAggregates().map((section) => [section.section_key, section]),
+      );
 
-      const sectionMap = new Map<string, { correct_count: number; question_count: number }>();
-      for (const row of sectionRows ?? []) {
-        const current = sectionMap.get(row.section_key) ?? { correct_count: 0, question_count: 0 };
-        current.correct_count += Number(row.correct_count ?? 0);
-        current.question_count += Number(row.question_count ?? 0);
-        sectionMap.set(row.section_key, current);
+      if (weaknessBasis === "wrong-rate") {
+        const { data: sectionRows, error: sectionSummaryError } = await client
+          .from("mock_exam_section_results")
+          .select("section_key, correct_count, question_count")
+          .in("mock_exam_attempt_id", attemptIds);
+        if (sectionSummaryError) throw sectionSummaryError;
+
+        for (const row of sectionRows ?? []) {
+          const sectionKey = normalizeSectionKey(row.section_key);
+          if (!sectionKey) continue;
+          const current = sectionMap.get(sectionKey);
+          if (!current) continue;
+          current.correct_count += Number(row.correct_count ?? 0);
+          current.question_count += Number(row.question_count ?? 0);
+        }
+        for (const current of sectionMap.values()) {
+          current.weakness_score = current.question_count ? 1 - current.correct_count / current.question_count : 0;
+        }
+      } else {
+        const attemptOrder = new Map(attemptRows.map((attempt, index) => [attempt.id, index]));
+        const { data: answerRows, error: answerSummaryError } = await client
+          .from("mock_exam_answers")
+          .select("mock_exam_attempt_id, selected_choice, is_correct, mock_exam_questions(mock_exam_sections(section_key))")
+          .in("mock_exam_attempt_id", attemptIds);
+        if (answerSummaryError) throw answerSummaryError;
+
+        for (const row of answerRows ?? []) {
+          const question = Array.isArray(row.mock_exam_questions) ? row.mock_exam_questions[0] : row.mock_exam_questions;
+          const section = Array.isArray(question?.mock_exam_sections) ? question?.mock_exam_sections[0] : question?.mock_exam_sections;
+          const sectionKey = normalizeSectionKey(section?.section_key);
+          if (!sectionKey) continue;
+          const current = sectionMap.get(sectionKey);
+          if (!current) continue;
+          const isAnswered = row.selected_choice !== null;
+          const countsForBasis = weaknessBasis === "unanswered" || isAnswered;
+          if (!countsForBasis) continue;
+          current.question_count += 1;
+          if (row.is_correct) current.correct_count += 1;
+          const isWeak = weaknessBasis === "unanswered" ? !row.is_correct || !isAnswered : isAnswered && !row.is_correct;
+          if (isWeak) {
+            const order = attemptOrder.get(row.mock_exam_attempt_id) ?? 0;
+            current.latest_miss_order = Math.min(current.latest_miss_order, order);
+            current.weakness_score += weaknessBasis === "recent-miss" ? Math.max(1, 6 - order) : 1;
+          }
+        }
       }
-      sectionSummary = sectionSummary.map((section) => {
-        const current = sectionMap.get(section.section_key) ?? { correct_count: 0, question_count: 0 };
-        const rate = current.question_count ? Math.round((current.correct_count / current.question_count) * 100) : 0;
-        return {
-          ...section,
-          correct_count: current.correct_count,
-          question_count: current.question_count,
-          correct_rate: rate,
-          weakness_label: current.question_count === 0 ? "기록 없음" : rate < 60 ? "복습 필요" : "유지 권장",
-        };
-      });
+
+      sectionSummary = summarizeWeaknessSections(Array.from(sectionMap.values()), weaknessBasis);
     }
 
     let wrongNote = {
@@ -392,6 +493,8 @@ export async function GET(request: NextRequest) {
       average_rate: averageRate,
       weekly_activity: weeklyActivity,
       section_summary: sectionSummary,
+      weakness_basis: weaknessBasis,
+      weakness_basis_label: WEAKNESS_BASIS_LABELS[weaknessBasis],
       wrong_note: wrongNote,
     });
   } catch (error) {
