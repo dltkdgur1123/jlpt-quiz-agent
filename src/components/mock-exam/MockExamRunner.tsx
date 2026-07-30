@@ -630,8 +630,12 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           : isAuthenticatedForWrongNote
             ? "로그인은 확인됐지만 저장 응답을 완료하지 못했습니다. 학습기록에서 저장 여부를 확인해 주세요."
             : "로그인하면 이번 결과와 다시 볼 문제가 학습기록에 저장됩니다.";
-  const wrongNoteHref = isServerSaved ? "/dashboard#wrong-note" : "/login";
-  const wrongNoteCta = isServerSaved ? "학습기록에서 보기" : "로그인하기";
+  const wrongNoteHref = isAuthenticatedForWrongNote ? "/dashboard#wrong-note" : "/login";
+  const wrongNoteCta = isServerSaved
+    ? "학습기록에서 보기"
+    : isAuthenticatedForWrongNote
+      ? "학습기록 확인"
+      : "로그인하기";
 
   function requestSubmitMockExam() {
     if (submitted || saveStatus === "saving") return;

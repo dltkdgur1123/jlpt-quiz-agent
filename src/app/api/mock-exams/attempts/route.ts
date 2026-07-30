@@ -80,6 +80,40 @@ function sectionTitleKo(sectionKey: unknown) {
   return "모의고사";
 }
 
+async function syncUserProfileForMockExam(
+  client: ReturnType<typeof getSupabasePrivilegedClient>,
+  authUser: Parameters<typeof buildUserProfileUpsert>[0],
+) {
+  const profile = buildUserProfileUpsert(authUser);
+  const { data: existingProfile, error: selectError } = await client
+    .from("users")
+    .select("id")
+    .eq("auth_provider", profile.auth_provider)
+    .eq("provider_user_id", profile.provider_user_id)
+    .maybeSingle();
+  if (selectError) throw selectError;
+
+  if (existingProfile?.id) {
+    const { error: updateError } = await client
+      .from("users")
+      .update({
+        display_name: profile.display_name,
+        last_seen_at: profile.last_seen_at,
+      })
+      .eq("id", existingProfile.id);
+    if (updateError) throw updateError;
+    return existingProfile;
+  }
+
+  const { data: insertedProfile, error: insertError } = await client
+    .from("users")
+    .insert(profile)
+    .select("id")
+    .single();
+  if (insertError) throw insertError;
+  return insertedProfile;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as MockExamAttemptInput;
@@ -98,13 +132,7 @@ export async function POST(request: NextRequest) {
 
     const client = getSupabasePrivilegedClient(accessToken);
 
-    const profile = buildUserProfileUpsert(authData.user);
-    const { data: userProfile, error: userError } = await client
-      .from("users")
-      .upsert(profile, { onConflict: "auth_provider,provider_user_id" })
-      .select("id")
-      .single();
-    if (userError) throw userError;
+    const userProfile = await syncUserProfileForMockExam(client, authData.user);
 
     const setId = deterministicUuid("mock_exam_set", body.set_code);
     const { error: setError } = await client.from("mock_exam_sets").upsert(
@@ -202,7 +230,18 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const message = errorMessage(error, "failed to save mock exam attempt");
     const status = message.includes("login required") ? 401 : message.includes("invalid") ? 400 : 500;
-    return NextResponse.json({ error: message }, { status });
+    const maybeSupabaseError = error as { code?: unknown; details?: unknown; hint?: unknown; message?: unknown };
+    console.error("mock exam attempt save failed", {
+      status,
+      message,
+      code: typeof maybeSupabaseError?.code === "string" ? maybeSupabaseError.code : null,
+      details: typeof maybeSupabaseError?.details === "string" ? maybeSupabaseError.details : null,
+      hint: typeof maybeSupabaseError?.hint === "string" ? maybeSupabaseError.hint : null,
+    });
+    return NextResponse.json({
+      error: message,
+      code: typeof maybeSupabaseError?.code === "string" ? maybeSupabaseError.code : null,
+    }, { status });
   }
 }
 
@@ -217,13 +256,7 @@ export async function GET(request: NextRequest) {
 
     const client = getSupabasePrivilegedClient(accessToken);
 
-    const profile = buildUserProfileUpsert(authData.user);
-    const { data: userProfile, error: userError } = await client
-      .from("users")
-      .upsert(profile, { onConflict: "auth_provider,provider_user_id" })
-      .select("id")
-      .single();
-    if (userError) throw userError;
+    const userProfile = await syncUserProfileForMockExam(client, authData.user);
 
     const { data: attempts, error } = await client
       .from("mock_exam_attempts")

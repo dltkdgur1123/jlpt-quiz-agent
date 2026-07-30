@@ -469,6 +469,11 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "getSupabaseServerClient",
     "onConflict: \"mock_exam_set_id,sort_order\"",
     "errorMessage",
+    "syncUserProfileForMockExam",
+    ".maybeSingle()",
+    ".insert(profile)",
+    "mock exam attempt save failed",
+    "code: typeof maybeSupabaseError?.code === \"string\"",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
@@ -700,6 +705,8 @@ test("mock exam client keeps answers hidden until full submit and shows section 
     "오답노트 기록을 완료하지 못했습니다",
     "isAuthenticatedForWrongNote",
     "authStatus === \"signed_in\"",
+    "학습기록 확인",
+    "const wrongNoteHref = isAuthenticatedForWrongNote ? \"/dashboard#wrong-note\" : \"/login\"",
     "mock-wrong-note-card",
     "mock-wrong-note-counts",
     "학습기록에서 보기",
