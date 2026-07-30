@@ -15,6 +15,10 @@ const PUBLIC_PAGE_CHECKS = [
   { path: "/mock-exams/n2", expect: ["N2 모의고사", "시험 시작"] },
   { path: "/mock-exams/n1", expect: ["N1 모의고사", "시험 시작"] },
   { path: "/wrong-note", expect: ["JLPT 오답노트", "wrong-note-shell"] },
+  { path: "/about", expect: ["서비스 소개", "HYOKU JLPT", "공식 JLPT 주관기관과 무관"] },
+  { path: "/privacy", expect: ["개인정보처리방침", "Google AdSense", "쿠키"] },
+  { path: "/terms", expect: ["이용약관", "학습 참고용", "Google AdSense"] },
+  { path: "/contact", expect: ["문의", "GitHub Issues", "개인정보처리방침"] },
 ];
 
 const SEO_FILE_CHECKS = [

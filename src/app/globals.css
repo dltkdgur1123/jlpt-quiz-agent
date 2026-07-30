@@ -6845,3 +6845,138 @@ main:has(.home-page-frame) {
     justify-content: flex-start;
   }
 }
+
+.site-footer {
+  border-top: 1px solid #f1f1f1;
+  background: #fff;
+  color: #555;
+  padding: 28px clamp(18px, 4vw, 48px) 34px;
+}
+
+.site-footer-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.site-footer-brand {
+  max-width: 520px;
+}
+
+.site-footer-brand strong {
+  display: block;
+  color: #1f1f1f;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.site-footer-brand p,
+.site-footer-copy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #777;
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.site-footer-links a {
+  color: #555;
+  text-decoration: none;
+}
+
+.site-footer-links a:hover {
+  color: var(--jlpt-primary, #d32f2f);
+  text-decoration: underline;
+}
+
+.site-footer-copy {
+  max-width: 1120px;
+  margin: 18px auto 0;
+}
+
+.policy-page-shell {
+  min-height: 100vh;
+  background: #fff;
+  padding: 96px clamp(18px, 4vw, 48px) 56px;
+}
+
+.policy-page-card {
+  max-width: 860px;
+  margin: 0 auto;
+  color: #202020;
+}
+
+.policy-eyebrow {
+  margin: 0 0 10px;
+  color: var(--jlpt-primary, #d32f2f);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.policy-page-card h1 {
+  margin: 0 0 16px;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.policy-lead {
+  margin: 0 0 34px;
+  color: #555;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.policy-page-card section {
+  padding: 24px 0;
+  border-top: 1px solid #eeeeee;
+}
+
+.policy-page-card h2 {
+  margin: 0 0 10px;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.policy-page-card p,
+.policy-page-card li {
+  color: #4c4c4c;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.policy-page-card a {
+  color: var(--jlpt-primary, #d32f2f);
+  font-weight: 800;
+}
+
+.policy-page-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+@media (max-width: 760px) {
+  .site-footer-inner {
+    display: block;
+  }
+  .site-footer-links {
+    justify-content: flex-start;
+    margin-top: 18px;
+  }
+  .policy-page-shell {
+    padding: 82px 18px 42px;
+  }
+}

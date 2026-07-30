@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import "./globals.css";
 
 const siteUrl = "https://jlpt-quiz-agent.vercel.app";
@@ -45,7 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

@@ -12,6 +12,10 @@ const publicRoutes = [
   { path: "/mock-exams/n2", priority: 0.9, changeFrequency: "weekly" as const },
   { path: "/mock-exams/n1", priority: 0.9, changeFrequency: "weekly" as const },
   { path: "/wrong-note", priority: 0.72, changeFrequency: "weekly" as const },
+  { path: "/about", priority: 0.48, changeFrequency: "monthly" as const },
+  { path: "/privacy", priority: 0.45, changeFrequency: "monthly" as const },
+  { path: "/terms", priority: 0.45, changeFrequency: "monthly" as const },
+  { path: "/contact", priority: 0.45, changeFrequency: "monthly" as const },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
