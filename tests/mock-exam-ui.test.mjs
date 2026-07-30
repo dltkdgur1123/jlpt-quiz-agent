@@ -889,6 +889,8 @@ test("mock exam active and result screens have mobile thumb-friendly controls", 
   for (const phrase of [
     "mock-mobile-action-bar",
     "문제 목록 보기",
+    "mock-mobile-action-bar__next",
+    "다음 문제",
     "mock-mobile-action-bar__submit",
     "mock-result-mobile-summary",
     "mock-result-primary-actions",
@@ -900,6 +902,8 @@ test("mock exam active and result screens have mobile thumb-friendly controls", 
   assert.match(css, /\.mock-mobile-action-bar \{[\s\S]*?display: none/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.mock-exam-shell--active \.mock-mobile-action-bar \{[\s\S]*?position: fixed !important;[\s\S]*?bottom: calc\(10px \+ env\(safe-area-inset-bottom\)\) !important/);
   assert.match(css, /\.mock-exam-shell--active \.mock-mobile-action-bar button \{[\s\S]*?min-height: 48px !important/);
+  assert.match(css, /grid-template-columns: minmax\(0, \.86fr\) minmax\(0, 1\.08fr\) minmax\(0, \.86fr\) !important/);
+  assert.match(css, /\.mock-mobile-action-bar__next \{[\s\S]*?background: var\(--jlpt-title, #212121\) !important;[\s\S]*?color: #ffffff !important/);
   assert.match(css, /\.mock-mobile-action-bar__submit \{[\s\S]*?background: var\(--jlpt-primary, #d32f2f\) !important;[\s\S]*?color: #ffffff !important/);
   assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?main:has\(\.mock-exam-shell--active\) \{[\s\S]*?padding-bottom: calc\(112px \+ env\(safe-area-inset-bottom\)\) !important/);
   assert.match(css, /Mobile mock exam result screen: compact score sheet and full-width next actions/);

@@ -1316,6 +1316,14 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               문제 목록 보기
             </button>
             <button
+              className="mock-mobile-action-bar__next"
+              disabled={currentQuestionIndex >= artifact.questions.length - 1}
+              onClick={() => moveQuestion(currentQuestionIndex + 1)}
+              type="button"
+            >
+              다음 문제
+            </button>
+            <button
               className="mock-mobile-action-bar__submit"
               disabled={saveStatus === "saving"}
               onClick={requestSubmitMockExam}

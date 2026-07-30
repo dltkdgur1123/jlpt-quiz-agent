@@ -6536,7 +6536,7 @@ main:has(.home-page-frame) {
     bottom: calc(10px + env(safe-area-inset-bottom)) !important;
     z-index: 120 !important;
     display: grid !important;
-    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important;
+    grid-template-columns: minmax(0, .86fr) minmax(0, 1.08fr) minmax(0, .86fr) !important;
     gap: 8px !important;
     padding: 8px !important;
     border: 1px solid rgba(229, 229, 229, .92) !important;
@@ -6551,6 +6551,12 @@ main:has(.home-page-frame) {
     font-size: 14px !important;
     font-weight: 900 !important;
     white-space: nowrap !important;
+  }
+  .mock-mobile-action-bar__next {
+    border: 0 !important;
+    background: var(--jlpt-title, #212121) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
   .mock-mobile-action-bar__submit {
     border: 0 !important;
