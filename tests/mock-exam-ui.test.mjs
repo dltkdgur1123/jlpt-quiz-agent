@@ -823,6 +823,12 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(pageSource, /<Suspense fallback=\{null\}>/);
   assert.match(clientSource, /오답 다시 풀기/);
   assert.match(clientSource, /마지막 문제를 확인하면 바로 다음 학습/);
+  assert.match(clientSource, /SECTION_FILTERS/);
+  assert.match(clientSource, /오답노트 섹션 필터/);
+  assert.match(clientSource, /전체 오답 보기/);
+  assert.match(clientSource, /sourceLabel/);
+  assert.match(clientSource, /오답 기록을 확인하고 있습니다/);
+  assert.match(clientSource, /오답이 없습니다/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
   assert.match(clientSource, /fetchServerWrongNoteItems/);
   assert.match(clientSource, /\/api\/mock-exams\/attempts\?\$\{params\.toString\(\)\}/);
@@ -853,6 +859,10 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(css, /\.wrong-note-shell \{[\s\S]*?margin: 0 auto/);
   assert.match(css, /\.wrong-note-page \{[\s\S]*?grid-template-columns: minmax\(360px, 460px\) minmax\(560px, 720px\)/);
   assert.match(css, /\.wrong-note-inline-complete/);
+  assert.match(css, /\.wrong-note-filter-tabs/);
+  assert.match(css, /\.wrong-note-filter-tabs a\[data-active="true"\]/);
+  assert.match(css, /\.wrong-note-empty-actions/);
+  assert.match(css, /\.wrong-note-empty-badge/);
   assert.match(css, /\.wrong-note-complete-actions \.wrong-note-primary-cta[\s\S]*?color: #ffffff !important/);
   assert.match(css, /-webkit-text-fill-color: #ffffff !important/);
   assert.match(css, /\.wrong-note-complete-actions \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);

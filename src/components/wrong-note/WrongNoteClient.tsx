@@ -43,8 +43,27 @@ const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "
 
 type SectionKey = "vocab" | "grammar" | "reading";
 
+const SECTION_FILTERS: Array<{ key: SectionKey | null; label: string }> = [
+  { key: null, label: "전체" },
+  { key: "vocab", label: "문자·어휘" },
+  { key: "grammar", label: "문법" },
+  { key: "reading", label: "읽기" },
+];
+
 function normalizeSectionFilter(value: string | null): SectionKey | null {
   return value === "vocab" || value === "grammar" || value === "reading" ? value : null;
+}
+
+function sectionFilterLabel(sectionFilter: SectionKey | null) {
+  return SECTION_FILTERS.find((section) => section.key === sectionFilter)?.label ?? "전체";
+}
+
+function wrongNoteFilterHref(sectionKey: SectionKey | null, basis: string | null) {
+  const params = new URLSearchParams();
+  if (sectionKey) params.set("section", sectionKey);
+  if (basis) params.set("basis", basis);
+  const query = params.toString();
+  return query ? `/wrong-note?${query}` : "/wrong-note";
 }
 
 function filterWrongNoteItems(items: WrongNoteItem[], sectionFilter: SectionKey | null) {
@@ -104,6 +123,7 @@ export function WrongNoteClient() {
   useEffect(() => {
     let cancelled = false;
     async function loadItems() {
+      setSource("loading");
       try {
         const serverItems = await fetchServerWrongNoteItems(sectionFilter, basis);
         if (!cancelled && serverItems.length) {
@@ -137,6 +157,8 @@ export function WrongNoteClient() {
   const reviewProgress = items.length ? Math.round((reviewedCount / items.length) * 100) : 0;
   const isLastItem = currentIndex >= items.length - 1;
   const isCurrentCorrect = Boolean(currentQuestion && selectedAnswer === currentQuestion.correct_choice);
+  const sourceLabel = source === "server" ? "서버 저장 기록" : source === "loading" ? "기록 확인 중" : "브라우저 임시 기록";
+  const activeFilterLabel = sectionFilterLabel(sectionFilter);
 
   function selectAnswer(choice: ChoiceKey) {
     if (!currentItem || isRevealed) return;
@@ -165,9 +187,21 @@ export function WrongNoteClient() {
         <h1>오답 다시 풀기</h1>
         <p>틀렸던 문제만 다시 풀고, 마지막 문제를 확인하면 바로 다음 학습으로 이어갑니다.</p>
         <div className="wrong-note-summary-row">
-          <strong>오답 {items.length}개</strong>
-          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개 · {source === "server" ? "서버 저장 기록" : source === "loading" ? "기록 확인 중" : "브라우저 임시 기록"}</span>
+          <strong>{activeFilterLabel} 오답 {items.length}개</strong>
+          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개 · {sourceLabel}</span>
         </div>
+        <nav className="wrong-note-filter-tabs" aria-label="오답노트 섹션 필터">
+          {SECTION_FILTERS.map((section) => (
+            <Link
+              aria-current={section.key === sectionFilter ? "page" : undefined}
+              data-active={section.key === sectionFilter || undefined}
+              href={wrongNoteFilterHref(section.key, basis)}
+              key={section.label}
+            >
+              {section.label}
+            </Link>
+          ))}
+        </nav>
         <div className="wrong-note-progress" aria-label="오답 재풀이 진행률">
           <i style={{ width: `${reviewProgress}%` }} />
         </div>
@@ -175,17 +209,21 @@ export function WrongNoteClient() {
 
       {items.length === 0 || !currentItem || !currentQuestion ? (
         <div className="wrong-note-empty">
-          <h2>아직 다시 풀 오답이 없습니다</h2>
-          <p>모의고사를 제출한 뒤 틀린 문제가 생기면 이 화면에서 다시 풀 수 있습니다.</p>
-          <Link className="primary-link" href="/mock-exams/n5">모의고사 풀기</Link>
+          <span className="wrong-note-empty-badge">{sourceLabel}</span>
+          <h2>{source === "loading" ? "오답 기록을 확인하고 있습니다" : sectionFilter ? `${activeFilterLabel} 오답이 없습니다` : "아직 다시 풀 오답이 없습니다"}</h2>
+          <p>{source === "loading" ? "저장된 모의고사 기록에서 다시 풀 문제를 불러오는 중입니다." : sectionFilter ? "다른 영역의 오답을 보거나, 새 모의고사를 제출하면 이 영역의 오답이 자동으로 모입니다." : "모의고사를 제출한 뒤 틀린 문제가 생기면 이 화면에서 다시 풀 수 있습니다."}</p>
+          <div className="wrong-note-empty-actions">
+            {sectionFilter ? <Link href={wrongNoteFilterHref(null, basis)}>전체 오답 보기</Link> : null}
+            <Link className="primary-link" href="/mock-exams/n5">모의고사 풀기</Link>
+          </div>
         </div>
       ) : (
         <div className="wrong-note-review-card">
           <div className="wrong-note-review-head">
             <span>{currentIndex + 1} / {items.length}</span>
-            <em>{currentItem.section_label}</em>
+            <em>{currentItem.section_label} · {currentItem.question_no ? `${currentItem.question_no}번` : "오답 문항"} · 오답</em>
           </div>
-          <h2>{currentItem.question_no ? `${currentItem.question_no}번` : "오답 문항"}</h2>
+          <h2>{currentItem.question_no ? `${currentItem.question_no}번 다시 풀기` : "오답 문항 다시 풀기"}</h2>
           <p className="wrong-note-question-text">{currentQuestion.question_text}</p>
 
           <div className="wrong-note-choice-list" role="radiogroup" aria-label="오답 재풀이 보기">
