@@ -140,12 +140,22 @@ test("realistic N5 mock exam 003 has production-ready draft composition and no p
 });
 
 test("N4 through N1 realistic mock exams match the 50-question production draft contract", () => {
-  for (const level of ["N4", "N3", "N2", "N1"]) {
-    const lower = level.toLowerCase();
+  const setCodes = [
+    ["n4-realistic-mock-exam-001", "N4"],
+    ["n4-realistic-mock-exam-002", "N4"],
+    ["n4-realistic-mock-exam-003", "N4"],
+    ["n3-realistic-mock-exam-001", "N3"],
+    ["n3-realistic-mock-exam-002", "N3"],
+    ["n2-realistic-mock-exam-001", "N2"],
+    ["n2-realistic-mock-exam-002", "N2"],
+    ["n1-realistic-mock-exam-001", "N1"],
+    ["n1-realistic-mock-exam-002", "N1"],
+  ];
+  for (const [setCode, level] of setCodes) {
     const artifact = JSON.parse(
-      readFileSync(new URL(`../data/generated/${lower}-realistic-mock-exam-001.json`, import.meta.url), "utf8"),
+      readFileSync(new URL(`../data/generated/${setCode}.json`, import.meta.url), "utf8"),
     );
-    assertRealisticDraftArtifact(artifact, `${lower}-realistic-mock-exam-001`, level);
+    assertRealisticDraftArtifact(artifact, setCode, level);
   }
 });
 
@@ -155,9 +165,14 @@ test("realistic mock exam sentence-build and context blanks avoid known answer-q
     "n5-realistic-mock-exam-002",
     "n5-realistic-mock-exam-003",
     "n4-realistic-mock-exam-001",
+    "n4-realistic-mock-exam-002",
+    "n4-realistic-mock-exam-003",
     "n3-realistic-mock-exam-001",
+    "n3-realistic-mock-exam-002",
     "n2-realistic-mock-exam-001",
+    "n2-realistic-mock-exam-002",
     "n1-realistic-mock-exam-001",
+    "n1-realistic-mock-exam-002",
   ];
 
   for (const setCode of artifactPaths) {
@@ -166,6 +181,13 @@ test("realistic mock exam sentence-build and context blanks avoid known answer-q
     );
     for (const question of artifact.questions) {
       assert.match(question.correct_choice, /^[ABCD]$/, `${setCode} ${question.sort_order} correct_choice must be A-D`);
+      if (question.question_type === "grammar_sentence_build") {
+        assert.match(
+          `${question.question_text} ${question.choice_a} ${question.choice_b} ${question.choice_c} ${question.choice_d}`,
+          /★/,
+          `${setCode} ${question.sort_order} sentence-build must mark star target`,
+        );
+      }
     }
   }
 
