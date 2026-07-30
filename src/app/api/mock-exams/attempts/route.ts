@@ -511,6 +511,12 @@ export async function GET(request: NextRequest) {
           correct_choice: ChoiceKey;
           explanation: string;
         };
+        review?: {
+          result: "resolved" | "repeat_wrong";
+          review_count: number;
+          repeat_wrong_count: number;
+          last_reviewed_at: string | null;
+        };
       }>,
     };
 
@@ -525,6 +531,30 @@ export async function GET(request: NextRequest) {
         .limit(200);
 
       if (wrongAnswerError) throw wrongAnswerError;
+
+      const reviewMap = new Map<string, {
+        result: "resolved" | "repeat_wrong";
+        review_count: number;
+        repeat_wrong_count: number;
+        last_reviewed_at: string | null;
+      }>();
+      const wrongAnswerIds = (wrongAnswers ?? []).map((row) => row.id).filter(Boolean);
+      if (wrongAnswerIds.length > 0) {
+        const { data: reviewRows, error: reviewRowsError } = await client
+          .from("mock_exam_wrong_reviews")
+          .select("mock_exam_answer_id, review_result, review_count, repeat_wrong_count, last_reviewed_at")
+          .eq("user_id", userProfile.id)
+          .in("mock_exam_answer_id", wrongAnswerIds);
+        if (reviewRowsError) throw reviewRowsError;
+        for (const review of reviewRows ?? []) {
+          reviewMap.set(review.mock_exam_answer_id, {
+            result: review.review_result === "repeat_wrong" ? "repeat_wrong" : "resolved",
+            review_count: Number(review.review_count ?? 0),
+            repeat_wrong_count: Number(review.repeat_wrong_count ?? 0),
+            last_reviewed_at: typeof review.last_reviewed_at === "string" ? review.last_reviewed_at : null,
+          });
+        }
+      }
 
       const rows = (wrongAnswers ?? [])
         .map((row) => {
@@ -550,9 +580,15 @@ export async function GET(request: NextRequest) {
               correct_choice: snapshot.correct_choice,
               explanation: snapshot.explanation,
             } : undefined,
+            review: reviewMap.get(row.id),
           };
         })
-        .filter((row) => !wrongNoteSection || row.section_key === wrongNoteSection);
+        .filter((row) => !wrongNoteSection || row.section_key === wrongNoteSection)
+        .sort((left, right) => {
+          const leftRank = left.review?.result === "repeat_wrong" ? 0 : left.review?.result === "resolved" ? 2 : 1;
+          const rightRank = right.review?.result === "repeat_wrong" ? 0 : right.review?.result === "resolved" ? 2 : 1;
+          return leftRank - rightRank || (right.review?.repeat_wrong_count ?? 0) - (left.review?.repeat_wrong_count ?? 0);
+        });
 
       wrongNote = {
         total_count: rows.length,

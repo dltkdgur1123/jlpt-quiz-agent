@@ -6,6 +6,8 @@ const migrations = [
   "../supabase/migrations/0001_initial_mvp_schema.sql",
   "../supabase/migrations/0002_source_traceability.sql",
   "../supabase/migrations/0003_mock_exam_schema.sql",
+  "../supabase/migrations/0004_mock_exam_realistic_mode.sql",
+  "../supabase/migrations/0005_mock_exam_wrong_reviews.sql",
 ];
 const schema = migrations
   .map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
@@ -77,6 +79,7 @@ test("mock exam schema defines non-listening set attempt answer result tables", 
     "mock_exam_attempts",
     "mock_exam_answers",
     "mock_exam_section_results",
+    "mock_exam_wrong_reviews",
   ]) {
     assert.match(schema, new RegExp(`create table if not exists public\\.${table}\\b`));
   }
@@ -86,6 +89,8 @@ test("mock exam schema defines non-listening set attempt answer result tables", 
   assert.match(schema, /check \(section_key <> 'listening'\)/);
   assert.match(schema, /item_type text not null check \(item_type in \('vocab', 'grammar', 'reading'\)\)/);
   assert.match(schema, /score_total is null or score_max is null or score_total <= score_max/);
+  assert.match(schema, /review_result text not null check \(review_result in \('resolved', 'repeat_wrong'\)\)/);
+  assert.match(schema, /unique \(user_id, mock_exam_answer_id\)/);
 });
 
 test("TypeScript DB types expose mock exam domain names", () => {
@@ -96,6 +101,7 @@ test("TypeScript DB types expose mock exam domain names", () => {
     "MockExamAttempt",
     "MockExamAnswer",
     "MockExamSectionResult",
+    "MockExamWrongReview",
   ]) {
     assert.match(types, new RegExp(`export interface ${name}`));
   }

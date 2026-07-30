@@ -11,6 +11,7 @@ export type MockExamSetStatus = "draft" | "published" | "archived";
 export type MockExamSectionKey = "vocab" | "grammar" | "reading" | "listening";
 export type ActiveMockExamSectionKey = Exclude<MockExamSectionKey, "listening">;
 export type MockExamAttemptStatus = "in_progress" | "submitted" | "abandoned";
+export type MockExamWrongReviewResult = "resolved" | "repeat_wrong";
 
 export interface UserProfile {
   id: string;
@@ -181,4 +182,17 @@ export interface MockExamSectionResult {
   correct_rate: number | null;
   weakness_label: string | null;
   created_at: string;
+}
+
+export interface MockExamWrongReview {
+  id: string;
+  mock_exam_answer_id: string;
+  user_id: string;
+  review_result: MockExamWrongReviewResult;
+  reviewed_choice: ChoiceKey;
+  review_count: number;
+  repeat_wrong_count: number;
+  last_reviewed_at: string;
+  created_at: string;
+  updated_at: string;
 }

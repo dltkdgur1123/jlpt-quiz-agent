@@ -22,6 +22,8 @@ const dashboardAttemptData = () =>
   readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
 const mockExamAttemptRoute = () =>
   readFileSync(new URL("../src/app/api/mock-exams/attempts/route.ts", import.meta.url), "utf8");
+const mockExamWrongReviewRoute = () =>
+  readFileSync(new URL("../src/app/api/mock-exams/wrong-reviews/route.ts", import.meta.url), "utf8");
 const mockExamClient = () =>
   readFileSync(new URL("../src/components/mock-exam/MockExamRunner.tsx", import.meta.url), "utf8");
 const wrongNotePage = () => readFileSync(new URL("../src/app/wrong-note/page.tsx", import.meta.url), "utf8");
@@ -469,6 +471,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "normalizeWeaknessBasis",
     "summarizeWeaknessSections",
     "mock_exam_answers",
+    "mock_exam_wrong_reviews",
+    "reviewMap",
+    "review_result, review_count, repeat_wrong_count, last_reviewed_at",
     "selected_choice, is_correct, mock_exam_questions(mock_exam_sections(section_key))",
     "attemptOrder",
     "recent-miss",
@@ -493,6 +498,26 @@ test("mock exam attempt API validates login and writes attempt answer result row
     ".insert(profile)",
     "mock exam attempt save failed",
     "code: typeof maybeSupabaseError?.code === \"string\"",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+});
+
+test("mock exam wrong review API persists resolved and repeat wrong retry state", () => {
+  const source = mockExamWrongReviewRoute();
+  for (const phrase of [
+    "mock_exam_wrong_reviews",
+    "review_result",
+    "repeat_wrong_count",
+    "review_count",
+    "mock_exam_answer_id",
+    "reviewed_choice",
+    "auth.getUser",
+    "syncUserProfileForWrongReview",
+    "wrong answer not found",
+    "invalid wrong answer review target",
+    "onConflict: \"user_id,mock_exam_answer_id\"",
+    "mock exam wrong review save failed",
   ]) {
     assert.ok(source.includes(phrase), phrase);
   }
@@ -827,6 +852,13 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(clientSource, /오답노트 섹션 필터/);
   assert.match(clientSource, /전체 오답 보기/);
   assert.match(clientSource, /sourceLabel/);
+  assert.match(clientSource, /persistServerWrongReview/);
+  assert.match(clientSource, /\/api\/mock-exams\/wrong-reviews/);
+  assert.match(clientSource, /복습 완료/);
+  assert.match(clientSource, /반복 오답/);
+  assert.match(clientSource, /복습 결과 저장 중입니다/);
+  assert.match(clientSource, /복습 결과 저장에 실패했습니다/);
+  assert.match(clientSource, /data-review=\{currentItem\.review\?\.result/);
   assert.match(clientSource, /오답 기록을 확인하고 있습니다/);
   assert.match(clientSource, /오답이 없습니다/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
@@ -845,7 +877,7 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(clientSource, /isLastItem && isRevealed/);
   assert.match(clientSource, /wrong-note-progress/);
   assert.match(clientSource, /wrong-note-inline-complete/);
-  assert.match(clientSource, /다시 맞힌 문제/);
+  assert.match(clientSource, /복습 완료/);
   assert.match(clientSource, /wrong-note-choice/);
   assert.match(mockSource, /question_text: question\.question_text/);
   assert.match(mockExamAttemptRoute(), /generatedQuestionSnapshot/);
@@ -863,6 +895,9 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(css, /\.wrong-note-filter-tabs a\[data-active="true"\]/);
   assert.match(css, /\.wrong-note-empty-actions/);
   assert.match(css, /\.wrong-note-empty-badge/);
+  assert.match(css, /\.wrong-note-review-head em\[data-review="resolved"\]/);
+  assert.match(css, /\.wrong-note-review-head em\[data-review="repeat_wrong"\]/);
+  assert.match(css, /\.wrong-note-save-state/);
   assert.match(css, /\.wrong-note-complete-actions \.wrong-note-primary-cta[\s\S]*?color: #ffffff !important/);
   assert.match(css, /-webkit-text-fill-color: #ffffff !important/);
   assert.match(css, /\.wrong-note-complete-actions \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);

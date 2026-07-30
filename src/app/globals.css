@@ -6190,6 +6190,25 @@ main:has(.home-page-frame) {
   font-style: normal;
   font-weight: 850;
 }
+.wrong-note-review-head em[data-review="resolved"] {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.wrong-note-review-head em[data-review="repeat_wrong"] {
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  color: var(--jlpt-primary, #d32f2f);
+}
+.wrong-note-save-state {
+  margin: 0;
+  color: var(--jlpt-text, #616161);
+  font-size: 13px;
+  font-weight: 800;
+}
+.wrong-note-save-state[data-error="true"] {
+  color: var(--jlpt-primary, #d32f2f);
+}
 .wrong-note-summary-row span {
   color: var(--jlpt-text, #616161);
   font-size: 13px;

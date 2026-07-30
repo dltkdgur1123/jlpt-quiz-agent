@@ -19,6 +19,13 @@ type WrongNoteQuestion = {
   explanation: string;
 };
 
+type WrongNoteReview = {
+  result: "resolved" | "repeat_wrong";
+  review_count: number;
+  repeat_wrong_count: number;
+  last_reviewed_at: string | null;
+};
+
 type WrongNoteItem = {
   id: string;
   attempt_id: string;
@@ -27,6 +34,7 @@ type WrongNoteItem = {
   section_key?: "vocab" | "grammar" | "reading" | null;
   status: "wrong" | "unanswered";
   question?: WrongNoteQuestion;
+  review?: WrongNoteReview;
 };
 
 type LocalAttempt = {
@@ -110,6 +118,34 @@ async function fetchServerWrongNoteItems(sectionFilter: SectionKey | null, basis
     .filter((item, index, items) => items.findIndex((candidate) => candidate.question?.id === item.question?.id) === index);
 }
 
+async function persistServerWrongReview(item: WrongNoteItem, reviewedChoice: ChoiceKey, reviewResult: WrongNoteReview["result"]) {
+  const supabase = getSupabaseBrowserClient();
+  const { data } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token;
+  if (!accessToken) return null;
+
+  const response = await fetch("/api/mock-exams/wrong-reviews", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${accessToken}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      mock_exam_answer_id: item.id,
+      reviewed_choice: reviewedChoice,
+      review_result: reviewResult,
+    }),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error ?? "failed to save wrong note review");
+  return result.review as {
+    review_result: WrongNoteReview["result"];
+    review_count: number;
+    repeat_wrong_count: number;
+    last_reviewed_at: string | null;
+  };
+}
+
 export function WrongNoteClient() {
   const searchParams = useSearchParams();
   const sectionFilter = normalizeSectionFilter(searchParams.get("section"));
@@ -119,6 +155,8 @@ export function WrongNoteClient() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
+  const [reviewSaving, setReviewSaving] = useState<Record<string, boolean>>({});
+  const [reviewSaveError, setReviewSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -154,20 +192,48 @@ export function WrongNoteClient() {
   const isRevealed = currentItem ? Boolean(revealed[currentItem.id]) : false;
   const reviewedCount = useMemo(() => items.filter((item) => revealed[item.id]).length, [items, revealed]);
   const solvedCount = useMemo(() => items.filter((item) => revealed[item.id] && selectedAnswers[item.id] === item.question?.correct_choice).length, [items, revealed, selectedAnswers]);
+  const resolvedCount = useMemo(() => items.filter((item) => item.review?.result === "resolved" || (revealed[item.id] && selectedAnswers[item.id] === item.question?.correct_choice)).length, [items, revealed, selectedAnswers]);
+  const repeatWrongCount = useMemo(() => items.filter((item) => item.review?.result === "repeat_wrong" || (revealed[item.id] && selectedAnswers[item.id] && selectedAnswers[item.id] !== item.question?.correct_choice)).length, [items, revealed, selectedAnswers]);
   const reviewProgress = items.length ? Math.round((reviewedCount / items.length) * 100) : 0;
   const isLastItem = currentIndex >= items.length - 1;
   const isCurrentCorrect = Boolean(currentQuestion && selectedAnswer === currentQuestion.correct_choice);
   const sourceLabel = source === "server" ? "서버 저장 기록" : source === "loading" ? "기록 확인 중" : "브라우저 임시 기록";
   const activeFilterLabel = sectionFilterLabel(sectionFilter);
+  const currentReviewLabel = currentItem?.review?.result === "resolved" ? "복습 완료" : currentItem?.review?.result === "repeat_wrong" ? "반복 오답" : "오답";
+  const isSavingCurrentReview = currentItem ? Boolean(reviewSaving[currentItem.id]) : false;
 
   function selectAnswer(choice: ChoiceKey) {
     if (!currentItem || isRevealed) return;
     setSelectedAnswers((answers) => ({ ...answers, [currentItem.id]: choice }));
   }
 
-  function revealAnswer() {
-    if (!currentItem || !selectedAnswer) return;
+  async function revealAnswer() {
+    if (!currentItem || !selectedAnswer || !currentQuestion) return;
+    const reviewResult: WrongNoteReview["result"] = selectedAnswer === currentQuestion.correct_choice ? "resolved" : "repeat_wrong";
     setRevealed((next) => ({ ...next, [currentItem.id]: true }));
+    setReviewSaveError(null);
+
+    if (source !== "server") return;
+
+    setReviewSaving((next) => ({ ...next, [currentItem.id]: true }));
+    try {
+      const savedReview = await persistServerWrongReview(currentItem, selectedAnswer, reviewResult);
+      if (savedReview) {
+        setItems((currentItems) => currentItems.map((item) => item.id === currentItem.id ? {
+          ...item,
+          review: {
+            result: savedReview.review_result,
+            review_count: Number(savedReview.review_count ?? 1),
+            repeat_wrong_count: Number(savedReview.repeat_wrong_count ?? 0),
+            last_reviewed_at: savedReview.last_reviewed_at,
+          },
+        } : item));
+      }
+    } catch {
+      setReviewSaveError("복습 결과 저장에 실패했습니다. 화면 복습은 계속할 수 있습니다.");
+    } finally {
+      setReviewSaving((next) => ({ ...next, [currentItem.id]: false }));
+    }
   }
 
   function move(step: number) {
@@ -178,6 +244,8 @@ export function WrongNoteClient() {
     setCurrentIndex(0);
     setSelectedAnswers({});
     setRevealed({});
+    setReviewSaving({});
+    setReviewSaveError(null);
   }
 
   return (
@@ -188,7 +256,7 @@ export function WrongNoteClient() {
         <p>틀렸던 문제만 다시 풀고, 마지막 문제를 확인하면 바로 다음 학습으로 이어갑니다.</p>
         <div className="wrong-note-summary-row">
           <strong>{activeFilterLabel} 오답 {items.length}개</strong>
-          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개 · {sourceLabel}</span>
+          <span>확인 {reviewedCount}개 · 복습 완료 {resolvedCount}개 · 반복 오답 {repeatWrongCount}개 · {sourceLabel}</span>
         </div>
         <nav className="wrong-note-filter-tabs" aria-label="오답노트 섹션 필터">
           {SECTION_FILTERS.map((section) => (
@@ -221,7 +289,7 @@ export function WrongNoteClient() {
         <div className="wrong-note-review-card">
           <div className="wrong-note-review-head">
             <span>{currentIndex + 1} / {items.length}</span>
-            <em>{currentItem.section_label} · {currentItem.question_no ? `${currentItem.question_no}번` : "오답 문항"} · 오답</em>
+            <em data-review={currentItem.review?.result ?? "wrong"}>{currentItem.section_label} · {currentItem.question_no ? `${currentItem.question_no}번` : "오답 문항"} · {currentReviewLabel}</em>
           </div>
           <h2>{currentItem.question_no ? `${currentItem.question_no}번 다시 풀기` : "오답 문항 다시 풀기"}</h2>
           <p className="wrong-note-question-text">{currentQuestion.question_text}</p>
@@ -257,10 +325,13 @@ export function WrongNoteClient() {
             </div>
           ) : null}
 
+          {isSavingCurrentReview ? <p className="wrong-note-save-state">복습 결과 저장 중입니다.</p> : null}
+          {reviewSaveError ? <p className="wrong-note-save-state" data-error="true">{reviewSaveError}</p> : null}
+
           {isLastItem && isRevealed ? (
             <div className="wrong-note-inline-complete" aria-label="마지막 오답 확인 완료">
               <strong>{isCurrentCorrect ? "마지막 문제까지 다시 맞혔습니다" : "마지막 문제까지 확인했습니다"}</strong>
-              <p>{items.length}개 중 {solvedCount}개를 다시 맞혔습니다. 여기서 복습을 한 번 더 돌리거나, 학습 기록을 확인한 뒤 새 모의고사로 넘어가세요.</p>
+              <p>{items.length}개 중 {solvedCount}개를 다시 맞혔습니다. 복습 완료 {resolvedCount}개, 반복 오답 {repeatWrongCount}개입니다. 반복 오답은 한 번 더 풀어보세요.</p>
               <div className="wrong-note-complete-actions">
                 <button type="button" onClick={restartReview}>다시 한 번 풀기</button>
                 <Link href="/dashboard">학습 기록 보기</Link>
