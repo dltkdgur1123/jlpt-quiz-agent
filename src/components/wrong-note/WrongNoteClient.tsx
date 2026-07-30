@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type ChoiceKey = "A" | "B" | "C" | "D";
 
@@ -21,6 +24,7 @@ type WrongNoteItem = {
   attempt_id: string;
   question_no: number | null;
   section_label: string;
+  section_key?: "vocab" | "grammar" | "reading" | null;
   status: "wrong" | "unanswered";
   question?: WrongNoteQuestion;
 };
@@ -37,11 +41,23 @@ const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
 const CHOICE_KEYS: ChoiceKey[] = ["A", "B", "C", "D"];
 const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "4" };
 
+type SectionKey = "vocab" | "grammar" | "reading";
+
+function normalizeSectionFilter(value: string | null): SectionKey | null {
+  return value === "vocab" || value === "grammar" || value === "reading" ? value : null;
+}
+
+function filterWrongNoteItems(items: WrongNoteItem[], sectionFilter: SectionKey | null) {
+  return items
+    .filter((item) => item.status === "wrong" && item.question)
+    .filter((item) => !sectionFilter || item.section_key === sectionFilter || item.section_label.includes(sectionFilter === "vocab" ? "어휘" : sectionFilter === "grammar" ? "문법" : "읽기"));
+}
+
 function choiceText(question: WrongNoteQuestion, key: ChoiceKey) {
   return question[`choice_${key.toLowerCase()}` as keyof WrongNoteQuestion] as string;
 }
 
-function readWrongNoteItems() {
+function readWrongNoteItems(sectionFilter: SectionKey | null) {
   if (typeof window === "undefined") return [] as WrongNoteItem[];
 
   try {
@@ -50,24 +66,67 @@ function readWrongNoteItems() {
     const attempts = JSON.parse(raw) as LocalAttempt[];
     if (!Array.isArray(attempts)) return [];
 
-    return attempts
-      .flatMap((attempt) => attempt.wrong_note_items ?? [])
-      .filter((item) => item.status === "wrong" && item.question)
+    return filterWrongNoteItems(attempts.flatMap((attempt) => attempt.wrong_note_items ?? []), sectionFilter)
       .filter((item, index, items) => items.findIndex((candidate) => candidate.question?.id === item.question?.id) === index);
   } catch {
     return [];
   }
 }
 
+async function fetchServerWrongNoteItems(sectionFilter: SectionKey | null, basis: string | null) {
+  const supabase = getSupabaseBrowserClient();
+  const { data } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token;
+  if (!accessToken) return [] as WrongNoteItem[];
+
+  const params = new URLSearchParams();
+  if (basis) params.set("weakness_basis", basis);
+  if (sectionFilter) params.set("wrong_note_section", sectionFilter);
+  const response = await fetch(`/api/mock-exams/attempts?${params.toString()}`, {
+    headers: { authorization: `Bearer ${accessToken}` },
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error ?? "failed to load wrong note items");
+  return filterWrongNoteItems(result.wrong_note?.recent_items ?? [], sectionFilter)
+    .filter((item, index, items) => items.findIndex((candidate) => candidate.question?.id === item.question?.id) === index);
+}
+
 export function WrongNoteClient() {
+  const searchParams = useSearchParams();
+  const sectionFilter = normalizeSectionFilter(searchParams.get("section"));
+  const basis = searchParams.get("basis");
   const [items, setItems] = useState<WrongNoteItem[]>([]);
+  const [source, setSource] = useState<"loading" | "server" | "local">("loading");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, ChoiceKey>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    queueMicrotask(() => setItems(readWrongNoteItems()));
-  }, []);
+    let cancelled = false;
+    async function loadItems() {
+      try {
+        const serverItems = await fetchServerWrongNoteItems(sectionFilter, basis);
+        if (!cancelled && serverItems.length) {
+          setItems(serverItems);
+          setSource("server");
+          setCurrentIndex(0);
+          return;
+        }
+      } catch {
+        // Fall through to browser-only fallback below.
+      }
+
+      if (!cancelled) {
+        setItems(readWrongNoteItems(sectionFilter));
+        setSource("local");
+        setCurrentIndex(0);
+      }
+    }
+    void loadItems();
+    return () => {
+      cancelled = true;
+    };
+  }, [basis, sectionFilter]);
 
   const currentItem = items[currentIndex];
   const currentQuestion = currentItem?.question;
@@ -107,7 +166,7 @@ export function WrongNoteClient() {
         <p>틀렸던 문제만 다시 풀고, 마지막 문제를 확인하면 바로 다음 학습으로 이어갑니다.</p>
         <div className="wrong-note-summary-row">
           <strong>오답 {items.length}개</strong>
-          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개</span>
+          <span>확인 {reviewedCount}개 · 다시 맞힌 문제 {solvedCount}개 · {source === "server" ? "서버 저장 기록" : source === "loading" ? "기록 확인 중" : "브라우저 임시 기록"}</span>
         </div>
         <div className="wrong-note-progress" aria-label="오답 재풀이 진행률">
           <i style={{ width: `${reviewProgress}%` }} />

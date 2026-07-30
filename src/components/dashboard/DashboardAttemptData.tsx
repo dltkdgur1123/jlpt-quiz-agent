@@ -19,6 +19,7 @@ type WrongNoteItem = {
   attempt_id: string;
   question_no: number | null;
   section_label: string;
+  section_key?: "vocab" | "grammar" | "reading" | null;
   status: "wrong" | "unanswered";
   question?: {
     id: string;
@@ -437,6 +438,10 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
     { section_key: "grammar", section_label: "문법", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
     { section_key: "reading", section_label: "읽기", correct_count: 0, question_count: 0, correct_rate: 0, weakness_label: "기록 없음" },
   ] satisfies SectionSummary[];
+  const recommendedSection = weakAreas.find((area) => area.question_count > 0)?.section_key;
+  const weakReviewHref = recommendedSection
+    ? `/wrong-note?section=${recommendedSection}&basis=${data?.weakness_basis ?? DEFAULT_WEAKNESS_BASIS}`
+    : "/wrong-note";
 
   return (
     <section className="dashboard-panel dashboard-weak dashboard-weak-full" aria-label="취약 영역 분석">
@@ -445,7 +450,7 @@ function DashboardWeakAreaPanel({ data, status }: DashboardDataState) {
           <h2>취약 영역 분석</h2>
           <p>{status === "ready" ? `${data?.weakness_basis_label ?? WEAKNESS_BASIS_LABELS[DEFAULT_WEAKNESS_BASIS]} 기준으로 보완이 필요한 영역을 정리합니다.` : "오답노트와 최근 모의고사 기준으로 보완이 필요한 영역을 정리합니다."}</p>
         </div>
-        <Link href="/mock-exams/n5">약한 영역 다시 풀기 →</Link>
+        <Link href={weakReviewHref}>약한 영역 다시 풀기 →</Link>
       </div>
       <div className="dashboard-weak-grid">
         {weakAreas.map((area, index) => (

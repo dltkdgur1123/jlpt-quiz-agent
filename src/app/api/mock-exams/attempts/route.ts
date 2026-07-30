@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { buildUserProfileUpsert } from "@/lib/auth/user-sync";
@@ -19,6 +21,21 @@ type SectionResultInput = {
   question_count: number;
   full_question_count?: number;
   rate: number;
+};
+
+type GeneratedMockExamQuestion = {
+  id: string;
+  question_text: string;
+  choice_a: string;
+  choice_b: string;
+  choice_c: string;
+  choice_d: string;
+  correct_choice: ChoiceKey;
+  explanation: string;
+};
+
+type GeneratedMockExamArtifact = {
+  questions?: GeneratedMockExamQuestion[];
 };
 
 type MockExamAttemptInput = {
@@ -123,6 +140,37 @@ function summarizeWeaknessSections(sections: SectionAggregate[], basis: Weakness
 function deterministicUuid(namespace: string, value: string) {
   const hash = createHash("sha256").update(`${namespace}:${value}`).digest("hex");
   return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+}
+
+const generatedQuestionCache = new Map<string, Map<string, GeneratedMockExamQuestion>>();
+
+function generatedQuestionMap(setCode: string) {
+  const cached = generatedQuestionCache.get(setCode);
+  if (cached) return cached;
+
+  const path = join(process.cwd(), "data/generated", `${setCode}.json`);
+  const questionMap = new Map<string, GeneratedMockExamQuestion>();
+  if (!existsSync(path)) {
+    generatedQuestionCache.set(setCode, questionMap);
+    return questionMap;
+  }
+
+  try {
+    const artifact = JSON.parse(readFileSync(path, "utf8")) as GeneratedMockExamArtifact;
+    for (const question of artifact.questions ?? []) {
+      questionMap.set(deterministicUuid("mock_exam_item", question.id), question);
+    }
+  } catch {
+    // Keep the wrong-note API resilient: missing snapshots should not break dashboard summaries.
+  }
+
+  generatedQuestionCache.set(setCode, questionMap);
+  return questionMap;
+}
+
+function generatedQuestionSnapshot(setCode: unknown, itemId: unknown) {
+  if (typeof setCode !== "string" || typeof itemId !== "string") return undefined;
+  return generatedQuestionMap(setCode).get(itemId);
 }
 
 function assertValidBody(body: MockExamAttemptInput) {
@@ -334,6 +382,7 @@ export async function GET(request: NextRequest) {
 
     const userProfile = await syncUserProfileForMockExam(client, authData.user);
     const weaknessBasis = normalizeWeaknessBasis(request.nextUrl.searchParams.get("weakness_basis"));
+    const wrongNoteSection = normalizeSectionKey(request.nextUrl.searchParams.get("wrong_note_section"));
 
     const { data: attempts, error } = await client
       .from("mock_exam_attempts")
@@ -450,14 +499,25 @@ export async function GET(request: NextRequest) {
         attempt_id: string;
         question_no: number | null;
         section_label: string;
+        section_key: ActiveMockExamSectionKey | null;
         status: "wrong" | "unanswered";
+        question?: {
+          id: string;
+          question_text: string;
+          choice_a: string;
+          choice_b: string;
+          choice_c: string;
+          choice_d: string;
+          correct_choice: ChoiceKey;
+          explanation: string;
+        };
       }>,
     };
 
     if (attemptIds.length > 0) {
       const { data: wrongAnswers, error: wrongAnswerError } = await client
         .from("mock_exam_answers")
-        .select("id, mock_exam_attempt_id, selected_choice, is_correct, mock_exam_questions(sort_order, mock_exam_sections(section_key))")
+        .select("id, mock_exam_attempt_id, selected_choice, is_correct, mock_exam_questions(sort_order, item_id, mock_exam_sections(section_key), mock_exam_sets(set_code))")
         .in("mock_exam_attempt_id", attemptIds)
         .eq("is_correct", false)
         .not("selected_choice", "is", null)
@@ -466,23 +526,39 @@ export async function GET(request: NextRequest) {
 
       if (wrongAnswerError) throw wrongAnswerError;
 
-      const rows = wrongAnswers ?? [];
-
-      wrongNote = {
-        total_count: rows.length,
-        wrong_count: rows.length,
-        unanswered_count: 0,
-        recent_items: rows.slice(0, 6).map((row) => {
+      const rows = (wrongAnswers ?? [])
+        .map((row) => {
           const question = Array.isArray(row.mock_exam_questions) ? row.mock_exam_questions[0] : row.mock_exam_questions;
           const section = Array.isArray(question?.mock_exam_sections) ? question?.mock_exam_sections[0] : question?.mock_exam_sections;
+          const set = Array.isArray(question?.mock_exam_sets) ? question?.mock_exam_sets[0] : question?.mock_exam_sets;
+          const sectionKey = normalizeSectionKey(section?.section_key);
+          const snapshot = generatedQuestionSnapshot(set?.set_code, question?.item_id);
           return {
             id: row.id,
             attempt_id: row.mock_exam_attempt_id,
             question_no: typeof question?.sort_order === "number" ? question.sort_order : null,
             section_label: sectionTitleKo(section?.section_key),
-            status: "wrong",
+            section_key: sectionKey,
+            status: "wrong" as const,
+            question: snapshot ? {
+              id: snapshot.id,
+              question_text: snapshot.question_text,
+              choice_a: snapshot.choice_a,
+              choice_b: snapshot.choice_b,
+              choice_c: snapshot.choice_c,
+              choice_d: snapshot.choice_d,
+              correct_choice: snapshot.correct_choice,
+              explanation: snapshot.explanation,
+            } : undefined,
           };
-        }),
+        })
+        .filter((row) => !wrongNoteSection || row.section_key === wrongNoteSection);
+
+      wrongNote = {
+        total_count: rows.length,
+        wrong_count: rows.length,
+        unanswered_count: 0,
+        recent_items: rows.slice(0, 20),
       };
     }
 

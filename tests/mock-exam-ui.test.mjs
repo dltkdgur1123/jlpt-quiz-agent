@@ -359,6 +359,8 @@ test("dashboard page matches Figma learning dashboard sections", () => {
     "aria-label=\"모바일 학습 기록\"",
     "history-mobile",
     "weakestSectionLabel",
+    "weakReviewHref",
+    "section=${recommendedSection}&basis=${data?.weakness_basis",
     "모의고사",
     "평균 정답률",
     "오답",
@@ -471,8 +473,9 @@ test("mock exam attempt API validates login and writes attempt answer result row
     "attemptOrder",
     "recent-miss",
     "unanswered",
+    "wrong_note_section",
     "attempt_count",
-    "mock_exam_questions(sort_order, mock_exam_sections(section_key))",
+    "mock_exam_questions(sort_order, item_id, mock_exam_sections(section_key), mock_exam_sets(set_code))",
     "source_sort_order?: number",
     "full_question_count?: number",
     "sort_order: answer.source_sort_order ?? index + 1",
@@ -817,9 +820,16 @@ test("wrong-note retry page replays only attempted wrong local fallback question
 
   assert.match(pageSource, /WrongNoteClient/);
   assert.match(pageSource, /SiteHeader active="history"/);
+  assert.match(pageSource, /<Suspense fallback=\{null\}>/);
   assert.match(clientSource, /오답 다시 풀기/);
   assert.match(clientSource, /마지막 문제를 확인하면 바로 다음 학습/);
   assert.match(clientSource, /LOCAL_ATTEMPTS_STORAGE_KEY/);
+  assert.match(clientSource, /fetchServerWrongNoteItems/);
+  assert.match(clientSource, /\/api\/mock-exams\/attempts\?\$\{params\.toString\(\)\}/);
+  assert.match(clientSource, /wrong_note_section/);
+  assert.match(clientSource, /서버 저장 기록/);
+  assert.match(clientSource, /normalizeSectionFilter/);
+  assert.match(clientSource, /filterWrongNoteItems/);
   assert.match(clientSource, /item\.status === "wrong" && item\.question/);
   assert.match(clientSource, /정답 확인/);
   assert.match(clientSource, /마지막 문제까지 확인했습니다/);
@@ -832,6 +842,9 @@ test("wrong-note retry page replays only attempted wrong local fallback question
   assert.match(clientSource, /다시 맞힌 문제/);
   assert.match(clientSource, /wrong-note-choice/);
   assert.match(mockSource, /question_text: question\.question_text/);
+  assert.match(mockExamAttemptRoute(), /generatedQuestionSnapshot/);
+  assert.match(mockExamAttemptRoute(), /generatedQuestionMap/);
+  assert.match(mockExamAttemptRoute(), /mock_exam_sets\(set_code\)/);
   assert.match(mockSource, /choice_a: question\.choice_a/);
   assert.match(mockSource, /correct_choice: question\.correct_choice/);
   assert.match(mockSource, /if \(!selectedChoice \|\| selectedChoice === correctChoice\) return \[\]/);
