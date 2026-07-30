@@ -344,6 +344,7 @@ function DashboardDailyRoutine({ data, status }: DashboardDataState) {
           <em>{weakSection ? `${weakSection.weakness_label} · ${weakSection.correct_rate}%` : "모의고사 제출 후 분석"}</em>
         </Link>
       </div>
+      <Link className="dashboard-saved-items-link" href="/wrong-note?saved=1">저장한 문제 보기</Link>
     </section>
   );
 }

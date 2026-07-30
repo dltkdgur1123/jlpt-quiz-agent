@@ -6478,6 +6478,36 @@ main:has(.home-page-frame) {
   font-weight: 800;
   line-height: 1.45;
 }
+.dashboard-saved-items-link {
+  width: fit-content;
+  min-height: 42px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--jlpt-title, #212121) !important;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none !important;
+}
+.mock-bookmark-button[data-saved="true"] {
+  border-color: var(--jlpt-primary, #d32f2f) !important;
+  background: #fff5f5 !important;
+  color: var(--jlpt-primary, #d32f2f) !important;
+}
+.mock-bookmark-message {
+  width: fit-content;
+  margin: 0 0 10px !important;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #fff5f5;
+  color: var(--jlpt-primary, #d32f2f) !important;
+  font-size: 13px;
+  font-weight: 850;
+}
 @media (max-width: 760px) {
   .dashboard-daily-routine {
     border-left: 0 !important;

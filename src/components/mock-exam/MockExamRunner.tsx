@@ -75,6 +75,7 @@ const CHOICE_NUMBERS: Record<ChoiceKey, string> = { A: "1", B: "2", C: "3", D: "
 const RECENT_HISTORY_STORAGE_KEY = "jlpt-mock-exam-recent-question-history";
 const IN_PROGRESS_STORAGE_KEY = "jlpt-mock-exam-in-progress";
 const LOCAL_ATTEMPTS_STORAGE_KEY = "jlpt-mock-exam-local-attempts";
+const SAVED_QUESTIONS_STORAGE_KEY = "jlpt-mock-exam-saved-questions";
 
 type MockExamDraft = {
   set_code: string;
@@ -127,6 +128,19 @@ type LocalMockExamSavedAttempt = {
   question_count: number;
   section_results: LocalMockExamSectionResult[];
   wrong_note_items: LocalMockExamWrongNoteItem[];
+  saved_questions?: SavedMockExamQuestion[];
+};
+
+type SavedMockExamQuestion = {
+  id: string;
+  saved_at: string;
+  set_code: string;
+  set_title: string;
+  jlpt_level: string;
+  question_no: number;
+  section_key: MockExamSectionKey;
+  section_label: string;
+  question: LocalMockExamWrongNoteItem["question"];
 };
 
 type TeacherFeedback = {
@@ -398,6 +412,24 @@ function writeLocalMockExamAttempt(attempt: LocalMockExamSavedAttempt) {
   window.localStorage.setItem(LOCAL_ATTEMPTS_STORAGE_KEY, JSON.stringify(nextAttempts));
 }
 
+function readSavedMockExamQuestions() {
+  if (typeof window === "undefined") return [] as SavedMockExamQuestion[];
+
+  try {
+    const rawSaved = window.localStorage.getItem(SAVED_QUESTIONS_STORAGE_KEY);
+    if (!rawSaved) return [];
+    const savedQuestions = JSON.parse(rawSaved) as SavedMockExamQuestion[];
+    return Array.isArray(savedQuestions) ? savedQuestions.filter((item) => item.id && item.question) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSavedMockExamQuestions(savedQuestions: SavedMockExamQuestion[]) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SAVED_QUESTIONS_STORAGE_KEY, JSON.stringify(savedQuestions.slice(0, 120)));
+}
+
 function localSectionLabel(sectionKey: MockExamSectionKey) {
   if (sectionKey === "vocab") return "문자·어휘";
   if (sectionKey === "grammar") return "문법";
@@ -419,6 +451,8 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "local_saved" | "login_required" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [mobileQuestionSheetOpen, setMobileQuestionSheetOpen] = useState(false);
+  const [savedQuestionIds, setSavedQuestionIds] = useState<Set<string>>(() => new Set());
+  const [bookmarkMessage, setBookmarkMessage] = useState<string | null>(null);
   const questionNavScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -450,6 +484,11 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     const nextAttemptSeed = `${artifact.set.set_code}:${globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36)}`;
     queueMicrotask(() => setAttemptSeed(nextAttemptSeed));
   }, [artifact.questions.length, artifact.set.set_code]);
+
+  useEffect(() => {
+    const savedIds = new Set(readSavedMockExamQuestions().map((item) => item.id));
+    queueMicrotask(() => setSavedQuestionIds(savedIds));
+  }, []);
 
   useEffect(() => {
     const recentIds = recentQuestionIdSet(readRecentQuestionHistory(), Date.now());
@@ -506,6 +545,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
   const currentCorrectChoice = currentQuestion
     ? renderedCorrectChoice(currentQuestion.question, currentRenderedChoices)
     : "A";
+  const currentQuestionSaved = currentQuestion ? savedQuestionIds.has(currentQuestion.question.id) : false;
 
   const answeredCount = Object.keys(selectedAnswers).length;
   const unansweredCount = artifact.set.question_count - answeredCount;
@@ -735,6 +775,41 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
     saveDraft(draftAnswers ?? selectedAnswers, boundedIndex);
   }
 
+  function toggleSavedQuestion() {
+    if (!currentQuestion) return;
+    const question = currentQuestion.question;
+    const savedQuestions = readSavedMockExamQuestions();
+    const alreadySaved = savedQuestions.some((item) => item.id === question.id);
+    const nextSavedQuestions = alreadySaved
+      ? savedQuestions.filter((item) => item.id !== question.id)
+      : [
+          {
+            id: question.id,
+            saved_at: new Date().toISOString(),
+            set_code: artifact.set.set_code,
+            set_title: artifact.set.set_title,
+            jlpt_level: artifact.set.jlpt_level,
+            question_no: currentQuestionNumber,
+            section_key: question.section_key,
+            section_label: localSectionLabel(question.section_key),
+            question: {
+              id: question.id,
+              question_text: question.question_text,
+              choice_a: question.choice_a,
+              choice_b: question.choice_b,
+              choice_c: question.choice_c,
+              choice_d: question.choice_d,
+              correct_choice: question.correct_choice,
+              explanation: question.explanation,
+            },
+          },
+          ...savedQuestions,
+        ];
+    writeSavedMockExamQuestions(nextSavedQuestions);
+    setSavedQuestionIds(new Set(nextSavedQuestions.map((item) => item.id)));
+    setBookmarkMessage(alreadySaved ? "저장한 문제에서 제거했습니다." : "다시 볼 문제에 저장했습니다.");
+  }
+
   function scrollMockExamToTop() {
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -858,6 +933,7 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
           weakness_label: section.answered === 0 ? "기록 없음" : section.answeredRate < 60 ? "복습 필요" : "유지 권장",
         })),
         wrong_note_items: localWrongNoteItems,
+        saved_questions: readSavedMockExamQuestions().filter((item) => item.set_code === artifact.set.set_code),
       });
       setSaveStatus("local_saved");
       setSaveMessage("서버 저장을 완료하지 못했습니다. 이 결과는 이 브라우저에만 남아 있으며 대시보드 통계에는 반영되지 않습니다.");
@@ -946,9 +1022,18 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
               <article className="quiz-card mock-exam-current-card" id={`question-${currentQuestion.question.id}`}>
                 <div className="mock-current-question-head">
                   <p className="section-eyebrow">문제 {currentQuestionNumber}</p>
-                  <button type="button" aria-label="북마크">북마크 ☆</button>
+                  <button
+                    aria-label={currentQuestionSaved ? "북마크 해제" : "북마크"}
+                    className="mock-bookmark-button"
+                    data-saved={currentQuestionSaved}
+                    onClick={toggleSavedQuestion}
+                    type="button"
+                  >
+                    {currentQuestionSaved ? "저장됨 ★" : "북마크 ☆"}
+                  </button>
                 </div>
                 <h4>{currentQuestion.question.question_text}</h4>
+                {bookmarkMessage ? <p className="mock-bookmark-message">{bookmarkMessage}</p> : null}
                 <div className="choice-list">
                   {currentRenderedChoices.map((choice) => {
                     const renderedKey = choice.renderedKey;

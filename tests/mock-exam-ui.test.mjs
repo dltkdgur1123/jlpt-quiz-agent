@@ -913,6 +913,41 @@ test("mock exam active and result screens have mobile thumb-friendly controls", 
 });
 
 
+test("mock exam bookmarks save confusing questions and expose them for review", () => {
+  const source = mockExamClient();
+  const wrongNoteSource = wrongNoteClient();
+  const dashboardSource = dashboardAttemptData();
+  const css = globalStyles();
+
+  for (const phrase of [
+    "SAVED_QUESTIONS_STORAGE_KEY",
+    "jlpt-mock-exam-saved-questions",
+    "savedQuestionIds",
+    "toggleSavedQuestion",
+    "저장됨 ★",
+    "북마크 ☆",
+    "다시 볼 문제에 저장했습니다",
+    "saved_questions",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+
+  for (const phrase of [
+    "saved=1",
+    "readSavedQuestionItems",
+    "저장한 문제",
+    "저장한 문제가 없습니다",
+    "저장 문제 보기",
+  ]) {
+    assert.ok(wrongNoteSource.includes(phrase), phrase);
+  }
+
+  assert.match(dashboardSource, /href="\/wrong-note\?saved=1"/);
+  assert.match(dashboardSource, /저장한 문제 보기/);
+  assert.match(css, /\.mock-bookmark-button\[data-saved="true"\]/);
+  assert.match(css, /\.dashboard-saved-items-link/);
+});
+
 test("wrong-note retry page is mobile readable with thumb-sized review controls", () => {
   const clientSource = wrongNoteClient();
   const css = globalStyles();
