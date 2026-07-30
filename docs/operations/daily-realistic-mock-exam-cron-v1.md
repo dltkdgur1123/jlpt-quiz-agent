@@ -60,9 +60,15 @@ N2/N1 독해는 단순 공지 확인이 아니라 논지, 대조, 조건, 함의
 ## 품질 검증
 
 ```bash
+# 단일 세트 사전검수
 npm run validate:realistic-mock-exam -- data/generated/<set-code>.json
-node --test tests/mock-exam-build-set.test.mjs tests/mock-exam-ui.test.mjs
+
+# 배포 전 전체 realistic 세트 게이트
+npm run quality:mock-exams
 npm run typecheck
+npm run lint
+npm test
+npm run build
 ```
 
 `validate-realistic-mock-exam-draft.mjs`는 다음을 검사한다.
@@ -73,6 +79,10 @@ npm run typecheck
 - 유형 다양성
 - 청해 제외
 - pre-answer 한국어 금지
+- 중복 선택지 금지
+- 문장 만들기 `★` 표식 필수
+- 공식성/기출 그대로/합격 보장/출제 예상 등 신뢰 훼손 문구 금지
+- 명백하게 한 선택지로만 쏠린 정답 분포 금지
 - 독해 길이 기준
 - 기존 realistic 세트와 `question_text` 완전 중복 금지
 

@@ -18,7 +18,8 @@
     "build:realistic-mock-exams-n4-n1": "node scripts/build-realistic-mock-exams-n4-n1.mjs",
     "strengthen:realistic-reading": "node scripts/strengthen-realistic-reading-passages.mjs && node scripts/strengthen-realistic-reading-passages-pass2.mjs",
     "select:next-realistic-mock-exam": "node scripts/select-next-realistic-mock-exam-target.mjs",
-    "validate:realistic-mock-exam": "node scripts/validate-realistic-mock-exam-draft.mjs"
+    "validate:realistic-mock-exam": "node scripts/validate-realistic-mock-exam-draft.mjs",
+    "quality:mock-exams": "npm run validate:realistic-mock-exam -- --all && node --test tests/realistic-mock-exam-validator.test.mjs tests/mock-exam-build-set.test.mjs tests/mock-exam-ui.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.6",
