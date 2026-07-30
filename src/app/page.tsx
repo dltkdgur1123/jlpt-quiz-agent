@@ -168,6 +168,10 @@ export default async function Home() {
                 <span>{nextJlptExam.label} · {nextJlptExam.displayDate} 기준</span>
                 <a href={nextJlptExam.sourceUrl} rel="noreferrer" target="_blank">공식 일정 확인</a>
               </p>
+              <p className="home-trust-note">
+                공식 JLPT 주관기관과 무관한 학습 서비스입니다. 공식 기출문제를 복제하거나 변형하지 않습니다.
+                점수와 합격권 표시는 현재 모의 세트 기준의 학습 참고용이며, 실제 시험 합격 여부나 출제 가능성을 예측하거나 보장하지 않습니다.
+              </p>
             </div>
 
             <div className="home-redesign-divider" aria-hidden="true" />

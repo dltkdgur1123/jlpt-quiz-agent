@@ -4,6 +4,10 @@ import test from "node:test";
 
 const quizClient = () => readFileSync(new URL("../src/components/quiz/QuizMvp.tsx", import.meta.url), "utf8");
 const scoreCard = () => readFileSync(new URL("../src/components/score/ScoreCard.tsx", import.meta.url), "utf8");
+const homePage = () => readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+const guidePage = () => readFileSync(new URL("../src/app/guide/page.tsx", import.meta.url), "utf8");
+const mockExamClient = () => readFileSync(new URL("../src/components/mock-exam/MockExamRunner.tsx", import.meta.url), "utf8");
+const dashboardAttemptData = () => readFileSync(new URL("../src/components/dashboard/DashboardAttemptData.tsx", import.meta.url), "utf8");
 const qaDoc = () => readFileSync(new URL("../docs/qa/mvp-integrated-qa.md", import.meta.url), "utf8");
 
 test("front page contains level/type selection and mobile-first quiz flow", () => {
@@ -37,6 +41,38 @@ test("score UI uses safe wording and data-insufficient state", () => {
   assert.match(source, /제보 수/);
   assert.match(source, /데이터 부족/);
   assert.match(source, /사용자 출제 경험 제보/);
+});
+
+test("trust and safety copy is consistent across public learning surfaces", () => {
+  const sources = {
+    home: homePage(),
+    guide: guidePage(),
+    score: scoreCard(),
+    mock: mockExamClient(),
+    dashboard: dashboardAttemptData(),
+  };
+  const combined = Object.values(sources).join("\n");
+
+  for (const phrase of [
+    "공식 JLPT 주관기관과 무관한 학습 서비스",
+    "공식 기출문제를 복제하거나 변형하지 않습니다",
+    "점수와 합격권 표시는 현재 모의 세트 기준의 학습 참고용",
+    "실제 시험 합격 여부나 출제 가능성을 예측하거나 보장하지 않습니다",
+    "체감 score는 사용자 제보 기반 참고 지표",
+    "데이터가 적을 때는 데이터 부족으로 표시합니다",
+  ]) {
+    assert.ok(combined.includes(phrase), phrase);
+  }
+
+  assert.match(sources.home, /home-trust-note/);
+  assert.match(sources.guide, /guide-trust-note/);
+  assert.match(sources.score, /score-trust-note/);
+  assert.match(sources.mock, /mock-trust-note/);
+  assert.match(sources.dashboard, /dashboard-trust-note/);
+
+  for (const unsafe of [/합격 보장/, /출제 예상/, /공식 문제/, /기출문제 그대로/, /합격 가능성 예측/]) {
+    assert.doesNotMatch(combined, unsafe);
+  }
 });
 
 test("integrated QA checklist covers MVP loop", () => {

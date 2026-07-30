@@ -65,6 +65,10 @@ export default function GuidePage() {
           <p>
             출처 : JLPT 서울실시위원회 참고. 실제 응시 전에는 반드시 공식 안내 원문과 시험장 공지를 다시 확인해주세요.
           </p>
+          <p className="guide-trust-note">
+            이 페이지의 수험 요약은 공식 안내 확인을 돕기 위한 학습 보조 자료입니다. HYOKU JLPT는 공식 JLPT 주관기관과 무관한 학습 서비스이며,
+            모의고사 문항은 공식 기출문제를 복제하거나 변형하지 않습니다.
+          </p>
           <div className="guide-hero-actions">
             <a className="guide-secondary-link" href={sourceUrl} rel="noreferrer" target="_blank">공식 안내 원문 보기</a>
           </div>

@@ -22,6 +22,10 @@ export function ScoreCard({
       <p>
         사용자 출제 경험 제보를 바탕으로 계산한 출제 체감 score입니다.
       </p>
+      <p className="score-trust-note">
+        체감 score는 사용자 제보 기반 참고 지표입니다. 공식 JLPT 성적이나 공식 출제 이력이 아니며,
+        데이터가 적을 때는 데이터 부족으로 표시합니다.
+      </p>
       <dl>
         <dt>perceived_exam_score</dt>
         <dd>{perceived_exam_score ?? "-"}</dd>

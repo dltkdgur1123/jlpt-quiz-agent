@@ -305,6 +305,14 @@ function DashboardBrowserOnlyNotice({ localFallbackCount }: DashboardDataState) 
   );
 }
 
+function DashboardTrustNote() {
+  return (
+    <p className="dashboard-trust-note">
+      취약 영역 분석과 점수 흐름은 저장된 모의고사 기록 기준의 학습 참고용입니다. 실제 시험 합격 여부나 출제 가능성을 예측하거나 보장하지 않습니다.
+    </p>
+  );
+}
+
 function DashboardDailyRoutine({ data, status }: DashboardDataState) {
   const nextExam = getNextJlptExam();
   const routineLevel = latestLevel(data) === "-" ? "N5" : latestLevel(data);
@@ -550,6 +558,7 @@ export function DashboardLiveData() {
         <DashboardStatGrid {...state} />
         <DashboardAttemptSummary {...state} />
         <DashboardBrowserOnlyNotice {...state} />
+        <DashboardTrustNote />
         <DashboardDailyRoutine {...state} />
         <div className="dashboard-desktop-flow">
           <DashboardActivityAndGoal {...state} />

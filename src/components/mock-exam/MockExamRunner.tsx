@@ -978,9 +978,9 @@ export function MockExamRunner({ artifact }: { artifact: MockExamArtifact }) {
             <li className="mock-exam-order-line">한자읽기 → 표기 → 문맥규정 → 유의표현 → 문법 → 독해</li>
             <li className="mock-exam-save-guide">로그인하면 제출 기록과 오답노트가 대시보드에 저장됩니다. 비로그인 상태에서는 체험 결과만 확인할 수 있습니다.</li>
             <li>미응답 문항은 제출 전 한 번 더 확인</li>
-            <li>
-              본 모의고사는 공식 JLPT 기출문제가 아니며, JLPT 시험 형식을 참고해 제작한 학습용 연습 문제입니다.
-              결과와 점수는 학습 참고용으로 제공되며, 실제 시험의 합격 여부나 출제 가능성을 보장하지 않습니다.
+            <li className="mock-trust-note">
+              본 모의고사는 공식 JLPT 주관기관과 무관한 학습 서비스의 연습 세트입니다. 공식 기출문제를 복제하거나 변형하지 않습니다.
+              점수와 합격권 표시는 현재 모의 세트 기준의 학습 참고용이며, 실제 시험 합격 여부나 출제 가능성을 예측하거나 보장하지 않습니다.
             </li>
           </ul>
           <button className="primary-action" onClick={() => setExamStarted(true)} type="button">
