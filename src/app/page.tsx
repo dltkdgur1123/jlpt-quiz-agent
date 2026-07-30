@@ -14,6 +14,13 @@ const levels = [
 const youtubeShortsUrl = "https://www.youtube.com/@hyokujlpt/shorts";
 const youtubeChannelHandle = "hyokujlpt";
 const shortsLevels = ["N1", "N2", "N3", "N4", "N5"];
+const seoEntryLevels = [
+  { level: "N5", label: "N5 모의고사" },
+  { level: "N4", label: "N4 모의고사" },
+  { level: "N3", label: "N3 모의고사" },
+  { level: "N2", label: "N2 모의고사" },
+  { level: "N1", label: "N1 모의고사" },
+];
 
 type YouTubeShort = {
   id: string;
@@ -180,6 +187,22 @@ export default async function Home() {
           </section>
 
           <HomeRecentMockExamGrid />
+
+          <section className="home-seo-entry-panel" aria-labelledby="home-seo-entry-title">
+            <div>
+              <p>JLPT MOCK EXAM</p>
+              <h2 id="home-seo-entry-title">레벨별 JLPT 모의고사</h2>
+              <span>JLPT D-Day를 확인하고 N5부터 N1까지 현재 레벨에 맞는 비청해 모의고사를 바로 시작하세요.</span>
+            </div>
+            <div className="home-seo-entry-links" aria-label="레벨별 JLPT 모의고사 바로가기">
+              {seoEntryLevels.map(({ level, label }) => (
+                <a href={`/mock-exams/${level.toLowerCase()}`} key={level}>{label}</a>
+              ))}
+              <a href="/wrong-note">JLPT 오답노트</a>
+              <a href="/wrong-note?saved=1">저장한 문제</a>
+              <a href="/guide">JLPT 수험안내</a>
+            </div>
+          </section>
 
           <section className="home-shorts-grid-section" id="recent-shorts" aria-labelledby="shorts-title">
             <div className="home-redesign-section-head">

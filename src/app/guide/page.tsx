@@ -1,4 +1,16 @@
+import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+
+export const metadata: Metadata = {
+  title: "JLPT 수험안내",
+  description: "JLPT 시험 당일 준비물, 규정 신분증, 부정행위 유의사항을 공식 안내 원문 확인 전 학습자 관점으로 정리했습니다.",
+  alternates: { canonical: "/guide" },
+  openGraph: {
+    title: "JLPT 수험안내",
+    description: "시험 전 준비물과 신분증, 시험장 유의사항을 확인하세요.",
+    url: "/guide",
+  },
+};
 
 const sourceUrl = "https://www.jlpt.or.kr/html/information_02.html";
 

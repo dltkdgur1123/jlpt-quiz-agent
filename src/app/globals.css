@@ -3158,6 +3158,70 @@ main:has(.mock-page-shell) {
 .home-dday-meta a:hover {
   text-decoration: underline;
 }
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.home-seo-entry-panel {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.15fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 22px;
+  background: #ffffff;
+}
+.home-seo-entry-panel p {
+  margin: 0 0 6px;
+  color: var(--jlpt-primary, #d32f2f);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+.home-seo-entry-panel h2 {
+  margin: 0 0 6px;
+  color: var(--jlpt-title, #212121);
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.12;
+}
+.home-seo-entry-panel span {
+  color: var(--jlpt-text, #616161);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.6;
+}
+.home-seo-entry-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.home-seo-entry-links a {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid var(--jlpt-border, #e5e5e5);
+  border-radius: 999px;
+  background: #fafafa;
+  color: var(--jlpt-title, #212121) !important;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none !important;
+}
+.home-seo-entry-links a:hover {
+  border-color: var(--jlpt-primary, #d32f2f);
+  color: var(--jlpt-primary, #d32f2f) !important;
+}
 .home-redesign-divider {
   width: min(620px, 82%);
   height: 1px;
@@ -6767,5 +6831,17 @@ main:has(.home-page-frame) {
   }
   .wrong-note-complete-actions {
     grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .home-seo-entry-panel {
+    grid-template-columns: 1fr;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+  .home-seo-entry-links {
+    justify-content: flex-start;
   }
 }

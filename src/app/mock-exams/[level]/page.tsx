@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AutoMockExamRunner } from "@/components/mock-exam/AutoMockExamRunner";
@@ -30,6 +31,21 @@ function loadLevelArtifacts(level: string) {
 
 export function generateStaticParams() {
   return LEVELS.map((level) => ({ level }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ level: string }> }): Promise<Metadata> {
+  const { level } = await params;
+  const normalizedLevel = level.toUpperCase();
+  return {
+    title: `${normalizedLevel} 모의고사`,
+    description: `${normalizedLevel} JLPT 모의고사 50문항을 풀고 결과, 오답노트, 저장한 문제 복습으로 이어가세요. 공식 기출문제를 복제하거나 변형하지 않는 학습용 세트입니다.`,
+    alternates: { canonical: `/mock-exams/${level.toLowerCase()}` },
+    openGraph: {
+      title: `${normalizedLevel} JLPT 모의고사`,
+      description: `${normalizedLevel} 레벨 비청해 모의고사와 오답노트 복습을 시작하세요.`,
+      url: `/mock-exams/${level.toLowerCase()}`,
+    },
+  };
 }
 
 export default async function LevelAutoMockExamPage({ params }: { params: Promise<{ level: string }> }) {
