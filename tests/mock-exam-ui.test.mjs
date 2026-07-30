@@ -160,6 +160,35 @@ test("level mock exam entry auto-assigns a set without exposing set selection UI
   assert.doesNotMatch(clientSource, /001|002|003 중 선택|세트 선택/);
 });
 
+test("dashboard page surfaces a D-Day based light study routine", () => {
+  const source = `${dashboardAttemptData()}\n${jlptExamSchedule()}`;
+  const css = globalStyles();
+
+  for (const phrase of [
+    "getNextJlptExam",
+    "DashboardDailyRoutine",
+    "dashboard-daily-routine",
+    "오늘의 가벼운 루틴",
+    "JLPT D-DAY",
+    "오늘 풀 세트",
+    "복습할 오답",
+    "약한 영역",
+    "routineMockHref",
+    "routineWrongHref",
+  ]) {
+    assert.ok(source.includes(phrase), phrase);
+  }
+
+  assert.match(source, /<DashboardDailyRoutine \{\.\.\.state\} \/>/);
+  assert.match(source, /getNextJlptExam\(\)/);
+  assert.match(source, /latestLevel\(data\) === "-" \? "N5" : latestLevel\(data\)/);
+  assert.match(source, /wrong_note\?\.repeat_wrong_count/);
+  assert.match(source, /wrong_note\?\.unresolved_count/);
+  assert.match(css, /\.dashboard-daily-routine \{[\s\S]*?display: grid/);
+  assert.match(css, /\.dashboard-routine-steps \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 760px\) \{[\s\S]*?\.dashboard-routine-steps \{[\s\S]*?grid-template-columns: 1fr !important/);
+});
+
 test("dashboard page matches Figma learning dashboard sections", () => {
   const source = dashboardPage();
   const clientSource = dashboardAttemptData();

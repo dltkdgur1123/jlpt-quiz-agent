@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { getNextJlptExam } from "@/lib/jlpt/exam-schedule";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type DashboardAttempt = {
@@ -304,6 +305,49 @@ function DashboardBrowserOnlyNotice({ localFallbackCount }: DashboardDataState) 
   );
 }
 
+function DashboardDailyRoutine({ data, status }: DashboardDataState) {
+  const nextExam = getNextJlptExam();
+  const routineLevel = latestLevel(data) === "-" ? "N5" : latestLevel(data);
+  const weakSection = data?.section_summary?.find((section) => section.question_count > 0);
+  const repeatWrongCount = data?.wrong_note?.repeat_wrong_count ?? 0;
+  const unresolvedWrongCount = data?.wrong_note?.unresolved_count ?? data?.wrong_note?.wrong_count ?? 0;
+  const reviewCount = repeatWrongCount || Math.min(unresolvedWrongCount, nextExam.dday <= 30 ? 15 : 10);
+  const routineMockHref = `/mock-exams/${routineLevel.toLowerCase()}`;
+  const routineWrongHref = weakSection
+    ? `/wrong-note?section=${weakSection.section_key}&basis=${data?.weakness_basis ?? DEFAULT_WEAKNESS_BASIS}`
+    : "/wrong-note";
+  const urgencyLabel = nextExam.dday <= 30 ? "마무리 루틴" : nextExam.dday <= 90 ? "실전 감각 유지" : "가볍게 누적";
+
+  return (
+    <section className="dashboard-panel dashboard-daily-routine" aria-label="D-Day 기반 오늘의 학습 루틴">
+      <div className="dashboard-routine-head dashboard-action-head">
+        <div>
+          <p>JLPT D-DAY {nextExam.dday >= 0 ? `D-${nextExam.dday}` : "일정 확인"}</p>
+          <h2>오늘의 가벼운 루틴</h2>
+        </div>
+        <span>{urgencyLabel}</span>
+      </div>
+      <div className="dashboard-routine-steps">
+        <Link href={routineMockHref}>
+          <small>오늘 풀 세트</small>
+          <strong>{routineLevel} 실전형 1세트</strong>
+          <em>{status === "ready" && data?.attempt_count ? "최근 기록 기준 레벨 유지" : "첫 기록은 N5부터 가볍게"}</em>
+        </Link>
+        <Link href={routineWrongHref}>
+          <small>복습할 오답</small>
+          <strong>{reviewCount ? `${reviewCount}문제` : "오답노트 확인"}</strong>
+          <em>{repeatWrongCount ? "반복 오답 우선" : unresolvedWrongCount ? "남은 오답 이어풀기" : "틀린 문제가 생기면 자동 추천"}</em>
+        </Link>
+        <Link href={routineWrongHref}>
+          <small>약한 영역</small>
+          <strong>{weakSection?.section_label ?? "기록 쌓기"}</strong>
+          <em>{weakSection ? `${weakSection.weakness_label} · ${weakSection.correct_rate}%` : "모의고사 제출 후 분석"}</em>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function DashboardActivityAndGoal({ data, status }: DashboardDataState) {
   const weeklyRows = data?.weekly_activity ?? [];
   const bars = weeklyRows.length ? weeklyRows.map((row) => row.question_count) : [0, 0, 0, 0, 0, 0, 0];
@@ -505,6 +549,7 @@ export function DashboardLiveData() {
         <DashboardStatGrid {...state} />
         <DashboardAttemptSummary {...state} />
         <DashboardBrowserOnlyNotice {...state} />
+        <DashboardDailyRoutine {...state} />
         <div className="dashboard-desktop-flow">
           <DashboardActivityAndGoal {...state} />
           <section className="dashboard-grid-bottom" id="history">
