@@ -58,17 +58,24 @@ test("sitemap and robots expose stable public SEO entry routes", () => {
   assert.doesNotMatch(sitemapSource, /admin|auth\/callback|api\//);
 });
 
+test("homepage stays minimal and does not render a separate SEO link panel", () => {
+  const source = homePage();
+
+  assert.doesNotMatch(source, /home-seo-entry-panel/);
+  assert.doesNotMatch(source, /JLPT MOCK EXAM/);
+  assert.doesNotMatch(source, /레벨별 JLPT 모의고사/);
+});
+
 test("public entry pages contain searchable task-focused headings and links", () => {
   const combined = `${homePage()}\n${levelPage()}\n${wrongNotePage()}\n${guidePage()}`;
 
   for (const phrase of [
     "JLPT D-DAY",
-    "레벨별 JLPT 모의고사",
-    "N5 모의고사",
-    "N4 모의고사",
-    "N3 모의고사",
-    "N2 모의고사",
-    "N1 모의고사",
+    "/mock-exams/n5",
+    "/mock-exams/n4",
+    "/mock-exams/n3",
+    "/mock-exams/n2",
+    "/mock-exams/n1",
     "JLPT 오답노트",
     "저장한 문제",
     "JLPT 수험안내",
