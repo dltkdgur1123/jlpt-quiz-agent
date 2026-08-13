@@ -39,17 +39,17 @@
 
 <br /><br />
 
-✅ `모의고사 시작 안내`  
-시험 시작 전 문항 수, 제한 시간, 청해 제외 여부, 해설 공개 시점을 안내합니다. 공식 시험과 혼동되지 않도록 학습 참고용 서비스라는 안내도 함께 제공합니다.
-
-<img src="./docs/assets/readme/02-mock-start.png" width="80%" alt="모의고사 시작 안내 화면" />
-
-<br /><br />
-
 ✅ `AI 자동화 YouTube Shorts 학습 루프`  
 메인 페이지에는 AI 자동화로 운영 중인 YouTube JLPT Shorts 채널의 레벨별 최신 영상 썸네일을 연결했습니다. 사용자는 YouTube Shorts에서 단어와 문법을 먼저 학습하고, 해당 학습 콘텐츠에서 정리된 데이터가 모의고사 문항 생성 흐름으로 이어집니다. Shorts가 업로드될 때마다 학습 데이터 자동화 흐름을 통해 모의고사 데이터도 함께 보강되는 구조입니다.
 
 <img src="./docs/assets/readme/09-youtube-shorts-loop.png" width="80%" alt="AI 자동화 YouTube Shorts 학습 루프 화면" />
+
+<br /><br />
+
+✅ `모의고사 시작 안내`  
+시험 시작 전 문항 수, 제한 시간, 청해 제외 여부, 해설 공개 시점을 안내합니다. 공식 시험과 혼동되지 않도록 학습 참고용 서비스라는 안내도 함께 제공합니다.
+
+<img src="./docs/assets/readme/02-mock-start.png" width="80%" alt="모의고사 시작 안내 화면" />
 
 <br /><br />
 
