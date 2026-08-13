@@ -17,6 +17,8 @@ test("required project scripts are available", () => {
   assert.equal(packageJson.scripts.build, "next build");
   assert.equal(packageJson.scripts.typecheck, "tsc --noEmit");
   assert.equal(packageJson.scripts.test, "node --test tests/*.test.mjs");
+  assert.equal(packageJson.scripts["report:content-quality"], "node scripts/generate-content-quality-report.mjs");
+  assert.equal(packageJson.scripts["check:content-quality-report"], "node scripts/generate-content-quality-report.mjs --check");
 });
 
 test("Supabase dependency is installed", () => {

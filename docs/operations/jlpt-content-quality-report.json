@@ -1,0 +1,1100 @@
+{
+  "summary": {
+    "files_checked": 25,
+    "total_questions": 1250,
+    "error_count": 0,
+    "warning_count": 0
+  },
+  "level_counts": {
+    "N1": {
+      "sets": 5,
+      "questions": 250,
+      "vocab": 100,
+      "grammar": 100,
+      "reading": 50,
+      "draft_questions": 250,
+      "approved_questions": 0,
+      "unknown_review_status_questions": 0
+    },
+    "N2": {
+      "sets": 5,
+      "questions": 250,
+      "vocab": 100,
+      "grammar": 100,
+      "reading": 50,
+      "draft_questions": 250,
+      "approved_questions": 0,
+      "unknown_review_status_questions": 0
+    },
+    "N3": {
+      "sets": 5,
+      "questions": 250,
+      "vocab": 100,
+      "grammar": 100,
+      "reading": 50,
+      "draft_questions": 250,
+      "approved_questions": 0,
+      "unknown_review_status_questions": 0
+    },
+    "N4": {
+      "sets": 5,
+      "questions": 250,
+      "vocab": 100,
+      "grammar": 100,
+      "reading": 50,
+      "draft_questions": 250,
+      "approved_questions": 0,
+      "unknown_review_status_questions": 0
+    },
+    "N5": {
+      "sets": 5,
+      "questions": 250,
+      "vocab": 100,
+      "grammar": 100,
+      "reading": 50,
+      "draft_questions": 250,
+      "approved_questions": 0,
+      "unknown_review_status_questions": 0
+    }
+  },
+  "question_type_counts": {
+    "N1": {
+      "vocab_reading": 15,
+      "vocab_orthography": 15,
+      "vocab_context_blank": 50,
+      "vocab_paraphrase": 20,
+      "grammar_sentence_blank": 50,
+      "grammar_sentence_build": 25,
+      "grammar_text_blank": 25,
+      "reading_short": 18,
+      "reading_medium": 14,
+      "reading_info": 18
+    },
+    "N2": {
+      "vocab_reading": 17,
+      "vocab_orthography": 16,
+      "vocab_context_blank": 46,
+      "vocab_paraphrase": 21,
+      "grammar_sentence_blank": 50,
+      "grammar_sentence_build": 25,
+      "grammar_text_blank": 25,
+      "reading_short": 20,
+      "reading_medium": 12,
+      "reading_info": 18
+    },
+    "N3": {
+      "vocab_reading": 18,
+      "vocab_orthography": 16,
+      "vocab_context_blank": 45,
+      "vocab_paraphrase": 21,
+      "grammar_sentence_blank": 48,
+      "grammar_sentence_build": 26,
+      "grammar_text_blank": 26,
+      "reading_short": 20,
+      "reading_medium": 11,
+      "reading_info": 19
+    },
+    "N4": {
+      "vocab_reading": 21,
+      "vocab_orthography": 19,
+      "vocab_context_blank": 39,
+      "vocab_paraphrase": 21,
+      "grammar_sentence_blank": 50,
+      "grammar_sentence_build": 24,
+      "grammar_text_blank": 26,
+      "reading_short": 20,
+      "reading_medium": 12,
+      "reading_info": 18
+    },
+    "N5": {
+      "vocab_reading": 17,
+      "vocab_orthography": 17,
+      "vocab_context_blank": 47,
+      "vocab_paraphrase": 19,
+      "grammar_sentence_blank": 48,
+      "grammar_sentence_build": 26,
+      "grammar_text_blank": 26,
+      "reading_short": 20,
+      "reading_info": 19,
+      "reading_medium": 11
+    }
+  },
+  "sets": [
+    {
+      "file": "data/generated/n1-realistic-mock-exam-001.json",
+      "set_code": "n1-realistic-mock-exam-001",
+      "level": "N1",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 307,
+      "reading_average": 330,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n1-realistic-mock-exam-002.json",
+      "set_code": "n1-realistic-mock-exam-002",
+      "level": "N1",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 4,
+        "reading_info": 2
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 300,
+      "reading_average": 335,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n1-realistic-mock-exam-003.json",
+      "set_code": "n1-realistic-mock-exam-003",
+      "level": "N1",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 13,
+        "B": 13,
+        "C": 12,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 300,
+      "reading_average": 314,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n1-realistic-mock-exam-004.json",
+      "set_code": "n1-realistic-mock-exam-004",
+      "level": "N1",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 12,
+        "B": 13,
+        "C": 13,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 307,
+      "reading_average": 335,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n1-realistic-mock-exam-005.json",
+      "set_code": "n1-realistic-mock-exam-005",
+      "level": "N1",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 2,
+        "reading_medium": 4,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 34,
+        "B": 8,
+        "C": 8,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 301,
+      "reading_average": 315,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n2-realistic-mock-exam-001.json",
+      "set_code": "n2-realistic-mock-exam-001",
+      "level": "N2",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 1,
+        "C": 4,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 258,
+      "reading_average": 286,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n2-realistic-mock-exam-002.json",
+      "set_code": "n2-realistic-mock-exam-002",
+      "level": "N2",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 2,
+        "C": 3,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 240,
+      "reading_average": 267,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n2-realistic-mock-exam-003.json",
+      "set_code": "n2-realistic-mock-exam-003",
+      "level": "N2",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 13,
+        "B": 13,
+        "C": 12,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 240,
+      "reading_average": 266,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n2-realistic-mock-exam-004.json",
+      "set_code": "n2-realistic-mock-exam-004",
+      "level": "N2",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 11,
+        "B": 15,
+        "C": 13,
+        "D": 11
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 243,
+      "reading_average": 268,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n2-realistic-mock-exam-005.json",
+      "set_code": "n2-realistic-mock-exam-005",
+      "level": "N2",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 5,
+        "vocab_orthography": 4,
+        "vocab_context_blank": 6,
+        "vocab_paraphrase": 5,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 4,
+        "reading_info": 2
+      },
+      "correct_choice_counts": {
+        "A": 13,
+        "B": 13,
+        "C": 12,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 254,
+      "reading_average": 272,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n3-realistic-mock-exam-001.json",
+      "set_code": "n3-realistic-mock-exam-001",
+      "level": "N3",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 249,
+      "reading_average": 265,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n3-realistic-mock-exam-002.json",
+      "set_code": "n3-realistic-mock-exam-002",
+      "level": "N3",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 215,
+      "reading_average": 229,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n3-realistic-mock-exam-003.json",
+      "set_code": "n3-realistic-mock-exam-003",
+      "level": "N3",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 13,
+        "B": 13,
+        "C": 12,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 194,
+      "reading_average": 207,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n3-realistic-mock-exam-004.json",
+      "set_code": "n3-realistic-mock-exam-004",
+      "level": "N3",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 5,
+        "vocab_orthography": 5,
+        "vocab_context_blank": 5,
+        "vocab_paraphrase": 5,
+        "grammar_sentence_blank": 8,
+        "grammar_sentence_build": 6,
+        "grammar_text_blank": 6,
+        "reading_short": 4,
+        "reading_medium": 3,
+        "reading_info": 3
+      },
+      "correct_choice_counts": {
+        "A": 15,
+        "B": 12,
+        "C": 13,
+        "D": 10
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 192,
+      "reading_average": 209,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n3-realistic-mock-exam-005.json",
+      "set_code": "n3-realistic-mock-exam-005",
+      "level": "N3",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 4,
+        "vocab_orthography": 2,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 12,
+        "B": 13,
+        "C": 13,
+        "D": 12
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 191,
+      "reading_average": 204,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n4-realistic-mock-exam-001.json",
+      "set_code": "n4-realistic-mock-exam-001",
+      "level": "N4",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 144,
+      "reading_average": 160,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n4-realistic-mock-exam-002.json",
+      "set_code": "n4-realistic-mock-exam-002",
+      "level": "N4",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 5,
+        "vocab_orthography": 5,
+        "vocab_context_blank": 6,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 8,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 7,
+        "reading_short": 4,
+        "reading_medium": 3,
+        "reading_info": 3
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 1,
+        "C": 4,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 141,
+      "reading_average": 154,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n4-realistic-mock-exam-003.json",
+      "set_code": "n4-realistic-mock-exam-003",
+      "level": "N4",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 4,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 9,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 141,
+      "reading_average": 152,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n4-realistic-mock-exam-004.json",
+      "set_code": "n4-realistic-mock-exam-004",
+      "level": "N4",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 5,
+        "vocab_orthography": 5,
+        "vocab_context_blank": 5,
+        "vocab_paraphrase": 5,
+        "grammar_sentence_blank": 12,
+        "grammar_sentence_build": 4,
+        "grammar_text_blank": 4,
+        "reading_short": 4,
+        "reading_medium": 3,
+        "reading_info": 3
+      },
+      "correct_choice_counts": {
+        "A": 13,
+        "B": 14,
+        "C": 13,
+        "D": 10
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 140,
+      "reading_average": 147,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n4-realistic-mock-exam-005.json",
+      "set_code": "n4-realistic-mock-exam-005",
+      "level": "N4",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 4,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 9,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 0,
+        "C": 5,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 144,
+      "reading_average": 156,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n5-realistic-mock-exam-001.json",
+      "set_code": "n5-realistic-mock-exam-001",
+      "level": "N5",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 11,
+        "vocab_paraphrase": 3,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_info": 4,
+        "reading_medium": 2
+      },
+      "correct_choice_counts": {
+        "A": 38,
+        "B": 6,
+        "C": 4,
+        "D": 2
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 132,
+      "reading_average": 152,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n5-realistic-mock-exam-002.json",
+      "set_code": "n5-realistic-mock-exam-002",
+      "level": "N5",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 3,
+        "C": 2,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 128,
+      "reading_average": 161,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n5-realistic-mock-exam-003.json",
+      "set_code": "n5-realistic-mock-exam-003",
+      "level": "N5",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 1,
+        "C": 2,
+        "D": 2
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 128,
+      "reading_average": 156,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n5-realistic-mock-exam-004.json",
+      "set_code": "n5-realistic-mock-exam-004",
+      "level": "N5",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 3,
+        "vocab_orthography": 3,
+        "vocab_context_blank": 10,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 10,
+        "grammar_sentence_build": 5,
+        "grammar_text_blank": 5,
+        "reading_short": 4,
+        "reading_medium": 2,
+        "reading_info": 4
+      },
+      "correct_choice_counts": {
+        "A": 45,
+        "B": 1,
+        "C": 4,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 120,
+      "reading_average": 133,
+      "findings": []
+    },
+    {
+      "file": "data/generated/n5-realistic-mock-exam-005.json",
+      "set_code": "n5-realistic-mock-exam-005",
+      "level": "N5",
+      "status": "draft",
+      "questions": 50,
+      "section_counts": {
+        "vocab": 20,
+        "grammar": 20,
+        "reading": 10
+      },
+      "question_type_counts": {
+        "vocab_reading": 5,
+        "vocab_orthography": 5,
+        "vocab_context_blank": 6,
+        "vocab_paraphrase": 4,
+        "grammar_sentence_blank": 8,
+        "grammar_sentence_build": 6,
+        "grammar_text_blank": 6,
+        "reading_short": 4,
+        "reading_medium": 3,
+        "reading_info": 3
+      },
+      "correct_choice_counts": {
+        "A": 24,
+        "B": 19,
+        "C": 7,
+        "D": 0
+      },
+      "review_status_counts": {
+        "draft": 50,
+        "approved": 0,
+        "rejected": 0,
+        "missing_or_unknown": 0
+      },
+      "reading_min": 120,
+      "reading_average": 131,
+      "findings": []
+    }
+  ],
+  "findings": []
+}

@@ -20,6 +20,8 @@
     "select:next-realistic-mock-exam": "node scripts/select-next-realistic-mock-exam-target.mjs",
     "validate:realistic-mock-exam": "node scripts/validate-realistic-mock-exam-draft.mjs",
     "quality:mock-exams": "npm run validate:realistic-mock-exam -- --all && node --test tests/realistic-mock-exam-validator.test.mjs tests/mock-exam-build-set.test.mjs tests/mock-exam-ui.test.mjs",
+    "report:content-quality": "node scripts/generate-content-quality-report.mjs",
+    "check:content-quality-report": "node scripts/generate-content-quality-report.mjs --check",
     "ops:health": "node scripts/ops-health-check.mjs"
   },
   "dependencies": {
