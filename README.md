@@ -149,7 +149,6 @@ jlpt-quiz-agent/
 ├─ docs/
 │  ├─ assets/readme/               # README 스크린샷 이미지
 │  ├─ architecture/                # 인증, 모의고사, 데이터 구조 설계 문서
-│  ├─ design/                      # 디자인 토큰과 UI 작업 기준
 │  ├─ operations/                  # 배포 후 점검, 콘텐츠 품질 리포트
 │  └─ qa/                          # QA 체크리스트와 smoke test 기록
 ├─ scripts/
