@@ -45,6 +45,10 @@ supabase/.temp/
 /data/source/
 /.hermes/
 
+# local AI-agent instruction files for private coding sessions
+/AGENTS.md
+/CLAUDE.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
