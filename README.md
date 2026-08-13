@@ -63,7 +63,13 @@
 ✅ `제출 후 결과 리포트`  
 전체 제출 후 총점, 영역별 결과, 약한 영역, 복습 우선순위를 확인할 수 있습니다. 결과는 현재 모의 세트 기준의 학습 참고용으로 표시됩니다.
 
-<img src="./docs/assets/readme/04-result.png" width="80%" alt="모의고사 결과 리포트 화면" />
+<img src="./docs/assets/readme/04-result-summary.png" width="80%" alt="모의고사 결과 요약 화면" />
+
+<br />
+
+영역별 정답률과 자동 학습 코치 코멘트를 함께 제공해, 어떤 영역부터 다시 볼지 바로 결정할 수 있습니다.
+
+<img src="./docs/assets/readme/04-result-coach.png" width="80%" alt="모의고사 결과 기반 자동 학습 코치 화면" />
 
 <br /><br />
 
@@ -75,16 +81,24 @@ Google, Kakao, Naver, 이메일 기반 로그인을 고려한 인증 UI를 구�
 <br /><br />
 
 ✅ `학습 기록 대시보드`  
-로그인 후 최근 모의고사 기록, 학습 루틴, 저장된 풀이 흐름을 확인할 수 있도록 대시보드 구조를 설계했습니다.
+로그인 전에는 학습 기록 저장 범위를 안내하고, 로그인 후에는 최근 모의고사 기록, 평균 정답률, 남은 오답, 취약 영역, 주간 학습 활동을 한 화면에서 확인할 수 있도록 구성했습니다.
 
-<img src="./docs/assets/readme/05-dashboard.png" width="80%" alt="학습 기록 대시보드 화면" />
+<img src="./docs/assets/readme/05-dashboard-login-required.png" width="80%" alt="학습 기록 대시보드 로그인 전 화면" />
+
+<br />
+
+<img src="./docs/assets/readme/05-dashboard-logged-in.png" width="80%" alt="학습 기록 대시보드 로그인 후 화면" />
 
 <br /><br />
 
 ✅ `오답노트 복습`  
-모의고사 제출 후 틀린 문제를 다시 볼 수 있는 오답노트 흐름을 제공합니다. 로그인 상태에서는 서버 저장 기반으로 복습 기록을 이어갈 수 있습니다.
+모의고사 제출 후 틀린 문제를 다시 풀 수 있는 오답노트 흐름을 제공합니다. 실제 오답 문항, 영역 필터, 복습 진행률, 정답 확인/해설까지 연결해 반복 학습이 가능하도록 구성했습니다.
 
-<img src="./docs/assets/readme/06-wrong-note.png" width="80%" alt="오답노트 화면" />
+<img src="./docs/assets/readme/06-wrong-note-active.png" width="80%" alt="실제 오답 문항이 있는 오답노트 화면" />
+
+<br />
+
+<img src="./docs/assets/readme/06-wrong-note-review.png" width="80%" alt="오답노트 정답 확인 및 해설 화면" />
 
 <br /><br />
 
@@ -95,8 +109,8 @@ Google, Kakao, Naver, 이메일 기반 로그인을 고려한 인증 UI를 구�
 
 <br /><br />
 
-✅ `모바일 우선 화면`  
-모바일에서도 D-Day, 레벨 선택, 모의고사 진입 흐름을 빠르게 확인할 수 있도록 반응형 UI를 구성했습니다.
+✅ `모바일 반응형 화면`  
+데스크톱뿐 아니라 모바일에서도 D-Day, 레벨 선택, 모의고사 진입 흐름을 빠르게 확인할 수 있도록 반응형 UI를 구성했습니다.
 
 <img src="./docs/assets/readme/08-mobile-home.png" width="40%" alt="모바일 홈 화면" />
 
