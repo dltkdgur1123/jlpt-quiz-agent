@@ -3,7 +3,7 @@
 # HYOKU JLPT
 
 🗓 개발기간 : 2026년 7월 ~ 2026년 8월  
-💬 [HYOKU JLPT에서 모의고사 풀기](https://jlpt.hyoku.cloud)  
+💬 [HYOKU JLPT에서 모의고사 사이트](https://jlpt.hyoku.cloud)  
 📦 [GitHub Repository](https://github.com/dltkdgur1123/jlpt-quiz-agent)
 
 > HYOKU JLPT는 공식 JLPT 주관기관과 무관한 학습 서비스입니다. 공식 기출문제를 복제하거나 변형하지 않으며, 점수와 합격권 표시는 현재 모의 세트 기준의 학습 참고용입니다.
