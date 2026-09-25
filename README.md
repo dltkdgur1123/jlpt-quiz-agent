@@ -19,6 +19,7 @@
 5. [검증 및 운영](#-검증-및-운영)
 6. [로컬 실행 방법](#-로컬-실행-방법)
 7. [데이터 및 신뢰성 원칙](#-데이터-및-신뢰성-원칙)
+8. [보안 보완 사항](#-보안-보완-사항)
 
 <br />
 
@@ -265,6 +266,60 @@ SUPABASE_ACCESS_TOKEN=
 - 문제와 보기는 제출 전 일본어만 노출하고, 해설은 제출 후 공개합니다.
 - 로그인 사용자의 모의고사 기록은 대시보드와 오답노트 흐름에 저장합니다.
 - 비로그인 사용자는 결과 화면에서만 체험 결과를 확인합니다.
+
+<br />
+
+# 🔒 보안 보완 사항
+
+JLPT Quiz는 공개 학습 서비스이지만 로그인, 학습 기록, 오답노트, 관리자 기능이 포함되어 있어 출시 전후로 다음 보안 항목을 보완했습니다.
+
+## 인증·권한 보호
+
+- Google, Kakao, Naver, 이메일 로그인을 고려한 Supabase Auth 기반 인증 흐름을 사용합니다.
+- 관리자 화면과 관리자 API는 별도 allowlist 기반으로 접근을 제한합니다.
+- 비로그인 사용자의 보호 API 접근은 `401/403`으로 차단되도록 점검합니다.
+- 관리자 회원 목록은 기본적으로 최소 정보만 노출하도록 설계했습니다.
+
+## 데이터 격리와 RLS
+
+- Supabase 사용자 활동 테이블에 Row Level Security를 적용해 익명 REST 접근으로 학습 기록, 풀이 이력, 피드백 데이터가 노출되지 않도록 보완했습니다.
+- `public.users`, `quiz_attempts`, `exam_seen_feedback`, mock exam attempt 관련 테이블은 anon dump 위험을 줄이기 위해 별도 lock-down migration으로 관리합니다.
+- 관리자 API는 service role 서버 경로에서만 사용하고, 브라우저에는 anon/publishable key만 노출하는 원칙을 유지합니다.
+
+## 정답 유출 방지와 서버 채점
+
+- 문제 풀이 중에는 정답과 해설을 공개하지 않고, 제출 후 결과 화면에서만 해설을 볼 수 있도록 했습니다.
+- 모의고사 채점은 클라이언트 표시값만 신뢰하지 않고 서버 측 제출·채점 흐름을 기준으로 검증합니다.
+- 비로그인 체험 제출은 저장 기록과 분리해 처리하고, 로그인 사용자 저장 기록과 혼동되지 않도록 했습니다.
+
+## 남용·비용 방지
+
+- 공개 API 반복 호출에 대비해 주요 엔드포인트에 rate limit을 적용했습니다.
+- 제한 초과 시 `429`와 `Retry-After`, `RateLimit-*` 헤더를 반환하도록 구성했습니다.
+- 정상 `200` 응답에도 rate-limit 헤더를 포함해 운영 점검에서 보호 장치가 살아 있는지 확인할 수 있게 했습니다.
+
+## 보안 헤더와 브라우저 보호
+
+- `next.config.ts`에서 공통 보안 헤더를 설정했습니다.
+  - `Content-Security-Policy`
+  - `X-Frame-Options: DENY`
+  - `X-Content-Type-Options: nosniff`
+  - `Strict-Transport-Security`
+  - `Referrer-Policy`
+  - `Permissions-Policy`
+- CSP는 Supabase, AdSense 등 실제 운영 연동이 깨지지 않도록 허용 도메인을 명시적으로 관리합니다.
+
+## 개인정보·운영 감사
+
+- 개인정보 처리방침, 이용약관, 환불 안내, 문의 페이지를 공개 페이지로 구성했습니다.
+- 향후 유료 서비스 전환을 고려해 privacy deletion request, subscription 상태, admin audit event 스키마 초안을 준비했습니다.
+- 관리자성 작업은 audit log를 남길 수 있는 구조로 확장했습니다.
+
+## 운영 점검
+
+- `npm run ops:health`에서 공개 URL, sitemap/robots, AdSense/정책 페이지, 보안 헤더, rate-limit 헤더, 주요 API guard를 점검합니다.
+- 배포 후에는 `docs/operations/post-deploy-health-check.md` 기준으로 실제 운영 URL을 확인합니다.
+- 모니터링 정상은 보안 리뷰 통과를 의미하지 않으므로, RLS·권한·정답 유출·관리자 접근은 별도 테스트로 확인합니다.
 
 <br />
 
